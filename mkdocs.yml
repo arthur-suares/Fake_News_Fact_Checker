@@ -1,0 +1,53 @@
+site_name: Grupo 2 - Residência em IA TIC - First Challenge
+
+repo_name: "Fake new validador "
+repo_url: https://github.com/arthur-suares/Fake_News_Fact_Checker/
+
+nav:
+  - Início: index.md
+  - Investigação Forense de Notícias: investigacao-forense-de-noticias.md
+  - Exploração de estudos de caso: exploracao-de-estudos-de-caso.md
+  - Elaboração de guiding questions: elaboracao-de-guiding-questions.md
+  - Workshop de confiança: workshop-de-confianca.md
+  - Exploração de datasets públicos: exploracao-de-datasets-publicos.md
+  - Processo investigativo: processo-investigativo.md
+  - Visão Geral da Arquitetura: visao-geral-arquitetura.md
+  - Bibliografia: bibliografia.md
+theme:
+  name: material
+  language: pt-BR
+  highlightjs: true
+  
+  features:
+    - content.code.annotate
+    - content.tabs.link
+    - header.autohide
+    - navigation.instant
+    - navigation.top
+    - navigation.tracking
+
+  palette:
+    - scheme: default
+      primary: ''
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+        
+    - scheme: slate
+      primary: ''
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+  
+  
+
+markdown_extensions:
+  - tables
+  - fenced_code
+  - codehilite
+  - attr_list
+  - pymdownx.tasklist
+  - codehilite:
+      guess_lang: false
+  - pymdownx.highlight
+  - pymdownx.superfences
