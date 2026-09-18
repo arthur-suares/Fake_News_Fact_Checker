@@ -12,8 +12,8 @@ nav:
   - Exploração de datasets públicos: exploracao-de-datasets-publicos.md
   - Processo investigativo: processo-investigativo.md
   - Visão Geral da Arquitetura: visao-geral-arquitetura.md
+  - Requisitos: Requisitos.md
   - Bibliografia: bibliografia.md
-
 theme:
   name: material
   language: pt-BR
