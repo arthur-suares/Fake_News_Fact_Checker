@@ -27,7 +27,7 @@ cd Fake_News_Fact_Checker
 
 ## 3. Criar ambiente virtual
 
-Recomenda-se utilizar um ambiente virtual Python..
+Recomenda-se utilizar um ambiente virtual Python.
 
 ### Linux / macOS
 
