@@ -6,3 +6,10 @@ venv/
 
 __pycache__/
 *.pyc
+
+# EDA: datasets limpos são gerados por EDA/00_limpeza.py
+EDA/datasets/limpos/nao_tratados.csv
+EDA/outputs
+
+# macOS
+.DS_Store
