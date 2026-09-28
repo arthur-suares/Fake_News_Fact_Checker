@@ -1,15 +1,28 @@
 env
 .env
+.env*.local
 
 venv/
 .venv
 
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # EDA: datasets limpos são gerados por EDA/00_limpeza.py
 EDA/datasets/limpos/nao_tratados.csv
 EDA/outputs
+
+# backend: imagens enviadas pelos usuários
+backend/uploads/
+
+# frontend
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
 
 # macOS
 .DS_Store
