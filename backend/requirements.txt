@@ -8,3 +8,6 @@ psycopg2-binary
 httpx
 python-multipart
 pytest
+mcp>=1.28,<2
+openai
+pydantic

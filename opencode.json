@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "image_analysis": {
+      "type": "local",
+      "command": [
+        "backend/.venv/bin/python",
+        "image-analysis/server.py"
+      ],
+      "enabled": true
+    }
+  }
+}
