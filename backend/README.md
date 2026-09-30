@@ -5,12 +5,12 @@ O sistema combina busca semântica em **banco vetorial local** com a **Google Fa
 
 ---
 
-## 1. Visão Geral da Arquitetura do Banco Vetorial
+## 1. Visão Geral da Arquitetura do Banco Vetorial, obsr
 
 O subsistema de banco vetorial foi projetado para indexar, consultar e categorizar notícias e afirmações previamente verificadas por agências de checagem brasileiras (como *Lupa*, *Aos Fatos*, *Boatos.org*, *Estadão Verifica*, *AFP Checamos*, *Projeto Comprova*).
 
 ```
-                            Usuário / Frontend / MCP
+                            Usuário / Frontend / MCPs
                                        │
                                        ▼
                        ┌───────────────────────────────┐

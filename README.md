@@ -113,6 +113,8 @@ GOOGLE_FACT_CHECK_API_KEY=AIzaSyXXXXXXXXXXXXXXXXXXXXXXXX
 
 ### Importante
 
+
+
 O arquivo `.env` não deve ser enviado para o Git.
 
 Certifique-se de que ele esteja presente no `.gitignore:
