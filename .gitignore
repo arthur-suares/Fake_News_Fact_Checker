@@ -15,6 +15,12 @@ EDA/outputs
 
 # backend: imagens enviadas pelos usuários
 backend/uploads/
+backend/data/
+backend/*.db
+backend/*.log
+*.db
+*.log
+*.ses
 
 # frontend
 node_modules/
