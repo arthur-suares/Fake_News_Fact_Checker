@@ -414,3 +414,32 @@ O funcionamento do sistema pode ser resumido da seguinte forma:
 ```
 
 O backend funciona como uma camada intermediária entre o sistema cliente e a Google Fact Check Tools API. Isso permite que posteriormente outros componentes, como um **MCP Server**, consumam o backend sem precisar acessar diretamente a API da Google ou armazenar sua API Key.
+
+---
+
+## 17. Banco Vetorial (ChromaDB + Busca Semântica Híbrida)
+
+O backend possui integração completa com um **Banco Vetorial** persistente utilizando **ChromaDB** e modelos neurais locais ONNX (`all-MiniLM-L6-v2`), permitindo checagem semântica inteligente a partir de uma base com mais de **23.000 afirmações verificadas** por agências de checagem brasileiras (*Lupa*, *Aos Fatos*, *Boatos.org*, *Estadão*).
+
+### Documentação detalhada:
+* [Manual Operacional do Banco Vetorial](file:///Users/aluno1/Fake_News_Fact_Checker/backend/app/vector_db/README.md)
+* [Documentação Técnica do Backend](file:///Users/aluno1/Fake_News_Fact_Checker/backend/README.md)
+
+### Comandos Rápidos da CLI:
+```bash
+# Ingerir registros do dataset limpo
+PYTHONPATH=backend python -m app.vector_db.cli ingest --limit 500 --batch-size 100
+
+# Fazer busca semântica por afirmação
+PYTHONPATH=backend python -m app.vector_db.cli search "Nando Reis Rock in Rio" --top-k 3
+
+# Visualizar estatísticas do banco
+PYTHONPATH=backend python -m app.vector_db.cli stats
+```
+
+### Endpoints da API Vetorial:
+* `GET /api/vector/stats` — métricas do banco vetorial.
+* `POST /api/vector/search` — busca semântica por similaridade de cosseno.
+* `POST /api/vector/documents` — inserção de novas matérias checadas.
+* `POST /api/vector/ingest` — disparo de ingestão dos datasets limpos via HTTP.
+
