@@ -44,7 +44,7 @@ export default function Page() {
 
   async function handleEnviarOpiniao(opiniaoMudou: number) {
     if (!resultado) return
-    await enviarFeedback(resultado.id, { ...respostasPre, opiniaoMudou })
+    await enviarFeedback(resultado.id, { ...respostasPre, q9: opiniaoMudou })
   }
 
   function handleRestart() {
