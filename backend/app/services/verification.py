@@ -1,32 +1,14 @@
 from typing import Any
 
-import httpx
-
-from app.config import settings
-
-
-GOOGLE_FACT_CHECK_URL = "https://factchecktools.googleapis.com/v1alpha1/claims:search"
+from app.services.google_fact_check import GoogleFactCheckService, map_claim_reviews
 
 
 def search_and_map_claims(text: str) -> tuple[dict[str, Any], list[dict[str, str | None]]]:
-    response = httpx.get(
-        GOOGLE_FACT_CHECK_URL,
-        params={"key": settings.google_fact_check_api_key, "query": text, "languageCode": "pt-BR", "pageSize": 10},
-        timeout=15,
-    )
-    if response.status_code != 200:
-        raise RuntimeError(f"Google Fact Check API error: {response.status_code} - {response.text}")
-
-    result = response.json()
-    evidence = []
-    for claim in result.get("claims", []):
-        for review in claim.get("claimReview", []):
-            publisher = review.get("publisher", {})
-            evidence.append({
-                "source": publisher.get("name", "Unknown"),
-                "rating": review.get("textualRating"),
-                "url": review.get("url"),
-            })
+    result = GoogleFactCheckService.search_claims(query=text)
+    evidence = [
+        {"source": review["publisher"], "rating": review["rating"], "url": review["url"]}
+        for review in map_claim_reviews(result)
+    ]
     return result, evidence
 
 

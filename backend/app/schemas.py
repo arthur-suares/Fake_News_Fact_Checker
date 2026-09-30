@@ -8,6 +8,14 @@ class VerificationCreate(BaseModel):
     text: str = Field(min_length=1)
 
 
+class FactCheckSearch(BaseModel):
+    query: str = Field(min_length=3)
+    language_code: str = Field(default="pt-BR", min_length=2)
+    max_age_days: int | None = Field(default=None, ge=1)
+    page_size: int = Field(default=10, ge=1, le=100)
+    page_token: str | None = None
+
+
 class VerificationAccepted(BaseModel):
     id: str
     status: str

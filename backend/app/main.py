@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
 from app.routes.feedback import router as feedback_router
 from app.routes.verification import router as verification_router
-from app.services.google_fact_check import GoogleFactCheckService
+from app.schemas import FactCheckSearch
+from app.services.google_fact_check import GoogleFactCheckService, search_fact_check_reviews
 
 
 Base.metadata.create_all(bind=engine)
@@ -55,6 +56,7 @@ def fact_check(
         le=100,
         description="Quantidade de resultados"
     ),
+    page_token: str | None = Query(None, description="Token para a próxima página"),
 ):
     try:
         result = GoogleFactCheckService.search_claims(
@@ -62,6 +64,7 @@ def fact_check(
             language_code=language_code,
             max_age_days=max_age_days,
             page_size=page_size,
+            page_token=page_token,
         )
 
         return result
@@ -77,3 +80,11 @@ def fact_check(
             status_code=500,
             detail=f"Internal server error: {error}"
         )
+
+
+@app.post("/api/fact-check")
+def fact_check_reviews(payload: FactCheckSearch):
+    try:
+        return search_fact_check_reviews(**payload.model_dump())
+    except RuntimeError as error:
+        raise HTTPException(status_code=502, detail=str(error))

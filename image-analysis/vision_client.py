@@ -13,6 +13,7 @@ load_dotenv(BACKEND_ENV_FILE)
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_MODEL = "google/gemma-4-31b-it:free"
+DEFAULT_FALLBACK_MODELS = ("qwen/qwen3.8-27b:free",)
 SUPPORTED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
 
 
@@ -61,17 +62,31 @@ def request_image_analysis(
             "é visualmente compatível com a afirmação e deixando claro que compatibilidade visual "
             "não comprova a veracidade da afirmação."
         )
+    prompt += (
+        " Inclua visible_text como uma lista com a transcrição literal de todo texto legível na imagem; "
+        "não complete palavras encobertas ou ilegíveis. Não identifique pessoas nem tente deduzir seus nomes; "
+        "limite-se a descrever o que é visível. Descreva sinais de conferência, entrevista ou protesto como "
+        "indícios visuais, sem afirmar um evento específico que não esteja comprovado pela imagem."
+    )
 
     client = OpenAI(
         api_key=api_key,
         base_url=OPENROUTER_BASE_URL,
         default_headers={"X-OpenRouter-Title": "Fake News Fact Checker"},
     )
-    response = client.chat.completions.create(
-        model=os.getenv("OPENROUTER_MODEL", DEFAULT_MODEL),
-        temperature=0.2,
-        max_tokens=500,
-        messages=[
+    fallback_models = [
+        model.strip()
+        for model in os.getenv(
+            "OPENROUTER_FALLBACK_MODELS",
+            ",".join(DEFAULT_FALLBACK_MODELS),
+        ).split(",")
+        if model.strip() and model.strip() != os.getenv("OPENROUTER_MODEL", DEFAULT_MODEL)
+    ]
+    request_options: dict[str, Any] = {
+        "model": os.getenv("OPENROUTER_MODEL", DEFAULT_MODEL),
+        "temperature": 0.2,
+        "max_tokens": 700,
+        "messages": [
             {
                 "role": "user",
                 "content": [
@@ -83,6 +98,12 @@ def request_image_analysis(
                 ],
             }
         ],
+    }
+    if fallback_models:
+        request_options["extra_body"] = {"models": fallback_models}
+
+    response = client.chat.completions.create(
+        **request_options,
     )
     content = response.choices[0].message.content
     if not content:

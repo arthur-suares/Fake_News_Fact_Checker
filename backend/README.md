@@ -33,9 +33,16 @@ DATABASE_URL=sqlite:///./fact_check.db
 GOOGLE_FACT_CHECK_API_KEY=sua_chave_google
 OPENROUTER_API_KEY=sua_chave_openrouter
 OPENROUTER_MODEL=google/gemma-4-31b-it:free
+OPENROUTER_FALLBACK_MODELS=qwen/qwen3.8-27b:free
 ```
 
-O modelo padrão é multimodal e gratuito no catálogo consultado. A disponibilidade e as cotas de modelos gratuitos podem mudar. `OPENROUTER_MODEL` pode ser trocado por outro modelo do OpenRouter que aceite imagens.
+O servidor MCP tenta primeiro o modelo de `OPENROUTER_MODEL`; se o OpenRouter retornar erro, tentará os modelos listados em `OPENROUTER_FALLBACK_MODELS`, na ordem. Ambos os padrões aceitam imagem e estão sujeitos às cotas compartilhadas do tier gratuito. Para maior disponibilidade, substitua um fallback por um modelo pago que aceite imagens. Os IDs e cotas podem mudar.
+
+O OpenCode usa credenciais próprias para o modelo conversacional; `OPENROUTER_API_KEY` no `.env` autentica o servidor MCP, mas não conecta automaticamente o OpenCode ao provedor. Na raiz do projeto, inicie `opencode`, execute `/connect`, selecione **OpenRouter** e insira uma chave OpenRouter. Depois, `/models` mostra as opções; a configuração do projeto seleciona `openrouter/google/gemma-3-27b-it` como modelo padrão. O Gemma 3 não está configurado como gratuito: chamadas do OpenCode consomem os créditos da sua conta. O Gemma 4/Qwen free configurados para o MCP podem receber 429 durante picos de uso.
+
+O OpenCode carrega [OPENCODE_INSTRUCTIONS.md](../OPENCODE_INSTRUCTIONS.md) para orientar o uso das ferramentas. Essas instruções melhoram a consistência, mas a decisão final de chamar uma tool ainda depende do modelo. Para modelos sem bom suporte a tool-calling, escolha outro modelo em `/models` ou passe `--model openrouter/google/gemma-3-27b-it` ao comando `opencode run`.
+
+As chaves de API são segredos. Se uma chave for colada em chat, issue ou log compartilhado, revogue-a no provedor e crie outra; não a inclua em `opencode.json` nem em documentação versionada.
 
 O cliente MCP carrega explicitamente esse arquivo central, mesmo sendo iniciado pelo OpenCode a partir da raiz do projeto. O FastAPI carrega o mesmo arquivo ao ser iniciado dentro de `backend/`.
 
@@ -72,6 +79,23 @@ curl --get http://127.0.0.1:8000/api/fact-check \
 ```
 
 Essa rota necessita de uma chave Google válida. O endpoint `POST /api/verifications` também aceita uma afirmação e pode armazenar uma imagem enviada, mas atualmente a análise multimodal MCP é uma ferramenta separada: esse endpoint não chama o servidor MCP.
+
+### Rotas REST de verificação
+
+- `GET /api/fact-check`: retorna a resposta original da Google Fact Check Tools API. Aceita `query`, `language_code`, `max_age_days`, `page_size` e `page_token`.
+- `POST /api/fact-check`: recebe JSON com os mesmos parâmetros e retorna avaliações organizadas por afirmação, publicação, classificação, URL e data. A resposta inclui `status`, `review_count` e `next_page_token`; não cria um veredito próprio.
+- `POST /api/verifications`: registra uma afirmação e inicia a consulta em segundo plano.
+- `GET /api/verifications/{id}`: consulta uma verificação pelo identificador.
+- `GET /api/verifications?limit=20&status=completed`: lista as verificações recentes, opcionalmente filtradas por status.
+- `POST /api/verifications/{id}/feedback`: registra feedback para uma verificação.
+
+Exemplo da busca organizada:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/fact-check \
+  -H 'Content-Type: application/json' \
+  -d '{"query":"Vacina causa autismo","language_code":"pt-BR","page_size":5}'
+```
 
 ## Testes do backend e da imagem
 
@@ -110,16 +134,23 @@ O servidor deve aparecer como conectado/disponível. Para parar o MCP, encerre a
 Para solicitar uma análise, use um caminho para uma imagem existente e uma afirmação. Exemplo no TUI do OpenCode:
 
 ```text
-Use a ferramenta MCP image_analysis_analyze_image para analisar a imagem /caminho/para/vacina.jpg e comparar com a afirmação "Vacina causa autismo". Leia o arquivo, envie os bytes codificados em Base64 e informe o MIME type correto.
+Use obrigatoriamente a ferramenta MCP image_analysis_compare_claim_with_image para comparar a imagem /caminho/para/vacina.jpg com a afirmação "Vacina causa autismo". Leia os bytes do arquivo, envie-os em Base64 com mime_type image/jpeg e transcreva o texto legível em visible_text. Não tente identificar as pessoas da foto.
 ```
 
 Também é possível fazer a solicitação pela CLI:
 
 ```bash
-opencode run 'Use image_analysis_analyze_image para analisar /caminho/para/vacina.jpg e comparar com a afirmação "Vacina causa autismo". Envie a imagem em Base64 com o MIME type correto.'
+opencode run 'Use obrigatoriamente image_analysis_compare_claim_with_image para a imagem /caminho/para/vacina.jpg e a afirmação "Vacina causa autismo". Envie a imagem em Base64 com mime_type image/jpeg e transcreva o texto legível. Não tente identificar as pessoas.'
 ```
 
-O host MCP fornece o conteúdo da imagem como `image_base64`, o MIME type como `mime_type` e o texto opcional como `text`. O servidor rejeita Base64 inválido e imagens acima de 10 MiB. O resultado contém `description`, `possible_manipulation`, `confidence` e `analysis`.
+O host MCP oferece estas ferramentas:
+
+- `analyze_image`: descreve a imagem, transcreve o texto legível em `visible_text`, estima possível manipulação visual e, opcionalmente, compara seu conteúdo com `text`.
+- `search_fact_checks`: busca avaliações publicadas e aceita `query`, `language_code`, `max_age_days`, `page_size` e `page_token`.
+- `summarize_fact_checks`: retorna contagem de avaliações por classificação, publicações encontradas e token para continuar a paginação. Não transforma as classificações em um veredito do sistema.
+- `compare_claim_with_image`: combina as avaliações da Google Fact Check Tools API com a análise visual do OpenRouter para uma afirmação e uma imagem.
+
+As ferramentas de imagem recebem o conteúdo como `image_base64` e `mime_type`; as ferramentas de comparação também recebem `claim`. O servidor rejeita Base64 inválido e imagens acima de 10 MiB. `visible_text` é uma transcrição automática e pode errar, especialmente em texto pequeno, desfocado ou parcialmente encoberto. Mesmo quando a busca não encontra avaliação, isso não significa que a afirmação seja verdadeira.
 
 ## Fluxo dos dados
 
@@ -128,6 +159,6 @@ O host MCP fornece o conteúdo da imagem como `image_base64`, o MIME type como `
 3. `image-analysis/server.py` valida e decodifica a imagem, aplica o limite de tamanho e chama `service.analyze_image`.
 4. O serviço chama `vision_client`, que cria uma data URL e envia texto mais imagem ao endpoint compatível com OpenAI do OpenRouter.
 5. O OpenRouter executa o modelo definido em `OPENROUTER_MODEL` e devolve uma resposta JSON.
-6. O serviço valida os campos e a faixa de confiança com Pydantic; a resposta estruturada volta pelo MCP ao OpenCode.
+6. O serviço valida os campos e a faixa de confiança com Pydantic; a resposta estruturada volta pelo MCP ao OpenCode. Para buscas fact-check, o MCP usa o mesmo serviço Google do backend e retorna as avaliações publicadas sem inferir verdade quando não há resultados.
 
 O MCP é a interface entre o OpenCode e a análise; ele não executa a inferência. Compatibilidade visual não comprova a veracidade de uma afirmação. `confidence` reflete a confiança reportada pelo modelo sobre a interpretação visual, e `possible_manipulation` não é uma avaliação forense.

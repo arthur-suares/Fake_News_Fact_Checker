@@ -1,7 +1,8 @@
 from pathlib import Path
 from uuid import UUID
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Query, Request, UploadFile, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import SessionLocal, get_db
@@ -11,6 +12,18 @@ from app.services.verification import search_and_map_claims, verdict_from_eviden
 
 
 router = APIRouter(prefix="/api/verifications", tags=["verifications"])
+
+
+@router.get("", response_model=list[VerificationResponse])
+def list_verifications(
+    limit: int = Query(20, ge=1, le=100),
+    verification_status: str | None = Query(None, alias="status"),
+    database: Session = Depends(get_db),
+):
+    query = select(Verification).order_by(Verification.created_at.desc()).limit(limit)
+    if verification_status:
+        query = query.where(Verification.status == verification_status)
+    return list(database.scalars(query))
 
 
 def process_verification(verification_id: str) -> None:

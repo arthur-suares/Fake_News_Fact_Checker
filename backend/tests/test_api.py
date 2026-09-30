@@ -31,6 +31,67 @@ def test_create_and_get_verification(monkeypatch):
     assert result.json()["evidence"][0]["source"] == "Reuters"
 
 
+def test_list_verifications_returns_recent_records(monkeypatch):
+    monkeypatch.setattr("app.routes.verification.search_and_map_claims", fake_search)
+    client.post("/api/verifications", json={"text": "Uma afirmação consultada"})
+
+    response = client.get("/api/verifications", params={"status": "completed", "limit": 5})
+
+    assert response.status_code == 200
+    assert response.json()
+    assert response.json()[0]["status"] == "completed"
+
+
+def test_fact_check_search_maps_reviews_and_preserves_pagination(monkeypatch):
+    captured = {}
+
+    def fake_search(**kwargs):
+        captured.update(kwargs)
+        return {
+            "claims": [
+                {
+                    "text": "Vacina causa autismo",
+                    "claimReview": [
+                        {
+                            "publisher": {"name": "Agência Exemplo", "site": "example.test"},
+                            "title": "Análise da afirmação",
+                            "textualRating": "Falso",
+                            "url": "https://example.test/review",
+                            "reviewDate": "2026-01-01",
+                            "languageCode": "pt",
+                        }
+                    ],
+                }
+            ],
+            "nextPageToken": "next-page",
+        }
+
+    monkeypatch.setattr("app.main.GoogleFactCheckService.search_claims", fake_search)
+
+    response = client.post(
+        "/api/fact-check",
+        json={
+            "query": "Vacina causa autismo",
+            "language_code": "pt-BR",
+            "max_age_days": 30,
+            "page_size": 3,
+            "page_token": "previous-page",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["status"] == "reviews_found"
+    assert response.json()["reviews"][0]["rating"] == "Falso"
+    assert response.json()["next_page_token"] == "next-page"
+    assert captured == {
+        "query": "Vacina causa autismo",
+        "language_code": "pt-BR",
+        "max_age_days": 30,
+        "page_size": 3,
+        "page_token": "previous-page",
+    }
+
+
 def test_create_feedback():
     created = client.post("/api/verifications", json={"text": "Uma afirmação"})
     verification_id = created.json()["id"]

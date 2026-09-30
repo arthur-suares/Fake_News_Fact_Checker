@@ -18,6 +18,7 @@ def test_openrouter_request_uses_configured_multimodal_model(monkeypatch):
             message = types.SimpleNamespace(
                 content=(
                     '{"description":"Pessoa recebendo uma vacina.",'
+                    '"visible_text":["Vacina"],'
                     '"possible_manipulation":false,"confidence":0.82,'
                     '"analysis":"A imagem é compatível, mas não comprova a afirmação."}'
                 )
@@ -45,6 +46,7 @@ def test_openrouter_request_uses_configured_multimodal_model(monkeypatch):
     assert captured["client"]["base_url"] == vision_client.OPENROUTER_BASE_URL
     request = captured["request"]
     assert request["model"] == "google/gemma-4-31b-it:free"
+    assert request["extra_body"]["models"] == ["qwen/qwen3.8-27b:free"]
     assert request["messages"][0]["content"][1]["image_url"]["url"] == (
         "data:image/png;base64," + base64.b64encode(b"png-bytes").decode("ascii")
     )

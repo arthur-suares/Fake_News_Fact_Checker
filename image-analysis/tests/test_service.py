@@ -12,6 +12,7 @@ import service
 def test_analyze_image_returns_validated_result(monkeypatch):
     expected = {
         "description": "Pessoa recebendo uma vacina.",
+        "visible_text": ["Vacina"],
         "possible_manipulation": False,
         "confidence": 0.82,
         "analysis": "A imagem é compatível com a afirmação, mas não comprova sua veracidade.",
