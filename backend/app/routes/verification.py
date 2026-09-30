@@ -1,5 +1,6 @@
+import logging
 from pathlib import Path
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, Request, UploadFile, status
 from sqlalchemy.orm import Session
@@ -11,6 +12,7 @@ from app.services.verification import search_and_map_claims, verdict_from_eviden
 
 
 router = APIRouter(prefix="/api/verifications", tags=["verifications"])
+logger = logging.getLogger(__name__)
 
 
 def process_verification(verification_id: str) -> None:
@@ -26,6 +28,7 @@ def process_verification(verification_id: str) -> None:
         verification.evidence = [Evidence(**item) for item in evidence]
         database.commit()
     except Exception:
+        logger.exception("Falha ao processar a verificação %s", verification_id)
         database.rollback()
         verification = database.get(Verification, verification_id)
         if verification:
@@ -53,7 +56,7 @@ async def create_verification(
     if image:
         upload_dir = Path("uploads")
         upload_dir.mkdir(exist_ok=True)
-        image_path = str(upload_dir / Path(image.filename).name)
+        image_path = str(upload_dir / f"{uuid4().hex}_{Path(image.filename or 'imagem').name}")
         Path(image_path).write_bytes(await image.read())
 
     verification = Verification(text=text.strip(), image_path=image_path)

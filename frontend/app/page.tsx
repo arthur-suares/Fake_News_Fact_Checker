@@ -121,7 +121,7 @@ export default function Page() {
         </div>
 
         <footer className="mt-6 text-center text-xs text-muted-foreground">
-          Verificação de notícias com Google Fact Check
+          Verificação de notícias powered by Minalba
         </footer>
       </div>
     </main>
