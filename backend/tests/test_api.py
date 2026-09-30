@@ -6,6 +6,7 @@ sys.path.insert(0, str(Path(__file__).parents[1]))
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.services.verification import search_and_map_claims
 
 
 client = TestClient(app)
@@ -31,7 +32,8 @@ def test_create_and_get_verification(monkeypatch):
     assert result.json()["evidence"][0]["source"] == "Reuters"
 
 
-def test_create_feedback():
+def test_create_feedback(monkeypatch):
+    monkeypatch.setattr("app.routes.verification.search_and_map_claims", fake_search)
     created = client.post("/api/verifications", json={"text": "Uma afirmação"})
     verification_id = created.json()["id"]
 
@@ -41,6 +43,25 @@ def test_create_feedback():
     )
     assert response.status_code == 201
     assert response.json()["verification_id"] == verification_id
+
+
+def test_long_text_falls_back_to_shorter_queries(monkeypatch):
+    queries = []
+
+    def fake_google(query):
+        queries.append(query)
+        if len(queries) < 3:
+            return {}
+        return {"claims": [{"claimReview": [{"publisher": {"name": "Lupa"}, "textualRating": "Falso", "url": None}]}]}
+
+    monkeypatch.setattr("app.services.verification._search", fake_google)
+    text = "Mensagem no WhatsApp afirma que vacinas causam autismo em crianças. Compartilhe com todos!"
+    _, evidence = search_and_map_claims(text)
+
+    assert len(queries) == 3
+    assert queries[1] == "Mensagem no WhatsApp afirma que vacinas causam autismo em crianças."
+    assert queries[2] == "vacinas causam autismo crianças compartilhe todos"
+    assert evidence == [{"source": "Lupa", "rating": "Falso", "url": None}]
 
 
 def test_missing_verification_returns_404():

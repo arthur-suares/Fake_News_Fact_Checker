@@ -16,6 +16,10 @@ EDA/outputs
 # backend: imagens enviadas pelos usuários
 backend/uploads/
 
+# backend: banco SQLite local (criado automaticamente ao subir o servidor)
+*.db
+*.db-journal
+
 # frontend
 node_modules/
 .next/
