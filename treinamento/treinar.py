@@ -1,185 +1,101 @@
+"""
+Treina o modelo de perfis e salva o artefato usado pela API.
+
+    GMM (principal) + K-Means (baseline), ambos com o StandardScaler
+    num Pipeline, treinados em dados sintéticos gerados a partir de
+    PERFIS (perfis.py).
+
+Saídas:
+
+    backend/app/ml/modelo_perfis.joblib   (ou o caminho de --saida)
+    dados/respostas_sinteticas.csv        (dados do cenário final)
+
+O modelo só é salvo se a acurácia do GMM no cenário final for pelo
+menos ACURACIA_MINIMA — protege a API de uma edição quebrada em PERFIS.
+
+Uso:
+
+    python treinar.py                          # treina e atualiza o modelo da API
+    python treinar.py --saida /tmp/teste.joblib  # treina sem tocar no modelo da API
+"""
+
+import argparse
+from datetime import datetime, timezone
+from pathlib import Path
+
+import joblib
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+import sklearn
 from sklearn.cluster import KMeans
-from sklearn.pipeline import Pipeline
 from sklearn.metrics import adjusted_rand_score, silhouette_score
-import joblib
+from sklearn.mixture import GaussianMixture
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+from classificador import CAMINHO_MODELO, classificar, corrigir_aquiescencia
+from perfis import (
+    CENARIOS,
+    PERFIS,
+    desquantizar,
+    entradas,
+    features,
+    gerar_dados,
+    mapa_clusters,
+    nomes_perfis,
+)
 
 
 # ============================================================
 # 1. CONFIGURAÇÕES
 # ============================================================
 
-np.random.seed(42)
+SEMENTE = 42
+
+# Arquivos gerados ficam ao lado deste script, não importa de
+# onde ele seja executado.
+PASTA = Path(__file__).resolve().parent
+
+CAMINHO_DADOS = PASTA / 'dados' / 'respostas_sinteticas.csv'
+
+# Cenário usado para treinar o modelo que será salvo
+CENARIO_FINAL = 'desbalanceado'
+
+# Abaixo disso o modelo NÃO é salvo
+ACURACIA_MINIMA = 0.90
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 250)
 
 
 # ============================================================
-# 2. PERGUNTAS UTILIZADAS PARA DEFINIR O PERFIL
+# 2. FUNÇÃO PARA TREINAR E AVALIAR GMM (PRINCIPAL) E K-MEANS (BASELINE)
 # ============================================================
 #
-# TODAS AS RESPOSTAS:
-# 1 = mínimo
-# 5 = máximo
-#
-# Q1 - Antes da verificação, você achava que a notícia era
-#      verdadeira?
-#
-# Q2 - O quanto você acreditava na notícia?
-#
-# Q3 - Você costuma verificar informações antes de
-#      compartilhá-las?
-#
-# Q4 - Com que frequência você confia em informações
-#      recebidas pelas redes sociais?
-#
-# Q6 - Se a verificação indicar o oposto do que você acha,
-#      o quão aberto você está para mudar de opinião?
-#
-# Q7 - Qual a probabilidade de você compartilhar essa notícia?
-#
-# Q8 - O quanto o assunto dessa notícia mexeu com suas emoções?
-#
-# Q5 NÃO entra no K-Means.
-# Ela é respondida depois da verificação.
+# GMM é o modelo principal: além do perfil, dá a PROBABILIDADE de
+# cada perfil (soft clustering). O K-Means fica como baseline para
+# comparação. Os dois começam das médias de PERFIS, então o
+# componente/cluster i corresponde sempre ao perfil i.
 #
 
-
-features = [
-    'q1_crenca_inicial',
-    'q2_credibilidade',
-    'q3_verificacao',
-    'q4_confianca_redes',
-    'q6_abertura_mudanca',
-    'q7_compartilhamento',
-    'q8_emocao'
-]
+TIPOS_COVARIANCIA = ('full', 'diag')
 
 
-# ============================================================
-# 3. OS 6 PERFIS (MÉDIAS ESPERADAS DAS RESPOSTAS)
-# ============================================================
-#
-# A ordem deste dicionário define o cluster_id:
-# cluster 0 = Verificador crítico, cluster 1 = Crente resistente...
-#
-# Ordem das médias: Q1, Q2, Q3, Q4, Q6, Q7, Q8
-#
+def avisar_se_fugiu(centros, centroides_iniciais, modelo):
 
-PERFIS = {
-    'Verificador crítico':        [2.0, 2.0, 5.0, 2.0, 5.0, 1.5, 2.5],
-    'Crente resistente':          [5.0, 5.0, 1.5, 4.5, 1.5, 4.5, 4.0],
-    'Crente flexível':            [4.5, 4.5, 4.0, 3.0, 5.0, 2.5, 3.0],
-    'Compartilhador impulsivo':   [4.5, 4.5, 1.5, 4.0, 2.0, 5.0, 5.0],
-    'Cético de baixa circulação': [2.0, 2.0, 3.5, 1.0, 4.0, 1.0, 1.5],
-    'Reativo emocional':          [4.0, 4.0, 2.0, 3.5, 3.0, 4.0, 5.0],
-}
-
-nomes_perfis = list(PERFIS.keys())
-
-mapa_clusters = dict(enumerate(nomes_perfis))
-
-
-# ============================================================
-# 4. CENÁRIOS (QUANTIDADE DE RESPOSTAS POR PERFIL)
-# ============================================================
-#
-# Edite os números para simular outros desbalanceamentos.
-#
-
-CENARIOS = {
-    'balanceado': {nome: 100 for nome in nomes_perfis},
-    'desbalanceado': {
-        'Verificador crítico':        50,
-        'Crente resistente':          120,
-        'Crente flexível':            80,
-        'Compartilhador impulsivo':   250,
-        'Cético de baixa circulação': 40,
-        'Reativo emocional':          180,
-    },
-}
-
-# Cenário usado para treinar o modelo que será salvo
-CENARIO_FINAL = 'desbalanceado'
-
-
-# ============================================================
-# 5. FUNÇÃO PARA GERAR RESPOSTAS INTEIRAS DE 1 A 5
-# ============================================================
-
-def gerar_perfil(medias, n):
-
-    # Gerar valores ao redor das médias
-    dados = np.random.normal(
-        loc=medias,
-        scale=0.7,
-        size=(n, len(medias))
+    distancias = np.linalg.norm(
+        centros[:, None, :] - centroides_iniciais[None, :, :],
+        axis=2
     )
 
-    # Arredondar para o inteiro mais próximo e limitar de 1 a 5
-    dados = np.rint(dados).clip(1, 5).astype(int)
+    for i, mais_proximo in enumerate(distancias.argmin(axis=1)):
 
-    return dados
+        if mais_proximo != i:
+            print(
+                f"\nAVISO ({modelo}): '{mapa_clusters[i]}' terminou "
+                f"mais perto de '{mapa_clusters[mais_proximo]}'."
+            )
 
-
-# ============================================================
-# 6. FUNÇÃO PARA GERAR O DATAFRAME DE UM CENÁRIO
-# ============================================================
-
-def gerar_dados(quantidades):
-
-    blocos = []
-
-    for nome, medias in PERFIS.items():
-
-        bloco = pd.DataFrame(
-            gerar_perfil(medias, quantidades[nome]),
-            columns=features
-        )
-
-        bloco['perfil_original'] = nome
-
-        blocos.append(bloco)
-
-    df = pd.concat(blocos, ignore_index=True)
-
-    # --------------------------------------------------------
-    # Q5 — MUDANÇA DE OPINIÃO
-    # --------------------------------------------------------
-    #
-    # Resposta inteira de 1 a 5. NÃO entra no K-Means.
-    #
-    # 1 = pouca/nenhuma mudança
-    # 5 = mudança muito grande
-    #
-
-    df['q5_mudanca_opiniao'] = np.random.randint(
-        1,
-        6,
-        size=len(df)
-    )
-
-    # --------------------------------------------------------
-    # RESULTADO DA VERIFICAÇÃO
-    # --------------------------------------------------------
-    #
-    # Essa informação vem de fora do questionário.
-    #
-
-    df['resultado_verificacao'] = np.random.choice(
-        ['VERDADEIRA', 'FALSA'],
-        size=len(df)
-    )
-
-    return df
-
-
-# ============================================================
-# 7. FUNÇÃO PARA TREINAR E AVALIAR O K-MEANS
-# ============================================================
 
 def treinar_e_avaliar(nome_cenario):
 
@@ -195,86 +111,110 @@ def treinar_e_avaliar(nome_cenario):
 
     scaler = StandardScaler()
 
-    X_scaled = scaler.fit_transform(df[features])
-
-    # --------------------------------------------------------
-    # K-MEANS COM CENTROIDES INICIAIS = MÉDIAS DOS PERFIS
-    # --------------------------------------------------------
-    #
-    # Começar das médias dos perfis faz com que o cluster i
-    # corresponda sempre ao perfil i, mesmo com desbalanceamento.
-    #
+    # Respostas já corrigidas pela aquiescência (Q4 x Q8)
+    X_scaled = scaler.fit_transform(corrigir_aquiescencia(df[entradas])[0])
 
     centroides_iniciais = scaler.transform(
         pd.DataFrame(list(PERFIS.values()), columns=features)
     )
+
+    # --------------------------------------------------------
+    # K-MEANS (BASELINE)
+    # --------------------------------------------------------
 
     kmeans = KMeans(
         n_clusters=len(PERFIS),
         init=centroides_iniciais,
         n_init=1,
         random_state=42
-    )
+    ).fit(X_scaled)
 
-    kmeans.fit(X_scaled)
+    avisar_se_fugiu(kmeans.cluster_centers_, centroides_iniciais, 'K-Means')
 
-    df['cluster_id'] = kmeans.labels_
+    df['perfil_kmeans'] = pd.Series(kmeans.labels_).map(mapa_clusters)
+
+    # --------------------------------------------------------
+    # GMM (PRINCIPAL) — covariância escolhida pelo BIC
+    # --------------------------------------------------------
+    #
+    # BIC e AIC: menor é melhor. O BIC pune mais parâmetros, então
+    # 'full' só ganha de 'diag' se as correlações entre perguntas
+    # dentro de cada perfil compensarem o custo. Calculados nos
+    # dados desquantizados (ver desquantizar).
+    #
+
+    X_criterio = desquantizar(X_scaled, scaler)
+
+    gmms = {
+        tipo: GaussianMixture(
+            n_components=len(PERFIS),
+            covariance_type=tipo,
+            means_init=centroides_iniciais,
+            random_state=42
+        ).fit(X_scaled)
+        for tipo in TIPOS_COVARIANCIA
+    }
+
+    criterios = pd.DataFrame({
+        tipo: {'BIC': g.bic(X_criterio), 'AIC': g.aic(X_criterio)}
+        for tipo, g in gmms.items()
+    }).T
+
+    tipo_escolhido = criterios['BIC'].idxmin()
+    gmm = gmms[tipo_escolhido]
+
+    print("\n" + "=" * 70)
+    print("GMM: BIC / AIC POR TIPO DE COVARIÂNCIA")
+    print("=" * 70)
+    print(criterios.round(1))
+    print(f"\nEscolhido: covariance_type='{tipo_escolhido}'")
+
+    avisar_se_fugiu(gmm.means_, centroides_iniciais, 'GMM')
+
+    probabilidades = gmm.predict_proba(X_scaled)
+
+    df['cluster_id'] = probabilidades.argmax(axis=1)
     df['perfil_previsto'] = df['cluster_id'].map(mapa_clusters)
-
-    # --------------------------------------------------------
-    # SANIDADE: ALGUM CLUSTER "FUGIU" PARA OUTRO PERFIL?
-    # --------------------------------------------------------
-
-    distancias = np.linalg.norm(
-        kmeans.cluster_centers_[:, None, :] - centroides_iniciais[None, :, :],
-        axis=2
-    )
-
-    for i, mais_proximo in enumerate(distancias.argmin(axis=1)):
-
-        if mais_proximo != i:
-            print(
-                f"\nAVISO: o cluster de '{mapa_clusters[i]}' terminou "
-                f"mais perto de '{mapa_clusters[mais_proximo]}'."
-            )
+    df['probabilidade'] = probabilidades.max(axis=1).round(3)
 
     # --------------------------------------------------------
     # DISTRIBUIÇÃO DOS CLUSTERS
     # --------------------------------------------------------
 
     print("\n" + "=" * 70)
-    print("DISTRIBUIÇÃO: REAL x PREVISTA")
+    print("DISTRIBUIÇÃO: REAL x GMM x K-MEANS")
     print("=" * 70)
 
     distribuicao = pd.DataFrame({
         'real': df['perfil_original'].value_counts(),
-        'previsto': df['perfil_previsto'].value_counts(),
+        'GMM': df['perfil_previsto'].value_counts(),
+        'K-Means': df['perfil_kmeans'].value_counts(),
     }).reindex(nomes_perfis).fillna(0).astype(int)
 
     print(distribuicao)
 
     # --------------------------------------------------------
-    # CENTROIDES (ESCALA 1–5)
+    # MÉDIAS DOS COMPONENTES DO GMM (ESCALA 1–5)
     # --------------------------------------------------------
 
-    centroides_df = pd.DataFrame(
-        scaler.inverse_transform(kmeans.cluster_centers_),
+    medias_gmm = pd.DataFrame(
+        scaler.inverse_transform(gmm.means_),
         columns=features,
         index=nomes_perfis
     )
 
     print("\n" + "=" * 70)
-    print("CENTROIDES DOS CLUSTERS")
+    print("MÉDIAS DOS COMPONENTES DO GMM")
     print("=" * 70)
 
-    print(centroides_df.round(2))
+    print(medias_gmm.round(2))
 
     # --------------------------------------------------------
-    # PERFIL ORIGINAL x PERFIL PREVISTO
+    # PERFIL ORIGINAL x PERFIL PREVISTO (GMM)
     # --------------------------------------------------------
 
     print("\n" + "=" * 70)
-    print("PERFIL ORIGINAL x PERFIL PREVISTO")
+    print("PERFIL ORIGINAL x PERFIL PREVISTO (GMM)")
     print("=" * 70)
 
     tabela_cruzada = pd.crosstab(
@@ -289,7 +229,7 @@ def treinar_e_avaliar(nome_cenario):
     # --------------------------------------------------------
     #
     # Recall por perfil: % das respostas de cada perfil que
-    # caíram no cluster certo. Mostra se perfis pequenos estão
+    # caíram no perfil certo. Mostra se perfis pequenos estão
     # sendo "engolidos" pelos grandes.
     #
 
@@ -300,196 +240,297 @@ def treinar_e_avaliar(nome_cenario):
         .reindex(nomes_perfis)
     )
 
+    acuracia = (df['perfil_original'] == df['perfil_previsto']).mean()
+    acuracia_kmeans = (df['perfil_original'] == df['perfil_kmeans']).mean()
     ari = adjusted_rand_score(df['perfil_original'], df['perfil_previsto'])
+    ari_kmeans = adjusted_rand_score(df['perfil_original'], df['perfil_kmeans'])
+    concordancia = (df['perfil_previsto'] == df['perfil_kmeans']).mean()
     silhueta = silhouette_score(X_scaled, df['cluster_id'])
+
+    # --------------------------------------------------------
+    # OS PERFIS APARECEM SOZINHOS?
+    # --------------------------------------------------------
+    #
+    # GMM SEM começar das médias dos perfis. Se o ARI contra os
+    # perfis originais continuar alto, os 6 perfis existem de fato
+    # na estrutura dos dados e não são só efeito da inicialização.
+    #
+
+    gmm_livre = GaussianMixture(
+        n_components=len(PERFIS),
+        covariance_type=tipo_escolhido,
+        n_init=5,
+        random_state=42
+    ).fit(X_scaled)
+
+    ari_livre = adjusted_rand_score(df['perfil_original'], gmm_livre.predict(X_scaled))
 
     print("\n" + "=" * 70)
     print("MÉTRICAS")
     print("=" * 70)
 
-    print("Recall por perfil:")
+    print("Recall por perfil (GMM):")
     print((recall * 100).round(1).astype(str) + '%')
-    print(f"\nAdjusted Rand Index: {ari:.3f}")
-    print(f"Silhouette:          {silhueta:.3f}")
+    print(f"\n{'':<24}{'GMM':>8}{'K-Means':>10}")
+    print(f"{'Acurácia':<24}{acuracia:>8.3f}{acuracia_kmeans:>10.3f}")
+    print(f"{'Adjusted Rand Index':<24}{ari:>8.3f}{ari_kmeans:>10.3f}")
+    print(f"\nConcordância GMM x K-Means: {concordancia:.3f}")
+    print(f"Probabilidade média do perfil escolhido: {df['probabilidade'].mean():.3f}")
+    print(f"Silhouette (GMM):           {silhueta:.3f}")
+    print(f"ARI GMM sem init fixo:      {ari_livre:.3f}")
 
-    metricas = {'ARI': ari, 'Silhouette': silhueta}
+    metricas = {
+        'Acurácia GMM': acuracia,
+        'Acurácia K-Means': acuracia_kmeans,
+        'ARI GMM': ari,
+        'ARI K-Means': ari_kmeans,
+        'Concordância GMM x K-Means': concordancia,
+        'Probabilidade média': df['probabilidade'].mean(),
+        'Silhouette': silhueta,
+        'ARI sem init fixo': ari_livre,
+    }
     metricas.update({f'Recall {nome}': valor for nome, valor in recall.items()})
 
-    return df, scaler, kmeans, metricas
+    return {
+        'df': df,
+        'scaler': scaler,
+        'kmeans': kmeans,
+        'gmm': gmm,
+        'metricas': metricas,
+    }
 
 
 # ============================================================
-# 8. TREINAR OS CENÁRIOS
-# ============================================================
-
-resultados = {
-    nome: treinar_e_avaliar(nome)
-    for nome in CENARIOS
-}
-
-
-# ============================================================
-# 9. COMPARAÇÃO ENTRE CENÁRIOS
-# ============================================================
-
-print("\n" + "#" * 70)
-print("COMPARAÇÃO ENTRE CENÁRIOS")
-print("#" * 70)
-
-comparacao = pd.DataFrame({
-    nome: resultado[3]
-    for nome, resultado in resultados.items()
-})
-
-print(comparacao.round(3))
-
-
-# ============================================================
-# 10. ANÁLISES DO CENÁRIO FINAL
-# ============================================================
-
-df, scaler, kmeans, _ = resultados[CENARIO_FINAL]
-
-print("\n" + "#" * 70)
-print(f"ANÁLISES DO CENÁRIO FINAL: {CENARIO_FINAL.upper()}")
-print("#" * 70)
-
-
-# ============================================================
-# 11. MÉDIAS POR PERFIL PREVISTO
-# ============================================================
-
-print("\n" + "=" * 70)
-print("MÉDIAS DAS RESPOSTAS POR PERFIL PREVISTO")
-print("=" * 70)
-
-medias_clusters = (
-    df.groupby('perfil_previsto')[features]
-    .mean()
-    .reindex(nomes_perfis)
-    .round(2)
-)
-
-print(medias_clusters)
-
-
-# ============================================================
-# 12. Q5 — MUDANÇA DE OPINIÃO POR PERFIL
-# ============================================================
-
-print("\n" + "=" * 70)
-print("Q5 — MUDANÇA DE OPINIÃO POR PERFIL")
-print("=" * 70)
-
-q5_por_cluster = (
-    df.groupby('perfil_previsto')['q5_mudanca_opiniao']
-    .mean()
-    .reindex(nomes_perfis)
-    .round(2)
-)
-
-print(q5_por_cluster)
-
-
-# ============================================================
-# 13. Q5 x RESULTADO DA VERIFICAÇÃO
-# ============================================================
-
-print("\n" + "=" * 70)
-print("Q5 x RESULTADO DA VERIFICAÇÃO")
-print("=" * 70)
-
-q5_resultado = (
-    df.groupby('resultado_verificacao')
-    ['q5_mudanca_opiniao']
-    .mean()
-    .round(2)
-)
-
-print(q5_resultado)
-
-
-# ============================================================
-# 14. PERFIL x RESULTADO x Q5
-# ============================================================
-
-print("\n" + "=" * 70)
-print("PERFIL x RESULTADO DA VERIFICAÇÃO x Q5")
-print("=" * 70)
-
-analise_completa = (
-    df.groupby(
-        ['perfil_previsto', 'resultado_verificacao']
-    )['q5_mudanca_opiniao']
-    .agg(['count', 'mean'])
-    .round(2)
-)
-
-print(analise_completa)
-
-
-# ============================================================
-# 15. SALVAR MODELO
+# EXECUÇÃO
 # ============================================================
 #
-# Scaler + K-Means ficam juntos num Pipeline, então quem usar o
-# modelo não precisa lembrar de normalizar antes do predict.
+# Tudo abaixo só roda com "python treinar.py". PERFIS, features
+# e gerar_dados ficam em perfis.py, que os outros scripts importam.
 #
 
-pipeline = Pipeline([
-    ('scaler', scaler),
-    ('kmeans', kmeans)
-])
+if __name__ == '__main__':
 
-joblib.dump(
-    {
-        'pipeline': pipeline,
-        'features': features,
-        'mapa_clusters': mapa_clusters,
-    },
-    'modelo_perfis.joblib'
-)
+    argumentos = argparse.ArgumentParser(description='Treina o modelo de perfis.')
+    argumentos.add_argument(
+        '--saida', type=Path, default=CAMINHO_MODELO,
+        help=f'onde salvar o modelo (padrão: {CAMINHO_MODELO})'
+    )
+    saida = argumentos.parse_args().saida
 
+    np.random.seed(SEMENTE)
 
-# ============================================================
-# 16. SALVAR DADOS SINTÉTICOS
-# ============================================================
+    # ============================================================
+    # 3. TREINAR OS CENÁRIOS
+    # ============================================================
 
-df.to_csv(
-    'respostas_sinteticas.csv',
-    index=False
-)
+    resultados = {
+        nome: treinar_e_avaliar(nome)
+        for nome in CENARIOS
+    }
 
 
-# ============================================================
-# 17. EXEMPLO DE USO (COMO O BACKEND VAI USAR)
-# ============================================================
+    # ============================================================
+    # 4. COMPARAÇÃO ENTRE CENÁRIOS
+    # ============================================================
 
-modelo = joblib.load('modelo_perfis.joblib')
+    print("\n" + "#" * 70)
+    print("COMPARAÇÃO ENTRE CENÁRIOS")
+    print("#" * 70)
 
-nova_resposta = pd.DataFrame(
-    [[5, 5, 1, 4, 2, 5, 5]],
-    columns=modelo['features']
-)
+    comparacao = pd.DataFrame({
+        nome: resultado['metricas']
+        for nome, resultado in resultados.items()
+    })
 
-cluster = modelo['pipeline'].predict(nova_resposta)[0]
-
-print("\n" + "=" * 70)
-print("EXEMPLO DE PREVISÃO")
-print("=" * 70)
-
-print(nova_resposta.to_string(index=False))
-print(f"\nPerfil previsto: {modelo['mapa_clusters'][cluster]}")
+    print(comparacao.round(3))
 
 
-# ============================================================
-# 18. FINAL
-# ============================================================
+    # ============================================================
+    # 5. ANÁLISES DO CENÁRIO FINAL
+    # ============================================================
 
-print("\n" + "=" * 70)
-print("MODELO SALVO COM SUCESSO!")
-print("=" * 70)
+    final = resultados[CENARIO_FINAL]
 
-print("\nArquivos gerados:")
-print("- modelo_perfis.joblib")
-print("- respostas_sinteticas.csv")
+    df, scaler, kmeans, gmm = final['df'], final['scaler'], final['kmeans'], final['gmm']
+
+    print("\n" + "#" * 70)
+    print(f"ANÁLISES DO CENÁRIO FINAL: {CENARIO_FINAL.upper()}")
+    print("#" * 70)
+
+
+    # ============================================================
+    # 6. MÉDIAS POR PERFIL PREVISTO
+    # ============================================================
+
+    print("\n" + "=" * 70)
+    print("MÉDIAS DAS RESPOSTAS POR PERFIL PREVISTO")
+    print("=" * 70)
+
+    medias_clusters = (
+        df.groupby('perfil_previsto')[features]
+        .mean()
+        .reindex(nomes_perfis)
+        .round(2)
+    )
+
+    print(medias_clusters)
+
+
+    # ============================================================
+    # 7. Q9 — MUDANÇA DE OPINIÃO POR PERFIL
+    # ============================================================
+
+    print("\n" + "=" * 70)
+    print("Q9 — MUDANÇA DE OPINIÃO POR PERFIL")
+    print("=" * 70)
+
+    q9_por_cluster = (
+        df.groupby('perfil_previsto')['q9_mudanca_opiniao']
+        .mean()
+        .reindex(nomes_perfis)
+        .round(2)
+    )
+
+    print(q9_por_cluster)
+
+
+    # ============================================================
+    # 8. Q9 x RESULTADO DA VERIFICAÇÃO
+    # ============================================================
+
+    print("\n" + "=" * 70)
+    print("Q9 x RESULTADO DA VERIFICAÇÃO")
+    print("=" * 70)
+
+    q9_resultado = (
+        df.groupby('resultado_verificacao')
+        ['q9_mudanca_opiniao']
+        .mean()
+        .round(2)
+    )
+
+    print(q9_resultado)
+
+
+    # ============================================================
+    # 9. PERFIL x RESULTADO x Q9
+    # ============================================================
+
+    print("\n" + "=" * 70)
+    print("PERFIL x RESULTADO DA VERIFICAÇÃO x Q9")
+    print("=" * 70)
+
+    analise_completa = (
+        df.groupby(
+            ['perfil_previsto', 'resultado_verificacao']
+        )['q9_mudanca_opiniao']
+        .agg(['count', 'mean'])
+        .round(2)
+    )
+
+    print(analise_completa)
+
+
+    # ============================================================
+    # 10. SALVAR MODELO
+    # ============================================================
+    #
+    # Scaler + modelo ficam juntos num Pipeline, então quem usar o
+    # modelo não precisa lembrar de normalizar antes do predict.
+    # O arquivo vai para backend/app/ml/, de onde a API carrega.
+    #
+
+    acuracia_final = final['metricas']['Acurácia GMM']
+
+    if acuracia_final < ACURACIA_MINIMA:
+        raise SystemExit(
+            f"\nMODELO NÃO SALVO: acurácia do GMM {acuracia_final:.3f} < "
+            f"{ACURACIA_MINIMA:.2f}. Revise PERFIS em perfis.py."
+        )
+
+    pipeline = Pipeline([
+        ('scaler', scaler),
+        ('gmm', gmm)
+    ])
+
+    pipeline_kmeans = Pipeline([
+        ('scaler', scaler),
+        ('kmeans', kmeans)
+    ])
+
+    # --------------------------------------------------------
+    # LIMIAR "FORA DO PADRÃO"
+    # --------------------------------------------------------
+    #
+    # Log-verossimilhança de cada resposta no GMM. Abaixo do
+    # percentil 1 do treino, a resposta não se parece com nenhum
+    # perfil (ex.: respondente aleatório). Usado em
+    # backend/app/ml/perfil.py para gerar alertas.
+    #
+
+    verossimilhanca_treino = pipeline.score_samples(
+        corrigir_aquiescencia(df[entradas])[0]
+    )
+
+    limiar_verossimilhanca = float(np.percentile(verossimilhanca_treino, 1))
+
+    joblib.dump(
+        {
+            'pipeline': pipeline,
+            'pipeline_kmeans': pipeline_kmeans,
+            'features': features,
+            'entradas': entradas,
+            'mapa_clusters': mapa_clusters,
+            'limiar_verossimilhanca': limiar_verossimilhanca,
+            'covariance_type': gmm.covariance_type,
+            # Rastreabilidade: o backend avisa se o scikit-learn
+            # instalado for diferente do usado no treino.
+            'versao_sklearn': sklearn.__version__,
+            'treinado_em': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+            'cenario': CENARIO_FINAL,
+            'semente': SEMENTE,
+            'metricas': {nome: round(float(valor), 4) for nome, valor in final['metricas'].items()},
+        },
+        saida
+    )
+
+
+    # ============================================================
+    # 11. SALVAR DADOS SINTÉTICOS
+    # ============================================================
+
+    df.to_csv(CAMINHO_DADOS, index=False)
+
+
+    # ============================================================
+    # 12. EXEMPLO DE USO (COMO O BACKEND VAI USAR)
+    # ============================================================
+
+    modelo = joblib.load(saida)
+
+    nova_resposta = [5, 5, 1, 4, 2, 5, 5, 2]
+
+    resultado = classificar(modelo, nova_resposta)
+
+    print("\n" + "=" * 70)
+    print("EXEMPLO DE PREVISÃO")
+    print("=" * 70)
+
+    print(f"Respostas: {nova_resposta}")
+    print(f"Perfil (GMM):     {resultado['cluster_label']}")
+    print(f"Perfil (K-Means): {resultado['details']['kmeans_label']}")
+    print(f"Probabilidades:   {resultado['probabilities']}")
+    print(f"Alertas:          {resultado['details']['alerts'] or 'nenhum'}")
+
+
+    # ============================================================
+    # 13. FINAL
+    # ============================================================
+
+    print("\n" + "=" * 70)
+    print("MODELO SALVO COM SUCESSO!")
+    print("=" * 70)
+
+    print("\nArquivos gerados:")
+    print(f"- {saida}")
+    print(f"- {CAMINHO_DADOS}")

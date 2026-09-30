@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, JSON, String, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -21,6 +21,9 @@ class Verification(Base):
 
     evidence: Mapped[list["Evidence"]] = relationship(back_populates="verification", cascade="all, delete-orphan")
     feedback: Mapped[list["Feedback"]] = relationship(back_populates="verification", cascade="all, delete-orphan")
+    profile: Mapped["Profile | None"] = relationship(
+        back_populates="verification", cascade="all, delete-orphan", uselist=False
+    )
 
 
 class Evidence(Base):
@@ -44,3 +47,17 @@ class Feedback(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
     verification: Mapped[Verification] = relationship(back_populates="feedback")
+
+
+class Profile(Base):
+    __tablename__ = "profiles"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    verification_id: Mapped[str] = mapped_column(ForeignKey("verifications.id"), nullable=False, unique=True)
+    assigned_cluster: Mapped[int] = mapped_column(Integer, nullable=False)
+    cluster_label: Mapped[str] = mapped_column(String(100), nullable=False)
+    probabilities: Mapped[dict] = mapped_column(JSON, nullable=False)
+    details: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    processed_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+
+    verification: Mapped[Verification] = relationship(back_populates="profile")

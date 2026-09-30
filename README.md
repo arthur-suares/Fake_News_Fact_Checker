@@ -364,7 +364,53 @@ pois o parâmetro `query` é obrigatório.
 
 ---
 
-## 15. Encerrar o servidor
+## 15. Perfil do usuário (questionário)
+
+Depois da verificação, o frontend salva o questionário em:
+
+```http
+POST /api/verifications/{verification_id}/feedback
+```
+
+```json
+{
+    "answers": {"q1": 4, "q2": 5, "q3": 2, "q4": 5, "q5": 1, "q6": 1, "q7": 1, "q8": 2, "q9": 3}
+}
+```
+
+* `q1`..`q7`: perguntas do perfil (escala de 1 a 5).
+* `q8`: pergunta invertida da `q4`, usada para corrigir quem concorda ou discorda de tudo.
+* `q9`: mudança de opinião depois da verificação (não entra no modelo).
+
+Ao salvar, o perfil é calculado na hora (hook síncrono) por um **Gaussian Mixture Model** (com K-Means como baseline). Questionários incompletos são salvos, mas não geram perfil.
+
+Rotas:
+
+| Método | Rota | O que faz |
+| ------ | ---- | --------- |
+| `GET`  | `/api/verifications/{verification_id}/profile` | Retorna o perfil salvo (404 se não houver) |
+| `POST` | `/api/verifications/{verification_id}/profile` | Recalcula a partir do último questionário (422 se incompleto) |
+
+Resposta:
+
+```json
+{
+    "verification_id": "123",
+    "profile_result": {
+        "assigned_cluster": 4,
+        "cluster_label": "Cético de baixa circulação",
+        "probabilities": {"cluster_0": 0.0, "cluster_1": 0.0, "cluster_2": 0.0, "cluster_3": 0.0, "cluster_4": 1.0, "cluster_5": 0.0},
+        "details": {"confidence": 1.0, "second_label": "Verificador crítico", "kmeans_label": "Cético de baixa circulação", "acquiescence": 0.0, "alerts": []},
+        "processed_at": "2026-09-30T10:00:00"
+    }
+}
+```
+
+O modelo fica em `backend/app/ml/modelo_perfis.joblib` e é gerado por `treinamento/treinar.py`. Treino, validação e matriz de confusão estão documentados em [`treinamento/README.md`](treinamento/README.md).
+
+---
+
+## 16. Encerrar o servidor
 
 Para parar o servidor:
 
@@ -380,7 +426,7 @@ deactivate
 
 ---
 
-## 16. Fluxo completo
+## 17. Fluxo completo
 
 O funcionamento do sistema pode ser resumido da seguinte forma:
 

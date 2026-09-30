@@ -26,3 +26,6 @@ npm-debug.log*
 
 # macOS
 .DS_Store
+
+# treinamento: relatórios gerados por matriz_confusao.py
+treinamento/relatorios/

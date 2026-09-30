@@ -8,3 +8,8 @@ psycopg2-binary
 httpx
 python-multipart
 pytest
+numpy
+pandas
+joblib
+# mesma versão usada para treinar app/ml/modelo_perfis.joblib
+scikit-learn==1.9.1

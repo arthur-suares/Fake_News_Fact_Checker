@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Feedback, Verification
 from app.schemas import FeedbackCreate, FeedbackResponse
+from app.services.profile import assign_profile_after_feedback
 
 
 router = APIRouter(prefix="/api/verifications", tags=["feedback"])
@@ -20,4 +21,6 @@ def create_feedback(verification_id: UUID, payload: FeedbackCreate, database: Se
     database.add(feedback)
     database.commit()
     database.refresh(feedback)
+    # Hook síncrono: calcula o perfil assim que o questionário é salvo
+    assign_profile_after_feedback(database, verification.id)
     return feedback
