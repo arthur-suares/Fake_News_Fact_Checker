@@ -460,3 +460,37 @@ O funcionamento do sistema pode ser resumido da seguinte forma:
 ```
 
 O backend funciona como uma camada intermediária entre o sistema cliente e a Google Fact Check Tools API. Isso permite que posteriormente outros componentes, como um **MCP Server**, consumam o backend sem precisar acessar diretamente a API da Google ou armazenar sua API Key.
+
+---
+
+## 17. Rodando frontend + backend juntos
+
+1. **Backend** (terminal 1) — o `.env` pode ficar na raiz do repositório ou em `backend/`:
+
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   uvicorn app.main:app --reload
+   ```
+
+2. **Frontend** (terminal 2):
+
+   ```bash
+   cd frontend
+   cp .env.example .env.local   # NEXT_PUBLIC_API_URL=http://localhost:8000
+   npm install
+   npm run dev
+   ```
+
+3. Acesse `http://localhost:3000`.
+
+Fluxo da integração:
+
+| Etapa no frontend | Chamada ao backend |
+| --- | --- |
+| Envio da notícia (texto + imagem opcional) | `POST /api/verifications` (multipart) → `202 { id, status }` |
+| Tela "Analisando notícia..." | `GET /api/verifications/{id}` a cada 1s até `status` = `completed`/`failed` |
+| Resultado | `verdict` + `evidence` (fonte, classificação, link) |
+| "Depois da verificação, sua opinião mudou?" | `POST /api/verifications/{id}/feedback` com as respostas do questionário inicial + `opiniaoMudou` |
+
+Como a Google Fact Check API busca por afirmações curtas, quando o texto completo da notícia não retorna checagens o backend tenta novamente com a primeira frase e depois com palavras-chave.
