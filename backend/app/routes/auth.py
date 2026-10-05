@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
 from app.schemas import UserCreate, UserLogin
-from app.security import hash_password, verify_password
+from app.security import ( hash_password, verify_password,create_access_token)
 
 router = APIRouter(
     prefix="/auth",
@@ -38,9 +38,9 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         "user_id": new_user.id
     }
 
-@router.post("/login")
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    existing_user = db.query(User).filter(User.email == user.email).first()
+    @router.post("/login")
+    def login(user: UserLogin, db: Session = Depends(get_db)):
+        existing_user = db.query(User).filter(User.email == user.email).first()
 
     if not existing_user:
         raise HTTPException(

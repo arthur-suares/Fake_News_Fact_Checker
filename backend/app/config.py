@@ -13,6 +13,7 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("GOOGLE_API_KEY", "GOOGLE_FACT_CHECK_API_KEY"),
     )
     database_url: str = "sqlite:///./fact_check.db"
+    secret_key: str
 
     model_config = SettingsConfigDict(
         # .env na raiz do repositório ou em backend/ (o último tem prioridade)
