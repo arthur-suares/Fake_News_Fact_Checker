@@ -53,3 +53,14 @@ class ProfileResult(BaseModel):
 class ProfileResponse(BaseModel):
     verification_id: str
     profile_result: ProfileResult
+
+class UserCreate(BaseModel):
+    name: str = Field(min_length=2, max_length=100)
+    email: str
+    phone: str
+    password: str = Field(min_length=6, max_length=100)
+
+
+class UserLogin(BaseModel):
+    email: str
+    password: str

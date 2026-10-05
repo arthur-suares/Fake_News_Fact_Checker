@@ -5,6 +5,7 @@ from app.database import Base, engine
 from app.routes.feedback import router as feedback_router
 from app.routes.profile import router as profile_router
 from app.routes.verification import router as verification_router
+from app.routes.auth import router as auth_router
 from app.services.google_fact_check import GoogleFactCheckService
 
 
@@ -15,10 +16,19 @@ app = FastAPI(
     description="Backend para consulta ao Google Fact Check Tools API",
     version="1.0.0",
 )
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(verification_router)
 app.include_router(feedback_router)
 app.include_router(profile_router)
+app.include_router(auth_router)
 
 
 @app.get("/")
