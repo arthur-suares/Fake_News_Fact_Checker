@@ -10,10 +10,13 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 class Settings(BaseSettings):
     google_fact_check_api_key: str = Field(
         default="",
-        validation_alias=AliasChoices("GOOGLE_API_KEY", "GOOGLE_FACT_CHECK_API_KEY"),
+        validation_alias=AliasChoices(
+            "GOOGLE_FACT_CHECK_API_KEY",
+            "GOOGLE_API_KEY",
+        ),
     )
     database_url: str = "sqlite:///./fact_check.db"
-    secret_key: str
+    secret_key: str = "dev-secret-key"
 
     model_config = SettingsConfigDict(
         # .env na raiz do repositório ou em backend/ (o último tem prioridade)

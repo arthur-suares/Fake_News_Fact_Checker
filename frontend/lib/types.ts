@@ -94,3 +94,77 @@ export const PERGUNTAS_PRE = [
     max: "Concordo totalmente",
   },
 ] as const
+
+export type SkillCode = "SOURCE" | "EVIDENCE" | "CONTEXT" | "VISUAL"
+
+export interface Skill {
+  id: string
+  code: SkillCode
+  name: string
+  description?: string | null
+}
+
+export interface News {
+  id: string
+  title: string
+  content: string
+  image_url?: string | null
+  verdict?: string | null
+  created_at?: string
+}
+
+export interface Question {
+  id: string
+  text: string
+  difficulty: number
+  options: Record<string, string>
+  skill_id: string
+  explanation?: string | null
+}
+
+export interface GameRound {
+  id: string
+  game_id: string
+  round_number: number
+  news: News
+  questions: Question[]
+  started_at: string
+  finished_at?: string | null
+}
+
+export interface Game {
+  id: string
+  user_id: string
+  status: "IN_PROGRESS" | "FINISHED"
+  started_at: string
+  finished_at?: string | null
+  rounds?: GameRound[]
+}
+
+export interface Answer {
+  id: string
+  user_id: string
+  game_round_id: string
+  question_id: string
+  selected_option: string
+  correct: boolean
+  confidence?: number | null
+  response_time?: number | null
+  created_at: string
+}
+
+export interface UserSkillState {
+  id: string
+  user_id: string
+  skill_id: string
+  skill_code: SkillCode
+  mastery_probability: number
+  updated_at: string
+}
+
+export interface GameResult {
+  correct: boolean
+  skill: SkillCode
+  mastery_probability: number
+  explanation?: string | null
+}
