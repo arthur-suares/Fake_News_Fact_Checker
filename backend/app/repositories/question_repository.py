@@ -30,7 +30,7 @@ class QuestionRepository:
     def get_questions_by_skill(
         db: Session,
         skill_id: str,
-        limit: int = 100,
+        limit: int | None = 100,
     ) -> list[Question]:
         """
         Get questions for a specific skill.
@@ -43,12 +43,15 @@ class QuestionRepository:
         Returns:
             List of Question instances
         """
-        return (
-            db.query(Question)
-            .filter(Question.skill_id == skill_id)
-            .limit(limit)
-            .all()
-        )
+        query = db.query(Question).filter(Question.skill_id == skill_id)
+        if limit is not None:
+            query = query.limit(limit)
+        return query.order_by(Question.id).all()
+
+    @staticmethod
+    def get_all_questions(db: Session) -> list[Question]:
+        """Get all questions in stable ID order for selector fallback."""
+        return db.query(Question).order_by(Question.id).all()
 
     @staticmethod
     def get_questions_by_news(db: Session, news_id: str) -> list[Question]:
