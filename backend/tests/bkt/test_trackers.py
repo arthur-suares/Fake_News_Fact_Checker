@@ -11,6 +11,8 @@ sys.path.insert(0, str(Path(__file__).parents[2]))
 
 import pytest
 from app.bkt.manager import BKTManager
+from app.bkt.base import SkillTracker
+from app.bkt.engine import BKTEngine
 from app.bkt.source_tracker import SourceTracker
 from app.bkt.evidence_tracker import EvidenceTracker
 from app.bkt.context_tracker import ContextTracker
@@ -35,51 +37,40 @@ class TestTrackers:
     def test_source_tracker_update(self):
         """Test SourceTracker.update method."""
         tracker = SourceTracker()
-        
-        mastery = 0.30
-        new_mastery = tracker.update(mastery, correct=True)
-        
-        assert new_mastery > mastery
-        assert 0 <= new_mastery <= 1
+
+        assert isinstance(tracker.engine, BKTEngine)
+        assert tracker.update(0.30, correct=True) == pytest.approx(0.7035294118)
+        assert tracker.update(0.30, correct=False) == pytest.approx(0.1234782609)
 
     def test_source_tracker_parameters(self):
         """Test that SourceTracker has proper parameters."""
         tracker = SourceTracker()
         params = tracker.get_parameters()
         
-        assert "p_guess" in params
-        assert "p_slip" in params
-        assert "p_transition" in params
+        assert params == {
+            "p_guess": 0.20,
+            "p_slip": 0.05,
+            "p_transition": 0.10,
+            "p_init": BKTEngine.DEFAULT_P_INIT,
+        }
 
-    def test_evidence_tracker_update(self):
-        """Test EvidenceTracker.update method."""
-        tracker = EvidenceTracker()
-        
-        mastery = 0.30
-        new_mastery = tracker.update(mastery, correct=True)
-        
-        assert new_mastery > mastery
-        assert 0 <= new_mastery <= 1
+    @pytest.mark.parametrize(
+        "tracker_class",
+        [EvidenceTracker, ContextTracker, VisualTracker],
+    )
+    def test_tracker_uses_bkt_engine_and_shared_interface(self, tracker_class):
+        tracker = tracker_class()
 
-    def test_context_tracker_update(self):
-        """Test ContextTracker.update method."""
-        tracker = ContextTracker()
-        
-        mastery = 0.30
-        new_mastery = tracker.update(mastery, correct=True)
-        
-        assert new_mastery > mastery
-        assert 0 <= new_mastery <= 1
-
-    def test_visual_tracker_update(self):
-        """Test VisualTracker.update method."""
-        tracker = VisualTracker()
-        
-        mastery = 0.30
-        new_mastery = tracker.update(mastery, correct=True)
-        
-        assert new_mastery > mastery
-        assert 0 <= new_mastery <= 1
+        assert isinstance(tracker, SkillTracker)
+        assert isinstance(tracker.engine, BKTEngine)
+        assert tracker.update(0.30, correct=True) == pytest.approx(0.7035294118)
+        assert tracker.update(0.30, correct=False) == pytest.approx(0.1234782609)
+        assert tracker.get_parameters() == {
+            "p_guess": 0.20,
+            "p_slip": 0.05,
+            "p_transition": 0.10,
+            "p_init": BKTEngine.DEFAULT_P_INIT,
+        }
 
     def test_all_trackers_same_interface(self):
         """Test that all trackers have the same interface."""

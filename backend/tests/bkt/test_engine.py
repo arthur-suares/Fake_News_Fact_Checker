@@ -90,6 +90,12 @@ class TestBKTEngine:
         assert new_mastery > initial_mastery
         assert 0 <= new_mastery <= 1
 
+    def test_update_matches_bayesian_observation_then_learning_transition(self):
+        engine = BKTEngine(p_guess=0.20, p_slip=0.05, p_transition=0.10)
+
+        assert engine.update(0.30, correct=True) == pytest.approx(0.7035294118)
+        assert engine.update(0.30, correct=False) == pytest.approx(0.1234782609)
+
     def test_update_incorrect_answer_decreases_mastery(self):
         """Test that incorrect answer decreases mastery probability."""
         engine = BKTEngine(p_guess=0.20, p_slip=0.05, p_transition=0.10)
@@ -180,7 +186,7 @@ class TestBKTEngine:
         assert mastery > 0.95
 
     def test_convergence_many_incorrect_answers(self):
-        """Test that mastery converges toward low value with many incorrect answers."""
+        """Test convergence to the nonzero equilibrium when learning remains possible."""
         engine = BKTEngine(p_guess=0.20, p_transition=0.10)
         
         mastery = 0.70
@@ -189,8 +195,7 @@ class TestBKTEngine:
         for _ in range(50):
             mastery = engine.update(mastery, correct=False)
         
-        # Should be close to 0.0
-        assert mastery < 0.05
+        assert mastery == pytest.approx(0.1066666667)
 
     def test_zero_mastery_edge_case(self):
         """Test update at exactly zero mastery."""
