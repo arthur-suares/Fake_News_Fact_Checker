@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-label="Ilustração de rua alagada">
+  <rect width="800" height="400" fill="#c7d2e0"/>
+  <rect y="0" width="800" height="180" fill="#9fb3c8"/>
+  <rect x="60" y="70" width="140" height="200" fill="#6b7a8f"/>
+  <rect x="230" y="40" width="120" height="230" fill="#5a687c"/>
+  <rect x="390" y="90" width="160" height="180" fill="#748499"/>
+  <rect x="590" y="60" width="150" height="210" fill="#5f6e83"/>
+  <g fill="#e2e8f0" opacity="0.7">
+    <rect x="85" y="100" width="25" height="30"/><rect x="150" y="100" width="25" height="30"/>
+    <rect x="255" y="70" width="25" height="30"/><rect x="305" y="70" width="25" height="30"/>
+    <rect x="420" y="120" width="25" height="30"/><rect x="490" y="120" width="25" height="30"/>
+    <rect x="615" y="90" width="25" height="30"/><rect x="690" y="90" width="25" height="30"/>
+  </g>
+  <path d="M0 240 Q100 225 200 240 T400 240 T600 240 T800 240 V400 H0 Z" fill="#6f8aa6"/>
+  <path d="M0 270 Q100 255 200 270 T400 270 T600 270 T800 270 V400 H0 Z" fill="#587391"/>
+  <rect x="300" y="225" width="90" height="28" rx="6" fill="#b4473f"/>
+</svg>

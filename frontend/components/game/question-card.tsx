@@ -1,39 +1,66 @@
+import { SKILL_INFO, toSkillCode } from "@/lib/skills"
 import type { Question } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
 type QuestionCardProps = {
   question: Question | null
+  selectedOption?: string | null
+  disabled?: boolean
   onAnswer: (option: string) => void
 }
 
-export function QuestionCard({ question, onAnswer }: QuestionCardProps) {
+export function QuestionCard({ question, selectedOption, disabled = false, onAnswer }: QuestionCardProps) {
   if (!question) {
-    return <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-slate-600">Nenhuma pergunta ativa.</div>
+    return <div className="rounded-xl border border-border bg-muted p-6 text-muted-foreground">Nenhuma pergunta ativa.</div>
   }
 
+  const skillCode = toSkillCode(question.skill_code ?? question.skill_id)
+
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <span className="rounded-full bg-sky-100 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-sky-700">
-          {question.skill_id}
+    <fieldset
+      disabled={disabled}
+      className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-sm disabled:opacity-60 sm:p-5"
+    >
+      {skillCode && (
+        <span className="w-fit rounded-full bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+          {SKILL_INFO[skillCode].name}
         </span>
-        <span className="text-sm text-slate-500">Dificuldade {question.difficulty.toFixed(2)}</span>
-      </div>
+      )}
 
-      <h2 className="mb-5 text-xl font-semibold text-slate-900">{question.text}</h2>
+      <legend className="sr-only">{question.text}</legend>
+      <h3 aria-hidden className="text-base font-semibold text-pretty text-foreground sm:text-lg">
+        {question.text}
+      </h3>
 
-      <div className="grid gap-3">
-        {Object.entries(question.options).map(([key, value]) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => onAnswer(key)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-left text-slate-700 transition hover:border-sky-300 hover:bg-sky-50"
-          >
-            <span className="mr-2 font-semibold text-slate-900">{key}.</span>
-            {value}
-          </button>
-        ))}
+      <div className="grid gap-2.5">
+        {Object.entries(question.options).map(([key, value]) => {
+          const selected = selectedOption === key
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => onAnswer(key)}
+              aria-pressed={selected}
+              className={cn(
+                "flex items-start gap-3 rounded-lg border px-3 py-3 text-left text-sm transition outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:px-4",
+                selected
+                  ? "border-primary bg-primary/5 text-foreground"
+                  : "border-border bg-background text-foreground/90 hover:border-primary/40 hover:bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "flex size-6 shrink-0 items-center justify-center rounded-full border text-xs font-bold",
+                  selected ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground",
+                )}
+              >
+                {key}
+              </span>
+              <span className="pt-0.5 leading-snug">{value}</span>
+            </button>
+          )
+        })}
       </div>
-    </div>
+    </fieldset>
   )
 }

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-label="Multidão com roupas de inverno diante de faixa de outro evento">
+  <rect width="800" height="400" fill="#7d8ea3"/>
+  <rect x="120" y="40" width="560" height="70" rx="6" fill="#f3efe4"/>
+  <text x="400" y="88" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#2b3a55">FESTIVAL DE INVERNO 2018</text>
+  <rect x="140" y="110" width="8" height="60" fill="#5a5a5a"/>
+  <rect x="652" y="110" width="8" height="60" fill="#5a5a5a"/>
+  <g id="row">
+    <g><circle cx="40" cy="250" r="22" fill="#e0b48f"/><path d="M18 238 Q40 210 62 238 Z" fill="#b23a3a"/><rect x="12" y="270" width="56" height="130" rx="18" fill="#3a3f5c"/></g>
+    <g><circle cx="120" cy="240" r="22" fill="#c98f6b"/><path d="M98 228 Q120 200 142 228 Z" fill="#2e6b4f"/><rect x="92" y="260" width="56" height="140" rx="18" fill="#6b4a3a"/></g>
+    <g><circle cx="200" cy="255" r="22" fill="#e8c4a0"/><path d="M178 243 Q200 215 222 243 Z" fill="#3a4f8a"/><rect x="172" y="275" width="56" height="125" rx="18" fill="#2f2f2f"/></g>
+    <g><circle cx="280" cy="245" r="22" fill="#a8714f"/><path d="M258 233 Q280 205 302 233 Z" fill="#b23a3a"/><rect x="252" y="265" width="56" height="135" rx="18" fill="#4a5a3a"/></g>
+    <g><circle cx="360" cy="252" r="22" fill="#e0b48f"/><path d="M338 240 Q360 212 382 240 Z" fill="#8a6a2e"/><rect x="332" y="272" width="56" height="128" rx="18" fill="#3a3f5c"/></g>
+    <g><circle cx="440" cy="242" r="22" fill="#c98f6b"/><path d="M418 230 Q440 202 462 230 Z" fill="#2e6b4f"/><rect x="412" y="262" width="56" height="138" rx="18" fill="#5c3a3a"/></g>
+    <g><circle cx="520" cy="250" r="22" fill="#e8c4a0"/><path d="M498 238 Q520 210 542 238 Z" fill="#3a4f8a"/><rect x="492" y="270" width="56" height="130" rx="18" fill="#2f2f2f"/></g>
+    <g><circle cx="600" cy="244" r="22" fill="#a8714f"/><path d="M578 232 Q600 204 622 232 Z" fill="#b23a3a"/><rect x="572" y="264" width="56" height="136" rx="18" fill="#4a5a3a"/></g>
+    <g><circle cx="680" cy="254" r="22" fill="#e0b48f"/><path d="M658 242 Q680 214 702 242 Z" fill="#8a6a2e"/><rect x="652" y="274" width="56" height="126" rx="18" fill="#3a3f5c"/></g>
+    <g><circle cx="760" cy="246" r="22" fill="#c98f6b"/><path d="M738 234 Q760 206 782 234 Z" fill="#2e6b4f"/><rect x="732" y="266" width="56" height="134" rx="18" fill="#6b4a3a"/></g>
+  </g>
+</svg>
