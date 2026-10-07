@@ -4,8 +4,11 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.database import get_db
+from app.models import User
 
 
 pwd_context = CryptContext(
@@ -64,8 +67,22 @@ def get_current_user_id(token: str = Depends(oauth2_scheme)) -> str:
 
         return user_id
 
-    except Exception:
+    except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido ou expirado"
         )
+
+def get_current_user(
+    user_id: str = Depends(get_current_user_id),
+    db: Session = Depends(get_db),
+) -> User:
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não encontrado"
+        )
+
+    return user

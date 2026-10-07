@@ -9,7 +9,7 @@ from app.database import SessionLocal, get_db
 from app.models import Evidence, Verification
 from app.schemas import VerificationAccepted, VerificationCreate, VerificationResponse
 from app.services.verification import search_and_map_claims, verdict_from_evidence
-from app.security import get_current_user_id
+from app.security import get_current_user
 
 
 router = APIRouter(prefix="/api/verifications", tags=["verifications"])
@@ -46,7 +46,7 @@ async def create_verification(
     text: str | None = Form(None),
     image: UploadFile | None = File(None),
     database: Session = Depends(get_db),
-    user_id: str = Depends(get_current_user_id),
+    current_user = Depends(get_current_user),
 ):
     if request.headers.get("content-type", "").startswith("application/json"):
         payload = VerificationCreate.model_validate(await request.json())
@@ -61,7 +61,11 @@ async def create_verification(
         image_path = str(upload_dir / f"{uuid4().hex}_{Path(image.filename or 'imagem').name}")
         Path(image_path).write_bytes(await image.read())
 
-    verification = Verification(text=text.strip(), image_path=image_path)
+    verification = Verification(
+    text=text.strip(),
+    image_path=image_path,
+    user_id=user_id
+)
     database.add(verification)
     database.commit()
     database.refresh(verification)
@@ -70,8 +74,17 @@ async def create_verification(
 
 
 @router.get("/{verification_id}", response_model=VerificationResponse)
-def get_verification(verification_id: UUID, database: Session = Depends(get_db)):
-    verification = database.get(Verification, str(verification_id))
+def get_verification(
+    verification_id: UUID,
+    database: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+):
+    verification = database.query(Verification).filter(
+        Verification.id == str(verification_id),
+        Verification.user_id == current_user.id
+    ).first()
+
     if verification is None:
         raise HTTPException(status_code=404, detail="Verification not found")
+
     return verification
