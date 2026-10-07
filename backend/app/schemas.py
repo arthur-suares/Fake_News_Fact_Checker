@@ -140,25 +140,47 @@ class AnswerResponse(BaseModel):
     correct: bool
     skill_code: str
     mastery_probability: float
+    previous_mastery_probability: float | None = None
+    correct_option: str | None = None
     explanation: str | None = None
 
 
-class GameRoundResponse(BaseModel):
-    """Response schema for a game round."""
-    model_config = ConfigDict(from_attributes=True)
-
+class GameRoundInfo(BaseModel):
+    """Identifiers of the round being played."""
     id: str
-    round_number: int
-    news: NewsResponse
-    questions: list[QuestionOptionResponse]
-    started_at: datetime
-    finished_at: datetime | None = None
+    number: int
+    news_id: str
+    question_id: str
 
 
-class GameCreateResponse(BaseModel):
-    """Response when creating a new game."""
+class GameNewsResponse(BaseModel):
+    """News shown during a round. The verdict is omitted so it doesn't spoil the answer."""
+    id: str
+    title: str
+    content: str
+    image_url: str | None = None
+
+
+class GameQuestionResponse(BaseModel):
+    """Question shown during a round. correct_option and explanation are only revealed after answering."""
+    id: str
+    text: str
+    difficulty: float
+    options: dict[str, str]
+    skill_id: str
+    skill_code: str
+
+
+class GameRoundResponse(BaseModel):
+    """A playable round, as returned by GameService (create and next)."""
     game_id: str
-    round: GameRoundResponse
+    round: GameRoundInfo
+    news: GameNewsResponse
+    question: GameQuestionResponse
+
+
+class GameCreateResponse(GameRoundResponse):
+    """Response when creating a new game: the game with its first round."""
 
 
 class GameStatusResponse(BaseModel):
