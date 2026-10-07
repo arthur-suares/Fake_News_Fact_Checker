@@ -111,6 +111,17 @@ class AnswerRepository:
         )
 
     @staticmethod
+    def get_answered_question_ids_for_user(db: Session, user_id: str) -> set[str]:
+        """Return question IDs answered by a user across all games."""
+        question_ids = (
+            db.query(Answer.question_id)
+            .filter(Answer.user_id == user_id)
+            .distinct()
+            .all()
+        )
+        return {question_id for (question_id,) in question_ids}
+
+    @staticmethod
     def get_answers_for_question(
         db: Session,
         question_id: str,
