@@ -119,7 +119,23 @@ export interface Question {
   difficulty: number
   options: Record<string, string>
   skill_id: string
+  skill_code?: SkillCode | null
   explanation?: string | null
+  correct_option?: string | null
+}
+
+// Rodada jogável devolvida por POST /api/games e GET /api/games/{id}/next
+// (GameRoundResponse no backend). O gabarito só vem após a resposta.
+export interface GameRoundPayload {
+  game_id: string
+  round: {
+    id: string
+    number: number
+    news_id: string
+    question_id: string
+  }
+  news: News
+  question: Question
 }
 
 export interface GameRound {
@@ -162,9 +178,39 @@ export interface UserSkillState {
   updated_at: string
 }
 
-export interface GameResult {
+// Payload de POST /api/games/{game_id}/answers (AnswerCreate no backend)
+export interface AnswerSubmission {
+  question_id: string
+  game_round_id: string
+  selected_option: string
+  confidence: number // 1..5
+  response_time: number // milissegundos
+}
+
+// Resposta de POST /api/games/{game_id}/answers (AnswerResponse no backend)
+export interface AnswerResponse {
+  id: string
   correct: boolean
-  skill: SkillCode
+  skill_code: SkillCode
   mastery_probability: number
+  previous_mastery_probability?: number | null
+  correct_option?: string | null
   explanation?: string | null
+}
+
+// Dados exibidos na tela de feedback após uma resposta. Os campos de
+// domínio são opcionais: quando o backend passar a devolver
+// old_mastery/new_mastery (AnswerService.process_answer), a tela mostra
+// a evolução da skill rastreada pelo BKT.
+export interface AnswerFeedback {
+  correct: boolean
+  skill_code: SkillCode
+  selected_option: string
+  selected_option_text?: string | null
+  correct_option?: string | null
+  correct_option_text?: string | null
+  explanation?: string | null
+  next_action?: string | null
+  mastery_before?: number | null
+  mastery_after?: number | null
 }
