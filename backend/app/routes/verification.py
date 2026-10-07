@@ -9,6 +9,7 @@ from app.database import SessionLocal, get_db
 from app.models import Evidence, Verification
 from app.schemas import VerificationAccepted, VerificationCreate, VerificationResponse
 from app.services.verification import search_and_map_claims, verdict_from_evidence
+from app.security import get_current_user_id
 
 
 router = APIRouter(prefix="/api/verifications", tags=["verifications"])
@@ -45,6 +46,7 @@ async def create_verification(
     text: str | None = Form(None),
     image: UploadFile | None = File(None),
     database: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
 ):
     if request.headers.get("content-type", "").startswith("application/json"):
         payload = VerificationCreate.model_validate(await request.json())
