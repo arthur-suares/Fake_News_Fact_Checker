@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from enum import Enum as PyEnum
 
-from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String, Text, Float, Enum, UniqueConstraint
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, JSON, String, Text, Float, Enum, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -143,6 +143,10 @@ class UserSkillState(Base):
     __tablename__ = "user_skill_states"
     __table_args__ = (
         UniqueConstraint('user_id', 'skill_id', name='uq_user_skill'),
+        CheckConstraint(
+            'mastery_probability >= 0 AND mastery_probability <= 1',
+            name='ck_user_skill_mastery_probability',
+        ),
     )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -220,6 +224,10 @@ class GameRound(Base):
     One round = one question about one news item.
     """
     __tablename__ = "game_rounds"
+    __table_args__ = (
+        UniqueConstraint("game_id", "round_number", name="uq_game_round_number"),
+        CheckConstraint("round_number > 0", name="ck_game_round_positive_number"),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False, index=True)

@@ -82,7 +82,22 @@ class GameRepository:
 
         Returns:
             Created GameRound instance
+
+        Raises:
+            ValueError: If the round number is not the next sequential number
         """
+        last_round_number = (
+            db.query(GameRound.round_number)
+            .filter(GameRound.game_id == game_id)
+            .order_by(GameRound.round_number.desc())
+            .first()
+        )
+        expected_round_number = (last_round_number[0] if last_round_number else 0) + 1
+        if round_number != expected_round_number:
+            raise ValueError(
+                f"Round number must be {expected_round_number}, got {round_number}"
+            )
+
         game_round = GameRound(
             game_id=game_id,
             news_id=news_id,

@@ -58,6 +58,17 @@ A lógica principal do BKT está em:
 - `backend/app/adaptation/question_selector.py` — seleção adaptativa simples
 - `backend/app/models.py` — modelos do domínio, incluindo `Game`, `GameRound`, `Skill`, `UserSkillState`, `Question` e `Answer`
 
+### Como aplicar migrations
+
+Com as dependências do backend instaladas, execute:
+
+```bash
+cd Fake_News_Fact_Checker/backend
+alembic upgrade head
+```
+
+O comando usa `DATABASE_URL` quando definido; sem essa variável, utiliza `sqlite:///./fact_check.db`.
+
 ### Como iniciar o backend
 
 ```bash
