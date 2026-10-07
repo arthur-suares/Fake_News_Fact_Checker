@@ -9,18 +9,19 @@ from app.routes.auth import router as auth_router
 from app.routes.game import router as game_router
 from app.routes.skills import router as skills_router
 from app.services.google_fact_check import GoogleFactCheckService
-from seed import seed_skills
+from seed import seed_sample_news_and_questions, seed_skills
 
 
 Base.metadata.create_all(bind=engine)
 
-# Initialize skills on startup
+# Initialize skills and sample game content (only on an empty news table) on startup
 try:
     db = SessionLocal()
     seed_skills(db)
+    seed_sample_news_and_questions(db)
     db.close()
 except Exception as e:
-    print(f"Warning: Failed to seed skills: {e}")
+    print(f"Warning: Failed to seed initial data: {e}")
 
 app = FastAPI(
     title="Fact Check Backend",

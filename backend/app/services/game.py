@@ -58,29 +58,7 @@ class GameService:
             round_number=1,
         )
 
-        return {
-            "game_id": game.id,
-            "round": {
-                "id": game_round.id,
-                "number": 1,
-                "news_id": news.id,
-                "question_id": question.id,
-            },
-            "news": {
-                "id": news.id,
-                "title": news.title,
-                "content": news.content,
-                "image_url": news.image_url,
-                "verdict": news.verdict,
-            },
-            "question": {
-                "id": question.id,
-                "text": question.text,
-                "difficulty": question.difficulty,
-                "options": question.options,
-                "skill_id": question.skill_id,
-            },
-        }
+        return GameService._round_payload(game.id, game_round, question, news)
 
     @staticmethod
     def get_next_question(db: Session, user_id: str, game_id: str) -> dict | None:
@@ -136,6 +114,11 @@ class GameService:
             round_number=last_round + 1,
         )
 
+        return GameService._round_payload(game_id, game_round, question, news)
+
+    @staticmethod
+    def _round_payload(game_id: str, game_round: GameRound, question: Question, news: News) -> dict:
+        """Build the round payload shared by game creation and next question."""
         return {
             "game_id": game_id,
             "round": {
@@ -157,6 +140,7 @@ class GameService:
                 "difficulty": question.difficulty,
                 "options": question.options,
                 "skill_id": question.skill_id,
+                "skill_code": question.skill.code,
             },
         }
 

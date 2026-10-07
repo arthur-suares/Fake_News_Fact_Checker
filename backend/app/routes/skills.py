@@ -84,9 +84,12 @@ def submit_answer(
 
     Response:
         {
+            "id": "...",
             "correct": true,
-            "skill": "SOURCE",
+            "skill_code": "SOURCE",
             "mastery_probability": 0.57,
+            "previous_mastery_probability": 0.30,
+            "correct_option": "A",
             "explanation": "..."
         }
     """
@@ -109,6 +112,8 @@ def submit_answer(
             "correct": result["correct"],
             "skill_code": result["skill_code"],
             "mastery_probability": result["new_mastery"],
+            "previous_mastery_probability": result["old_mastery"],
+            "correct_option": result["correct_option"],
             "explanation": result["explanation"],
         }
     except ValueError as error:

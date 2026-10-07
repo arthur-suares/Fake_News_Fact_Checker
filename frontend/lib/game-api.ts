@@ -1,7 +1,9 @@
 import type {
   Answer,
+  AnswerResponse,
+  AnswerSubmission,
   Game,
-  GameResult,
+  GameRoundPayload,
   Question,
   Skill,
   UserSkillState,
@@ -9,31 +11,55 @@ import type {
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "")
 
+// status 0 = falha de rede (backend fora do ar, CORS, sem internet)
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    readonly detail: string,
+  ) {
+    super(status ? `${status} ${detail}` : detail)
+    this.name = "ApiError"
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, init)
+  let response: Response
+  try {
+    response = await fetch(`${API_URL}${path}`, init)
+  } catch {
+    throw new ApiError(0, "Não foi possível conectar ao servidor.")
+  }
   if (!response.ok) {
     const body = await response.json().catch(() => null)
     const detail = typeof body?.detail === "string" ? body.detail : response.statusText
-    throw new Error(`${response.status} ${detail}`)
+    throw new ApiError(response.status, detail)
   }
   return (await response.json()) as T
 }
 
-export async function createGame(): Promise<Game> {
-  return request<Game>("/api/games", {
+// Mensagem amigável para exibir ao usuário
+export function describeApiError(error: unknown): string {
+  if (!(error instanceof ApiError)) return "Algo deu errado. Tente novamente."
+  if (error.status === 0) return "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
+  if (error.status === 404) return "Partida não encontrada. Inicie uma nova partida."
+  if (error.status === 422) return `Não foi possível registrar a resposta: ${error.detail}`
+  return "O servidor encontrou um erro. Tente novamente em instantes."
+}
+
+export async function createGame(): Promise<GameRoundPayload> {
+  return request<GameRoundPayload>("/api/games", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   })
 }
 
-export async function submitAnswer(payload: {
-  question_id: string
-  game_round_id: string
-  selected_option: string
-  confidence?: number
-  response_time?: number
-}): Promise<GameResult> {
-  return request<GameResult>(`/api/games/${payload.game_round_id}/answers`, {
+// null quando a partida terminou (10 rodadas ou sem perguntas novas)
+export async function getNextRound(gameId: string): Promise<GameRoundPayload | null> {
+  return request<GameRoundPayload | null>(`/api/games/${encodeURIComponent(gameId)}/next`)
+}
+
+export async function submitAnswer(gameId: string, payload: AnswerSubmission): Promise<AnswerResponse> {
+  return request<AnswerResponse>(`/api/games/${encodeURIComponent(gameId)}/answers`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -69,4 +95,4 @@ export async function getExampleQuestion(): Promise<Question> {
   }
 }
 
-export type { Answer, Game, GameResult, Question, Skill, UserSkillState }
+export type { Answer, AnswerResponse, AnswerSubmission, Game, GameRoundPayload, Question, Skill, UserSkillState }

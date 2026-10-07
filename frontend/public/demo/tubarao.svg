@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" role="img" aria-label="Montagem de barbatana de tubarão em rua alagada">
+  <rect width="800" height="400" fill="#8a9bb0"/>
+  <rect x="0" y="40" width="180" height="190" fill="#5d6b7e"/>
+  <rect x="620" y="60" width="180" height="170" fill="#56647a"/>
+  <rect x="210" y="110" width="12" height="130" fill="#3f4a5a"/>
+  <circle cx="216" cy="105" r="14" fill="#f4d58d"/>
+  <rect y="230" width="800" height="170" fill="#6b7f72"/>
+  <path d="M0 250 Q80 240 160 250 T320 250 T480 250 T640 250 T800 250" fill="none" stroke="#8fa596" stroke-width="4"/>
+  <path d="M0 300 Q80 290 160 300 T320 300 T480 300 T640 300 T800 300" fill="none" stroke="#8fa596" stroke-width="4"/>
+  <g>
+    <rect x="80" y="225" width="120" height="35" rx="8" fill="#2f5d8a"/>
+    <rect x="95" y="210" width="80" height="22" rx="6" fill="#3d73a8"/>
+    <ellipse cx="140" cy="268" rx="70" ry="6" fill="#55695c"/>
+    <rect x="560" y="228" width="130" height="34" rx="8" fill="#a33d3d"/>
+    <rect x="580" y="212" width="80" height="22" rx="6" fill="#bf5050"/>
+    <ellipse cx="625" cy="270" rx="75" ry="6" fill="#55695c"/>
+  </g>
+  <path d="M360 300 L420 210 L455 300 Z" fill="#9aa4ad"/>
+  <path d="M372 300 L420 225 L440 300 Z" fill="#b6bec5"/>
+</svg>
