@@ -89,7 +89,7 @@ class AnswerService:
         current_mastery = user_skill_state.mastery_probability
 
         # Update mastery using BKT
-        new_mastery = BKTManager.update_skill(
+        new_mastery = BKTManager.update(
             skill.code,
             current_mastery,
             is_correct,
