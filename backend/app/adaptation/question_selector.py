@@ -64,49 +64,33 @@ class QuestionSelector:
             skill = state.skill
             skill_states_by_code[skill.code] = state
 
-        # Find skill with lowest mastery (skill to focus on)
-        # If a skill hasn't been initialized yet, start with it
-        lowest_skill_code = None
-        lowest_mastery = 1.0
+        # Order skills from lowest to highest mastery (skill to focus on first).
+        # Skills not initialized yet get priority.
+        def mastery_of(skill_code: str) -> float:
+            state = skill_states_by_code.get(skill_code)
+            return state.mastery_probability if state else -1.0
 
-        for skill_code in BKTManager.VALID_SKILLS:
-            if skill_code not in skill_states_by_code:
-                # Skill not yet initialized - prioritize it
-                lowest_skill_code = skill_code
-                break
-            
-            mastery = skill_states_by_code[skill_code].mastery_probability
-            if mastery < lowest_mastery:
-                lowest_mastery = mastery
-                lowest_skill_code = skill_code
+        ordered_skill_codes = sorted(BKTManager.VALID_SKILLS, key=mastery_of)
 
-        if not lowest_skill_code:
-            # Fallback if somehow we can't determine a skill
-            return QuestionSelector._select_fallback_question(db, used_news_ids)
+        # Try the weakest skill first; if all its news were already used in this
+        # game, move on to the next weakest instead of repeating news.
+        reusable: tuple[Question, News] | None = None
+        for skill_code in ordered_skill_codes:
+            skill = SkillRepository.get_skill_by_code(db, skill_code)
+            if not skill:
+                continue
 
-        # Get the skill ID
-        skill = SkillRepository.get_skill_by_code(db, lowest_skill_code)
-        if not skill:
-            return QuestionSelector._select_fallback_question(db, used_news_ids)
+            questions = QuestionRepository.get_questions_by_skill(db, skill.id)
+            for question in questions:
+                if question.news_id not in used_news_ids:
+                    return (question, question.news)
 
-        # Try to find a question for this skill from a new news item
-        # Strategy: Get all questions for the skill, then find one with news not yet used
-        questions = QuestionRepository.get_questions_by_skill(db, skill.id)
-        
-        for question in questions:
-            if question.news_id not in used_news_ids:
-                news = question.news
-                return (question, news)
+            if questions and reusable is None:
+                reusable = (questions[0], questions[0].news)
 
-        # If all news items for this skill have been used, allow re-using news
-        # but pick a different question if possible
-        if questions:
-            question = questions[0]
-            news = question.news
-            return (question, news)
-
-        # Fallback: try any available question
-        return QuestionSelector._select_fallback_question(db, used_news_ids)
+        # No unused news for any skill: try any unused news, then allow repeating
+        fallback = QuestionSelector._select_fallback_question(db, used_news_ids)
+        return fallback or reusable
 
     @staticmethod
     def _select_fallback_question(
