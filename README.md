@@ -4,6 +4,101 @@ Backend desenvolvido em Python utilizando **FastAPI** para consultar a **Google 
 
 A aplicação disponibiliza uma API própria que recebe uma afirmação ou assunto e consulta verificações existentes na API do Google.
 
+## Nova arquitetura — Game + Knowledge Tracing
+
+O projeto evoluiu de um fluxo baseado em questionário inicial para uma arquitetura orientada a jogo, rodadas, perguntas e rastreamento de domínio por habilidade.
+
+```text
+User
+ ↓
+Game
+ ↓
+GameRound
+ ↓
+Question
+ ↓
+Answer
+ ↓
+BKTManager
+ ↓
+SkillTracker
+ ↓
+BKTEngine
+ ↓
+UserSkillState
+ ↓
+Adaptive Question Selection
+```
+
+### Habilidades do MVP
+
+As quatro habilidades centrais são:
+
+- SOURCE: capacidade de analisar origem e fonte da informação.
+- EVIDENCE: capacidade de avaliar evidências que sustentam a alegação.
+- CONTEXT: capacidade de perceber contexto omitido, distorcido ou incompatível.
+- VISUAL: capacidade de validar se uma imagem realmente sustenta a alegação.
+
+### Onde fica o BKT
+
+A lógica principal do BKT está em:
+
+- `backend/app/bkt/engine.py` — matemática central do algoritmo
+- `backend/app/bkt/base.py` — interface comum dos trackers
+- `backend/app/bkt/manager.py` — registro de skills e atualização por habilidade
+- `backend/app/bkt/source_tracker.py`
+- `backend/app/bkt/evidence_tracker.py`
+- `backend/app/bkt/context_tracker.py`
+- `backend/app/bkt/visual_tracker.py`
+
+### Onde ficam as partidas e as habilidades
+
+- `backend/app/services/game.py` — lógica de criação de partida e rodadas
+- `backend/app/services/answer.py` — processamento da resposta e atualização de domínio
+- `backend/app/adaptation/question_selector.py` — seleção adaptativa simples
+- `backend/app/models.py` — modelos do domínio, incluindo `Game`, `GameRound`, `Skill`, `UserSkillState`, `Question` e `Answer`
+
+### Como iniciar o backend
+
+```bash
+cd Fake_News_Fact_Checker
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r backend/requirements.txt
+cd backend
+uvicorn app.main:app --reload
+```
+
+### Como iniciar o frontend
+
+```bash
+cd Fake_News_Fact_Checker/frontend
+npm install
+npm run dev
+```
+
+### Como rodar teste
+
+```bash
+cd Fake_News_Fact_Checker
+source .venv/bin/activate
+cd backend
+pytest -q
+```
+
+### Legacy / compatibilidade
+
+A arquitetura antiga continua preservada como legado e compatibilidade:
+
+- `Profile`
+- `GMM / perfil antigo`
+- `modelo_perfis.joblib`
+- questionário inicial e rotas legadas de verificação
+
+Esses componentes continuam presentes para não quebrar funcionalidades existentes, mas o fluxo principal do MVP deve utilizar `UserSkillState` + `BKTManager` + `SkillTracker`.
+
+---
+
 ## 1. Pré-requisitos
 
 Antes de iniciar, é necessário ter instalado:
@@ -463,7 +558,257 @@ O backend funciona como uma camada intermediária entre o sistema cliente e a Go
 
 ---
 
-## 17. Rodando frontend + backend juntos
+## 18. Nova Arquitetura — Game + Knowledge Tracing
+
+O projeto está evoluindo para um novo modelo baseado em **jogos adaptativos** com rastreamento de habilidades via **Bayesian Knowledge Tracing (BKT)**.
+
+### 18.1 Visão Geral
+
+Em vez de um questionário inicial com diagnóstico psicológico, o sistema agora oferece:
+
+1. **Games**: Sessões onde o usuário responde perguntas sobre notícias
+2. **Habilidades**: Quatro dimensões de competência em análise de informação
+3. **Rastreamento Adaptativo**: BKT atualiza a probabilidade de domínio após cada resposta
+4. **Seleção Adaptativa**: A próxima pergunta é escolhida para otimizar aprendizado
+
+### 18.2 As Quatro Habilidades
+
+```
+SOURCE    → Capacidade de analisar a origem/fonte da informação
+EVIDENCE  → Capacidade de avaliar as evidências apresentadas
+CONTEXT   → Capacidade de perceber contexto omitido ou distorcido
+VISUAL    → Capacidade de avaliar relação entre imagem e alegação
+```
+
+As habilidades **não** são perfil psicológico ou personalidade, mas sim um **perfil de habilidades de avaliação de informação**.
+
+### 18.3 Arquitetura de Camadas
+
+```
+┌─────────────────────────────────────┐
+│         Frontend (Next.js)          │
+│      /game, /profile                │
+└────────────────┬────────────────────┘
+                 │
+                 │ HTTP/REST
+                 ▼
+┌─────────────────────────────────────┐
+│        API Routes (FastAPI)         │
+│   POST /api/games                   │
+│   POST /api/games/{id}/answers      │
+│   GET  /api/users/me/skills         │
+└────────────────┬────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────┐
+│     Services (Business Logic)       │
+│   - GameService                     │
+│   - AnswerService                   │
+│   - QuestionSelector (Adaptation)   │
+└────────────────┬────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────┐
+│  BKT (Bayesian Knowledge Tracing)   │
+│   - BKTEngine (Math)                │
+│   - BKTManager (Registry)           │
+│   - SourceTracker                   │
+│   - EvidenceTracker                 │
+│   - ContextTracker                  │
+│   - VisualTracker                   │
+└────────────────┬────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────┐
+│  Repositories (Database Access)     │
+│   - GameRepository                  │
+│   - SkillRepository                 │
+│   - QuestionRepository              │
+│   - AnswerRepository                │
+└────────────────┬────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────────┐
+│   SQLAlchemy + SQLite/PostgreSQL    │
+└─────────────────────────────────────┘
+```
+
+### 18.4 Fluxo de um Game
+
+```
+1. Usuário inicia jogo
+   ↓ POST /api/games
+   └→ GameService cria Game + primeira GameRound
+      └→ QuestionSelector escolhe pergunta baseada em skills fracos
+         └→ UserSkillState inicializado com mastery_probability=0.3
+
+2. Usuário vê pergunta
+   ↓
+   └→ Responde com opção + confiança + tempo
+
+3. Backend processa resposta
+   ↓ POST /api/games/{game_id}/answers
+   └→ AnswerService valida e armazena
+      └→ BKTManager.update_skill() atualiza probabilidade
+         └→ UserSkillState atualizado com nova mastery
+            └→ Feedback enviado ao usuário
+
+4. Próxima rodada
+   ↓ GET /api/games/{game_id}/next
+   └→ GameService.get_next_question()
+      └→ QuestionSelector escolhe com base em novo perfil
+         └→ GameRound criada automaticamente
+
+5. Fim após 10 rodadas ou sem perguntas
+   ↓
+   └→ Game.status = FINISHED
+```
+
+### 18.5 Estrutura de Diretórios
+
+```
+backend/app/
+  ├── bkt/                          # Núcleo BKT (puro, sem DB)
+  │   ├── engine.py                 # Fórmula matemática BKT
+  │   ├── manager.py                # Registry de trackers
+  │   ├── base.py                   # Interface SkillTracker
+  │   ├── source_tracker.py         # SOURCE skill
+  │   ├── evidence_tracker.py       # EVIDENCE skill
+  │   ├── context_tracker.py        # CONTEXT skill
+  │   └── visual_tracker.py         # VISUAL skill
+  │
+  ├── adaptation/
+  │   └── question_selector.py      # Seleção adaptativa simples
+  │
+  ├── repositories/                 # Database access
+  │   ├── game_repository.py
+  │   ├── skill_repository.py
+  │   ├── question_repository.py
+  │   └── answer_repository.py
+  │
+  ├── services/
+  │   ├── game.py                   # Game business logic
+  │   ├── answer.py                 # Answer + BKT update
+  │   ├── verification.py           # LEGACY
+  │   └── profile.py                # LEGACY
+  │
+  ├── routes/
+  │   ├── game.py                   # POST /api/games, GET /api/games/{id}
+  │   ├── skills.py                 # GET /api/users/me/skills, POST .../answers
+  │   ├── verification.py           # LEGACY
+  │   ├── feedback.py               # LEGACY
+  │   ├── profile.py                # LEGACY
+  │   └── auth.py
+  │
+  ├── models.py                     # SQLAlchemy models (new + legacy)
+  ├── schemas.py                    # Pydantic schemas (new + legacy)
+  ├── main.py                       # FastAPI app + route registration
+  ├── database.py
+  ├── config.py
+  └── security.py
+
+seed/                               # Initial data
+  └── __init__.py                   # seed_skills(), seed_sample_data()
+
+tests/
+  ├── bkt/
+  │   ├── test_engine.py           # BKT math tests
+  │   └── test_trackers.py         # Tracker + Manager tests
+  └── integration/
+      └── ...                       # Integration tests (RF-21)
+```
+
+### 18.6 Principais Entidades (Novos Modelos)
+
+| Entidade | Campos | Descrição |
+| --- | --- | --- |
+| `Game` | id, user_id, status, started_at, finished_at | Sessão de jogo do usuário |
+| `GameRound` | id, game_id, news_id, round_number, started_at, finished_at | Uma rodada dentro de um jogo |
+| `Skill` | id, code, name, description | Uma das 4 habilidades (SOURCE, EVIDENCE, CONTEXT, VISUAL) |
+| `UserSkillState` | id, user_id, skill_id, mastery_probability, updated_at | Estado atual de domínio de skill do usuário (0..1) |
+| `News` | id, title, content, image_url, verdict, fact_check_data | Notícia ou alegação a ser avaliada |
+| `Question` | id, news_id, skill_id, text, difficulty, options, correct_option, explanation | Pergunta sobre uma notícia, associada a uma skill |
+| `Answer` | id, user_id, game_round_id, question_id, selected_option, correct, confidence, response_time | Resposta do usuário a uma pergunta |
+
+### 18.7 Pontos-Chave de Design
+
+#### BKT é puro (sem dependências)
+- `backend/app/bkt/engine.py` contém apenas matemática
+- Não acessa banco, não conhece User, não conhece FastAPI
+- Facilita testes e reutilização
+
+#### Interfaces estáveis
+- Todos os trackers implementam `SkillTracker` (abstract)
+- Permite que diferentes pessoas trabalhem em diferentes trackers sem conflito
+
+#### Separação clara de responsabilidades
+- **API** (routes/) ← HTTP
+- **Services** ← Regra de negócio
+- **BKT** ← Matemática pura
+- **Repositories** ← Banco de dados
+
+#### Compatibilidade SQLite + PostgreSQL
+- Modelos usam tipos padrão (String, Float, DateTime)
+- Evita features específicas de um banco
+
+### 18.8 Como Iniciar um Game (Exemplo)
+
+```bash
+# Terminal 1: Backend
+cd backend
+uvicorn app.main:app --reload
+
+# Terminal 2: Testar com curl
+curl -X POST http://localhost:8000/api/games \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json"
+
+# Resposta:
+# {
+#   "game_id": "abc123",
+#   "round": {
+#     "id": "round1",
+#     "number": 1,
+#     "news_id": "news1",
+#     "question_id": "q1"
+#   },
+#   "news": {...},
+#   "question": {...}
+# }
+```
+
+### 18.9 Legacy: Perfil Antigo (GMM)
+
+O sistema antigo baseado em **questionário + GMM** continua existente:
+
+```
+backend/app/ml/modelo_perfis.joblib  # Modelo treinado
+backend/app/ml/perfil.py             # Predictor
+backend/app/services/profile.py      # Service (LEGACY)
+backend/app/routes/profile.py        # Endpoints (LEGACY)
+```
+
+**Não foi removido** porque pode ser necessário durante a transição. Para evitar confusão, considere renomear ou documentar como "LEGACY - GMM Profile System" em futuras versões.
+
+### 18.10 Próximas Etapas (Issues RF-01 a RF-21)
+
+A estrutura acima prepara o caminho para:
+
+- **RF-01, RF-02**: Completar models (Game, Skill, UserSkillState) ✅
+- **RF-03, RF-04**: Endpoints básicos do game ✅
+- **RF-05**: BKTEngine matemático ✅
+- **RF-06 a RF-09**: Trackers específicas ✅
+- **RF-10 a RF-18**: Integração completa game/BKT/adaptation ✅
+- **RF-19**: Seed de notícias e perguntas
+- **RF-20**: Testes unitários BKT ✅
+- **RF-21**: Testes de integração
+- **Frontend**: Componentes game, profile, feedback
+
+A arquitetura permite que **diferentes pessoas trabalhem em paralelo** sem conflitos, desde que sigam as interfaces definidas (ex: `SkillTracker`, `AnswerService`, etc.).
+
+---
+
+## 19. Rodando frontend + backend juntos
 
 1. **Backend** (terminal 1) — o `.env` pode ficar na raiz do repositório ou em `backend/`:
 
