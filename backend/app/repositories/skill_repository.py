@@ -98,6 +98,7 @@ class SkillRepository:
         user_id: str,
         skill_id: str,
         new_mastery: float,
+        commit: bool = True,
     ) -> UserSkillState:
         """
         Update a user's skill mastery probability.
@@ -107,6 +108,7 @@ class SkillRepository:
             user_id: ID of the user
             skill_id: ID of the skill
             new_mastery: New mastery probability (0 to 1)
+            commit: If False, only flush so the caller controls the transaction
 
         Returns:
             Updated UserSkillState instance
@@ -132,8 +134,11 @@ class SkillRepository:
             )
 
         state.mastery_probability = new_mastery
-        db.commit()
-        db.refresh(state)
+        if commit:
+            db.commit()
+            db.refresh(state)
+        else:
+            db.flush()
         return state
 
     @staticmethod

@@ -11,7 +11,23 @@ from app.repositories.question_repository import QuestionRepository
 from app.repositories.game_repository import GameRepository
 from app.repositories.skill_repository import SkillRepository
 from app.bkt.manager import BKTManager
-from app.models import Answer, Question, Skill
+from app.models import GameStatusEnum
+
+
+class AnswerError(ValueError):
+    """Base error for answers that cannot be processed."""
+
+
+class AnswerNotFoundError(AnswerError):
+    """Game, round or question does not exist."""
+
+
+class AnswerForbiddenError(AnswerError):
+    """User is trying to answer a round from another user's game."""
+
+
+class AnswerConflictError(AnswerError):
+    """Round was already answered or the game is finished."""
 
 
 class AnswerService:
@@ -21,6 +37,7 @@ class AnswerService:
     def process_answer(
         db: Session,
         user_id: str,
+        game_id: str,
         game_round_id: str,
         question_id: str,
         selected_option: str,
@@ -30,15 +47,13 @@ class AnswerService:
         """
         Process a user's answer to a question.
 
-        This:
-        1. Validates the answer
-        2. Stores it in the database
-        3. Updates user's skill mastery using BKT
-        4. Returns feedback
+        Flow: validate -> determine correct -> save Answer -> identify skill ->
+        retrieve UserSkillState -> BKTManager -> save new mastery -> return result.
 
         Args:
             db: Database session
-            user_id: ID of the user
+            user_id: ID of the user answering
+            game_id: ID of the game the round belongs to
             game_round_id: ID of the game round
             question_id: ID of the question
             selected_option: The option selected (e.g., "A", "B", "C")
@@ -49,73 +64,94 @@ class AnswerService:
             Dictionary with feedback including correctness, skill, and new mastery
 
         Raises:
-            ValueError: If validation fails
+            AnswerNotFoundError: If game, round or question does not exist
+            AnswerForbiddenError: If the game belongs to another user
+            AnswerConflictError: If the round was already answered or the game is finished
+            ValueError: If the answer itself is invalid
         """
-        # Validate inputs
+        # 1. Validate
         if confidence is not None and not (1 <= confidence <= 5):
             raise ValueError("confidence must be between 1 and 5")
 
         if response_time is not None and response_time < 0:
             raise ValueError("response_time must be non-negative")
 
-        # Get question details
-        question = QuestionRepository.get_question_by_id(db, question_id)
-        if not question:
-            raise ValueError(f"Question {question_id} not found")
+        game = GameRepository.get_game_by_id(db, game_id)
+        if not game:
+            raise AnswerNotFoundError(f"Game {game_id} not found")
 
-        # Check if answer is correct
+        if game.user_id != user_id:
+            raise AnswerForbiddenError("User does not own this game")
+
+        if game.status == GameStatusEnum.FINISHED:
+            raise AnswerConflictError(f"Game {game_id} is already finished")
+
+        game_round = GameRepository.get_game_round_by_id(db, game_round_id)
+        if not game_round or game_round.game_id != game.id:
+            raise AnswerNotFoundError(
+                f"Round {game_round_id} not found in game {game_id}"
+            )
+
+        question = QuestionRepository.get_question_by_id(db, question_id)
+        if not question or question.news_id != game_round.news_id:
+            raise AnswerNotFoundError(
+                f"Question {question_id} not found in round {game_round_id}"
+            )
+
+        if selected_option not in question.options:
+            raise ValueError(
+                f"Invalid option {selected_option}. "
+                f"Valid options are: {', '.join(sorted(question.options))}"
+            )
+
+        if AnswerRepository.get_answers_for_round(db, game_round.id):
+            raise AnswerConflictError(f"Round {game_round_id} was already answered")
+
+        # 2. Determine correct
         is_correct = selected_option == question.correct_option
 
-        # Get skill associated with question
+        # 3. Identify skill and current state
         skill = question.skill
         if not skill:
             raise ValueError(f"Question {question_id} has no skill associated")
 
-        # Get current user skill state
-        user_skill_state = SkillRepository.get_user_skill_state(
+        user_skill_state = SkillRepository.get_or_create_user_skill_state(
             db,
             user_id,
             skill.id,
         )
+        current_mastery = user_skill_state.mastery_probability
 
-        if not user_skill_state:
-            # Should not happen if initialization was done properly
-            user_skill_state = SkillRepository.get_or_create_user_skill_state(
+        # 4. Run BKT before persisting so a failure leaves nothing half-saved
+        new_mastery = BKTManager.update(skill.code, current_mastery, is_correct)
+
+        # 5. Save Answer and new mastery in a single transaction
+        try:
+            answer = AnswerRepository.create_answer(
+                db,
+                user_id,
+                game_round.id,
+                question.id,
+                selected_option,
+                is_correct,
+                confidence,
+                response_time,
+                commit=False,
+            )
+            SkillRepository.update_user_skill_mastery(
                 db,
                 user_id,
                 skill.id,
+                new_mastery,
+                commit=False,
             )
+            db.commit()
+        except Exception:
+            db.rollback()
+            raise
+        db.refresh(answer)
 
-        current_mastery = user_skill_state.mastery_probability
-
-        # Update mastery using BKT
-        new_mastery = BKTManager.update_skill(
-            skill.code,
-            current_mastery,
-            is_correct,
-        )
-
-        # Save answer
-        answer = AnswerRepository.create_answer(
-            db,
-            user_id,
-            game_round_id,
-            question_id,
-            selected_option,
-            is_correct,
-            confidence,
-            response_time,
-        )
-
-        # Update skill state in database
-        SkillRepository.update_user_skill_mastery(
-            db,
-            user_id,
-            skill.id,
-            new_mastery,
-        )
-
-        # Prepare response
+        # 6. Return result
         return {
             "answer_id": answer.id,
             "correct": is_correct,

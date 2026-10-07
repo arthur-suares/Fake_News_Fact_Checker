@@ -12,6 +12,18 @@ from app.bkt.context_tracker import ContextTracker
 from app.bkt.visual_tracker import VisualTracker
 
 
+class InvalidSkillError(ValueError):
+    """Raised when a skill code has no registered tracker."""
+
+    def __init__(self, skill_code: str, valid_skills: list[str]):
+        self.skill_code = skill_code
+        self.valid_skills = valid_skills
+        super().__init__(
+            f"Invalid skill code: {skill_code}. "
+            f"Valid skills are: {', '.join(valid_skills)}"
+        )
+
+
 class BKTManager:
     """
     Manager for BKT trackers.
@@ -38,12 +50,15 @@ class BKTManager:
     VALID_SKILLS = list(_TRACKERS.keys())
 
     @classmethod
-    def update_skill(cls, skill_code: str, mastery: float, correct: bool) -> float:
+    def update(cls, skill: str, mastery: float, correct: bool) -> float:
         """
         Update mastery probability for a specific skill.
 
+        Single entry point for the backend: callers only pass the skill code,
+        the manager selects the matching tracker.
+
         Args:
-            skill_code: Code of the skill (SOURCE, EVIDENCE, CONTEXT, or VISUAL)
+            skill: Code of the skill (SOURCE, EVIDENCE, CONTEXT, or VISUAL)
             mastery: Current mastery probability (0 to 1)
             correct: Whether the user answered correctly
 
@@ -51,16 +66,15 @@ class BKTManager:
             Updated mastery probability (0 to 1)
 
         Raises:
-            ValueError: If skill_code is invalid or mastery is out of range
+            InvalidSkillError: If skill is not registered
+            ValueError: If mastery is out of range
         """
-        if skill_code not in cls._TRACKERS:
-            raise ValueError(
-                f"Invalid skill code: {skill_code}. "
-                f"Valid skills are: {', '.join(cls.VALID_SKILLS)}"
-            )
+        return cls.get_tracker(skill).update(mastery, correct)
 
-        tracker = cls._TRACKERS[skill_code]
-        return tracker.update(mastery, correct)
+    @classmethod
+    def update_skill(cls, skill_code: str, mastery: float, correct: bool) -> float:
+        """Alias of update(), kept for backwards compatibility."""
+        return cls.update(skill_code, mastery, correct)
 
     @classmethod
     def get_tracker(cls, skill_code: str) -> SkillTracker:
@@ -74,13 +88,10 @@ class BKTManager:
             SkillTracker instance
 
         Raises:
-            ValueError: If skill_code is invalid
+            InvalidSkillError: If skill_code is invalid
         """
         if skill_code not in cls._TRACKERS:
-            raise ValueError(
-                f"Invalid skill code: {skill_code}. "
-                f"Valid skills are: {', '.join(cls.VALID_SKILLS)}"
-            )
+            raise InvalidSkillError(skill_code, cls.VALID_SKILLS)
         return cls._TRACKERS[skill_code]
 
     @classmethod

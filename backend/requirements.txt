@@ -10,8 +10,3 @@ python-multipart
 python-jose[cryptography]
 passlib[bcrypt]
 pytest
-numpy
-pandas
-joblib
-# mesma versão usada para treinar app/ml/modelo_perfis.joblib
-scikit-learn==1.9.1

@@ -21,6 +21,7 @@ class AnswerRepository:
         correct: bool,
         confidence: int | None = None,
         response_time: int | None = None,
+        commit: bool = True,
     ) -> Answer:
         """
         Create a new answer record.
@@ -34,6 +35,7 @@ class AnswerRepository:
             correct: Whether the answer was correct
             confidence: User's confidence level (1-5)
             response_time: Time taken to answer in milliseconds
+            commit: If False, only flush so the caller controls the transaction
 
         Returns:
             Created Answer instance
@@ -48,8 +50,11 @@ class AnswerRepository:
             response_time=response_time,
         )
         db.add(answer)
-        db.commit()
-        db.refresh(answer)
+        if commit:
+            db.commit()
+            db.refresh(answer)
+        else:
+            db.flush()
         return answer
 
     @staticmethod

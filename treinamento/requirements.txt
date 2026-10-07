@@ -1,4 +1,0 @@
-# Mesmas versões da API (o scikit-learn precisa ser igual ao do backend
-# para o modelo salvo carregar lá) + o que só o treino usa.
--r ../backend/requirements.txt
-matplotlib
