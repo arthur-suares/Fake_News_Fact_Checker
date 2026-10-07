@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 # ============================================================================
-# LEGACY SCHEMAS (Verification, Feedback, Profile)
+# LEGACY SCHEMAS (Verification, Feedback)
 # ============================================================================
 
 class VerificationCreate(BaseModel):
@@ -43,20 +43,6 @@ class FeedbackResponse(BaseModel):
     id: str
     verification_id: str
 
-
-class ProfileResult(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    assigned_cluster: int
-    cluster_label: str
-    probabilities: dict[str, float]
-    details: dict[str, Any] | None = None
-    processed_at: datetime
-
-
-class ProfileResponse(BaseModel):
-    verification_id: str
-    profile_result: ProfileResult
 
 class UserCreate(BaseModel):
     name: str = Field(min_length=2, max_length=100)

@@ -80,6 +80,42 @@ class TestBKTEngine:
         with pytest.raises(ValueError):
             engine.update(-0.1, correct=True)
 
+    def test_update_accepts_per_call_parameters(self):
+        """Test that update uses parameters passed in the call."""
+        engine = BKTEngine(p_guess=0.50, p_slip=0.40, p_transition=0.90)
+
+        result = engine.update(
+            0.30, correct=True, p_guess=0.20, p_slip=0.05, p_transition=0.10
+        )
+
+        assert result == pytest.approx(0.7035294118)
+
+    def test_update_per_call_parameters_do_not_change_engine(self):
+        """Test that per-call overrides are not stored in the engine."""
+        engine = BKTEngine(p_guess=0.20, p_slip=0.05, p_transition=0.10)
+
+        engine.update(0.30, correct=True, p_guess=0.50)
+
+        assert engine.p_guess == 0.20
+        assert engine.update(0.30, correct=True) == pytest.approx(0.7035294118)
+
+    def test_update_partial_override_keeps_other_defaults(self):
+        """Test that only overridden parameters change the result."""
+        engine = BKTEngine(p_guess=0.20, p_slip=0.05, p_transition=0.10)
+
+        no_learning = engine.update(0.30, correct=True, p_transition=0.0)
+
+        assert no_learning == pytest.approx(0.285 / 0.425)
+
+    @pytest.mark.parametrize("param", ["p_guess", "p_slip", "p_transition"])
+    @pytest.mark.parametrize("value", [-0.1, 1.5])
+    def test_update_validates_per_call_parameters(self, param, value):
+        """Test that per-call parameters must be between 0 and 1."""
+        engine = BKTEngine()
+
+        with pytest.raises(ValueError):
+            engine.update(0.5, correct=True, **{param: value})
+
     def test_update_correct_answer_increases_mastery(self):
         """Test that correct answer increases mastery probability."""
         engine = BKTEngine(p_guess=0.20, p_slip=0.05, p_transition=0.10)

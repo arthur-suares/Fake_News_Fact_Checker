@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine, SessionLocal
 from app.routes.feedback import router as feedback_router
-from app.routes.profile import router as profile_router
 from app.routes.verification import router as verification_router
 from app.routes.auth import router as auth_router
 from app.routes.game import router as game_router
@@ -40,7 +39,6 @@ app.add_middleware(
 # Legacy routes
 app.include_router(verification_router)
 app.include_router(feedback_router)
-app.include_router(profile_router)
 app.include_router(auth_router)
 
 # New routes (Game + Knowledge Tracing)

@@ -8,7 +8,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.services.answer import AnswerService
+from app.dependencies import get_current_user_id
+from app.services.answer import (
+    AnswerConflictError,
+    AnswerForbiddenError,
+    AnswerNotFoundError,
+    AnswerService,
+)
 from app.schemas import AnswerCreate, AnswerResponse, UserSkillProfileResponse
 
 router = APIRouter(prefix="/api", tags=["skills"])
@@ -63,15 +69,22 @@ def submit_answer(
     game_id: str,
     answer: AnswerCreate,
     db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
 ):
     """
     Submit an answer to a question.
 
     This endpoint:
-    1. Validates the answer
+    1. Validates the answer (game ownership, round, question and option)
     2. Stores it in the database
     3. Updates user's skill mastery using BKT
     4. Returns feedback including correctness and new mastery level
+
+    Errors:
+        403: The game belongs to another user
+        404: Game, round or question not found
+        409: Round already answered or game finished
+        422: Invalid answer payload or option
 
     Request:
         {
@@ -94,12 +107,10 @@ def submit_answer(
         }
     """
     try:
-        # TODO: Get actual user from auth token
-        user_id = "test-user"  # Placeholder
-        
         result = AnswerService.process_answer(
             db,
             user_id,
+            game_id,
             answer.game_round_id,
             answer.question_id,
             answer.selected_option,
@@ -116,6 +127,12 @@ def submit_answer(
             "correct_option": result["correct_option"],
             "explanation": result["explanation"],
         }
+    except AnswerForbiddenError as error:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(error))
+    except AnswerNotFoundError as error:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(error))
+    except AnswerConflictError as error:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(error))
     except ValueError as error:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
