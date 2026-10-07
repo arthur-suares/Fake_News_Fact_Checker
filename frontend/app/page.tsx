@@ -1,123 +1,88 @@
-"use client"
+import Link from "next/link"
+import { ArrowRight, BarChart3, FileSearch, Gamepad2, Image as ImageIcon, Layers, SearchCheck, UserCheck } from "lucide-react"
 
-import { useState } from "react"
-import { SurveyForm } from "@/components/survey-form"
-import { NewsEntry } from "@/components/news-entry"
-import { ProcessingScreen } from "@/components/processing-screen"
-import { ResultScreen } from "@/components/result-screen"
-import { enviarFeedback, verificarNoticia } from "@/lib/api"
-import type { RespostasPre, ResultadoVerificacao } from "@/lib/types"
-import { Button } from "@/components/ui/button"
-import { AlertCircle, ArrowLeft, ShieldCheck } from "lucide-react"
+import { BrandLogo } from "@/components/brand-logo"
+import { buttonVariants } from "@/components/ui/button"
+import { SKILL_INFO } from "@/lib/skills"
+import type { SkillCode } from "@/lib/types"
+import { cn } from "@/lib/utils"
 
-type Etapa = "survey" | "entry" | "processing" | "result"
+const SKILL_ICONS: Record<SkillCode, typeof UserCheck> = {
+  SOURCE: UserCheck,
+  EVIDENCE: SearchCheck,
+  CONTEXT: Layers,
+  VISUAL: ImageIcon,
+}
 
-export default function Page() {
-  const [etapa, setEtapa] = useState<Etapa>("survey")
-  const [respostasPre, setRespostasPre] = useState<RespostasPre | null>(null)
-  const [hasImage, setHasImage] = useState(false)
-  const [resultado, setResultado] = useState<ResultadoVerificacao | null>(null)
-  const [erro, setErro] = useState<string | null>(null)
-
-  async function handleVerify(news: string, image: File | null) {
-    setErro(null)
-    setHasImage(Boolean(image))
-    setEtapa("processing")
-
-    const started = Date.now()
-    try {
-      const data = await verificarNoticia(news, image)
-
-      // garante que a animação de análise seja perceptível
-      const elapsed = Date.now() - started
-      const minTime = image ? 3600 : 2600
-      if (elapsed < minTime) await new Promise((r) => setTimeout(r, minTime - elapsed))
-
-      setResultado(data)
-      setEtapa("result")
-    } catch (e) {
-      console.error("Falha na verificação:", e)
-      setErro("Não foi possível concluir a verificação. Tente novamente.")
-      setEtapa("entry")
-    }
-  }
-
-  async function handleEnviarOpiniao(opiniaoMudou: number) {
-    if (!resultado) return
-    await enviarFeedback(resultado.id, { ...respostasPre, q9: opiniaoMudou })
-  }
-
-  function handleRestart() {
-    setResultado(null)
-    setErro(null)
-    setHasImage(false)
-    setRespostasPre(null)
-    setEtapa("survey")
-  }
-
+export default function HomePage() {
   return (
     <main className="relative min-h-dvh overflow-hidden bg-gradient-to-br from-primary/35 via-background to-accent/35">
       <div className="pointer-events-none absolute -left-40 -top-40 size-[36rem] rounded-full bg-primary/60 blur-3xl" aria-hidden />
       <div className="pointer-events-none absolute -bottom-40 -right-40 size-[36rem] rounded-full bg-accent/55 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -right-24 top-10 size-72 rounded-full bg-primary/40 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -left-24 bottom-10 size-72 rounded-full bg-accent/40 blur-3xl" aria-hidden />
       <div className="relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center px-4 py-8 sm:py-10">
-        <div className="relative mb-5 flex items-center justify-center gap-2">
-          {(etapa === "entry" || etapa === "result") && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={handleRestart}
-              className="absolute left-0 gap-1 text-muted-foreground"
-            >
-              <ArrowLeft />
-              <span className="hidden sm:inline">Voltar ao início</span>
-              <span className="sr-only sm:hidden">Voltar ao início</span>
-            </Button>
-          )}
-          <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30">
-            <ShieldCheck className="size-5" />
-          </span>
-          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-xl font-bold tracking-tight text-transparent">
-            Verifica.
-          </span>
+        <div className="mb-5 flex justify-center">
+          <BrandLogo />
         </div>
 
         <div className="rounded-2xl bg-gradient-to-br from-primary via-primary/60 to-accent p-[2px] shadow-2xl shadow-primary/40">
-        <div className="relative overflow-hidden rounded-[calc(1rem-2px)] bg-card/90 p-6 backdrop-blur-sm sm:p-8 md:p-10">
-          <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary to-accent" aria-hidden />
-          {etapa === "survey" && (
-            <SurveyForm
-              onComplete={(r) => {
-                setRespostasPre(r)
-                setEtapa("entry")
-              }}
-            />
-          )}
+          <div className="relative flex flex-col gap-6 overflow-hidden rounded-[calc(1rem-2px)] bg-card/90 p-6 backdrop-blur-sm sm:p-8 md:p-10">
+            <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary to-accent" aria-hidden />
 
-          {etapa === "entry" && (
-            <div className="flex flex-col gap-4">
-              {erro && (
-                <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                  <AlertCircle className="size-4 shrink-0" />
-                  {erro}
-                </div>
-              )}
-              <NewsEntry onVerify={handleVerify} />
+            <header className="flex flex-col gap-2 text-center">
+              <h1 className="text-2xl font-bold text-balance text-foreground sm:text-3xl">
+                Aprenda a identificar desinformação jogando
+              </h1>
+              <p className="text-sm leading-relaxed text-pretty text-muted-foreground sm:text-base">
+                Em cada rodada você analisa uma notícia, responde uma pergunta e recebe uma explicação. O jogo
+                acompanha sua evolução em quatro habilidades.
+              </p>
+            </header>
+
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Link href="/game" className={cn(buttonVariants(), "h-12 flex-1 gap-2 text-base font-semibold")}>
+                <Gamepad2 className="size-5" />
+                Jogar
+              </Link>
+              <Link
+                href="/profile"
+                className={cn(buttonVariants({ variant: "outline" }), "h-12 flex-1 gap-2 text-sm font-semibold")}
+              >
+                <BarChart3 className="size-4" />
+                Minhas habilidades
+              </Link>
             </div>
-          )}
 
-          {etapa === "processing" && <ProcessingScreen hasImage={hasImage} />}
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {(Object.keys(SKILL_INFO) as SkillCode[]).map((code) => {
+                const Icon = SKILL_ICONS[code]
+                return (
+                  <li key={code} className="flex items-start gap-3 rounded-xl border border-border bg-background/60 p-3">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Icon className="size-4" />
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold text-foreground">{SKILL_INFO[code].name}</span>
+                      <span className="text-xs leading-snug text-muted-foreground">{SKILL_INFO[code].description}</span>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
 
-          {etapa === "result" && resultado && (
-            <ResultScreen
-              resultado={resultado}
-              onRestart={handleRestart}
-              onEnviarOpiniao={handleEnviarOpiniao}
-            />
-          )}
-        </div>
+            <Link
+              href="/verificar"
+              className="group flex items-center justify-between gap-3 rounded-xl border border-dashed border-border p-3 text-sm transition hover:border-primary/40 hover:bg-muted"
+            >
+              <span className="flex items-center gap-2 text-muted-foreground">
+                <FileSearch className="size-4 shrink-0" />
+                Quer checar uma notícia específica?
+              </span>
+              <span className="flex shrink-0 items-center gap-1 font-semibold text-primary">
+                Verificar notícia
+                <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          </div>
         </div>
 
         <footer className="mt-6 text-center text-xs text-muted-foreground">
