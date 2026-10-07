@@ -4,13 +4,12 @@ BKT (Bayesian Knowledge Tracing) Mathematical Engine.
 Pure mathematical implementation of BKT. No dependencies on database, API, or frontend.
 
 Formula:
-    P(Ln+1) = P(Ln) * P(T) + (1 - P(Ln)) * P(T)
-    
-    If observation = correct:
+    First update mastery from the observation using Bayes' rule:
         P(L | correct) = P(L) * (1 - P(S)) / [P(L) * (1 - P(S)) + (1 - P(L)) * P(G)]
-    
-    If observation = incorrect:
         P(L | incorrect) = P(L) * P(S) / [P(L) * P(S) + (1 - P(L)) * (1 - P(G))]
+
+    Then apply learning transition:
+        P(L_next) = P(L | observation) + (1 - P(L | observation)) * P(T)
 
 Where:
     P(L0) = Prior probability of mastery (initial state)
@@ -84,28 +83,23 @@ class BKTEngine:
         if not (0 <= mastery <= 1):
             raise ValueError(f"mastery must be between 0 and 1, got {mastery}")
 
-        # Step 1: Apply transition - probability of learning
-        predicted = mastery * (1 - self.p_transition) + (1 - mastery) * self.p_transition
-
-        # Step 2: Apply observation (correct/incorrect) using Bayes rule
+        # Step 1: Apply the observation using Bayes' rule.
         if correct:
             # User answered correctly
-            # P(mastered | correct) = P(mastered) * P(correct | mastered) / P(correct)
-            numerator = predicted * (1 - self.p_slip)
-            denominator = predicted * (1 - self.p_slip) + (1 - predicted) * self.p_guess
+            numerator = mastery * (1 - self.p_slip)
+            denominator = numerator + (1 - mastery) * self.p_guess
         else:
             # User answered incorrectly
-            # P(mastered | incorrect) = P(mastered) * P(incorrect | mastered) / P(incorrect)
-            numerator = predicted * self.p_slip
-            denominator = predicted * self.p_slip + (1 - predicted) * (1 - self.p_guess)
+            numerator = mastery * self.p_slip
+            denominator = numerator + (1 - mastery) * (1 - self.p_guess)
 
-        # Avoid division by zero
         if denominator == 0:
-            return predicted
+            posterior = mastery
+        else:
+            posterior = numerator / denominator
 
-        updated_mastery = numerator / denominator
-
-        # Ensure result is within bounds
+        # Step 2: Learning can move an unmastered learner to mastery, not reverse it.
+        updated_mastery = posterior + (1 - posterior) * self.p_transition
         return max(0.0, min(1.0, updated_mastery))
 
     def get_parameters(self) -> dict:
