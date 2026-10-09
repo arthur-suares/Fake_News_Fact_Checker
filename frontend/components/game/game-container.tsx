@@ -6,14 +6,14 @@ import { AlertCircle, BarChart3, Home, Loader2, RotateCcw, Trophy } from "lucide
 
 import { GameScreen } from "@/components/game/game-screen"
 import { Button, buttonVariants } from "@/components/ui/button"
-import { createGame, describeApiError, getNextRound } from "@/lib/game-api"
+import { createGame, describeApiError, getNextRound, isAuthenticationError } from "@/lib/game-api"
 import type { GameRoundPayload } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type GameState =
   | { phase: "loading"; message: string }
   | { phase: "playing"; round: GameRoundPayload }
-  | { phase: "error"; message: string; retry: () => void }
+  | { phase: "error"; message: string; retry: () => void; requiresLogin: boolean }
   | { phase: "finished"; roundsPlayed: number }
 
 function CenteredCard({ children }: { children: React.ReactNode }) {
@@ -36,7 +36,12 @@ export function GameContainer() {
     try {
       setState({ phase: "playing", round: await createGame() })
     } catch (error) {
-      setState({ phase: "error", message: describeApiError(error), retry: startGame })
+      setState({
+        phase: "error",
+        message: describeApiError(error),
+        retry: startGame,
+        requiresLogin: isAuthenticationError(error),
+      })
     }
   }, [])
 
@@ -46,7 +51,12 @@ export function GameContainer() {
       const next = await getNextRound(gameId)
       setState(next ? { phase: "playing", round: next } : { phase: "finished", roundsPlayed })
     } catch (error) {
-      setState({ phase: "error", message: describeApiError(error), retry: () => loadNextRound(gameId, roundsPlayed) })
+      setState({
+        phase: "error",
+        message: describeApiError(error),
+        retry: () => loadNextRound(gameId, roundsPlayed),
+        requiresLogin: isAuthenticationError(error),
+      })
     }
   }, [])
 
@@ -74,10 +84,16 @@ export function GameContainer() {
         <p role="alert" className="text-sm text-foreground">
           {state.message}
         </p>
-        <Button type="button" onClick={state.retry} className="h-10 w-full gap-2 text-sm font-semibold">
-          <RotateCcw className="size-4" />
-          Tentar novamente
-        </Button>
+        {state.requiresLogin ? (
+          <Link href="/login" className={cn(buttonVariants(), "h-10 w-full gap-2 text-sm font-semibold")}>
+            Entrar
+          </Link>
+        ) : (
+          <Button type="button" onClick={state.retry} className="h-10 w-full gap-2 text-sm font-semibold">
+            <RotateCcw className="size-4" />
+            Tentar novamente
+          </Button>
+        )}
       </CenteredCard>
     )
   }

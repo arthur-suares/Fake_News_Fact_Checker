@@ -1,10 +1,12 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { BarChart3, Gamepad2 } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { BarChart3, Gamepad2, LogIn, LogOut } from "lucide-react"
 
 import { BrandLogo } from "@/components/brand-logo"
+import { clearAccessToken, getAccessToken } from "@/lib/game-api"
 import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
@@ -14,6 +16,18 @@ const NAV_ITEMS = [
 
 export function SiteHeader() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    setIsAuthenticated(Boolean(getAccessToken()))
+  }, [])
+
+  function handleLogout() {
+    clearAccessToken()
+    setIsAuthenticated(false)
+    router.replace("/login")
+  }
 
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur">
@@ -39,6 +53,26 @@ export function SiteHeader() {
             )
           })}
         </nav>
+        {isAuthenticated ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            aria-label="Sair da conta"
+            title="Sair da conta"
+            className="flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
+            <LogOut className="size-4" />
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            aria-label="Entrar"
+            title="Entrar"
+            className="flex size-9 items-center justify-center rounded-md text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          >
+            <LogIn className="size-4" />
+          </Link>
+        )}
       </div>
     </header>
   )
