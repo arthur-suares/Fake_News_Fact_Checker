@@ -162,9 +162,18 @@ export interface UserSkillState {
   updated_at: string
 }
 
+
+
 export interface GameResult {
+  id: string
   correct: boolean
-  skill: SkillCode
+  skill_code: SkillCode
   mastery_probability: number
   explanation?: string | null
+}
+
+
+export interface GameCreateResponse {
+  game_id: string
+  round: GameRound
 }

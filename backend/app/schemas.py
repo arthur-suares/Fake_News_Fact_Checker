@@ -155,10 +155,26 @@ class GameRoundResponse(BaseModel):
     finished_at: datetime | None = None
 
 
+class GameStartNewsResponse(BaseModel):
+    id: str
+    title: str
+    content: str
+    image_url: str | None = None
+    verdict: str | None = None
+
+
+class GameStartRoundResponse(BaseModel):
+    id: str
+    number: int
+    news_id: str
+    question_id: str
+    news: GameStartNewsResponse
+    question: QuestionOptionResponse
+
+
 class GameCreateResponse(BaseModel):
-    """Response when creating a new game."""
     game_id: str
-    round: GameRoundResponse
+    round: GameStartRoundResponse
 
 
 class GameStatusResponse(BaseModel):
