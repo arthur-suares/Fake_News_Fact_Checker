@@ -204,16 +204,19 @@ class GameRound(Base):
     One round = one question about one news item.
     """
     __tablename__ = "game_rounds"
+    __table_args__ = (UniqueConstraint("game_id", "round_number", name="uq_game_round_number"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     game_id: Mapped[str] = mapped_column(ForeignKey("games.id"), nullable=False, index=True)
     news_id: Mapped[str] = mapped_column(ForeignKey("news.id"), nullable=False, index=True)
+    question_id: Mapped[str | None] = mapped_column(ForeignKey("questions.id"), nullable=True, index=True)
     round_number: Mapped[int] = mapped_column(Integer, nullable=False)
     started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     game: Mapped[Game] = relationship(back_populates="rounds")
     news: Mapped[News] = relationship(back_populates="game_rounds")
+    question: Mapped["Question | None"] = relationship()
     answers: Mapped[list["Answer"]] = relationship(back_populates="game_round", cascade="all, delete-orphan")
 
 
@@ -226,6 +229,7 @@ class Answer(Base):
     - response_time: Time taken in milliseconds
     """
     __tablename__ = "answers"
+    __table_args__ = (UniqueConstraint("game_round_id", name="uq_answers_game_round_id"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)

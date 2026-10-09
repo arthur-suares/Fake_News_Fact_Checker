@@ -1,7 +1,10 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import Base, engine, SessionLocal
+from app.migrations import upgrade_game_round_question
 from app.routes.feedback import router as feedback_router
 from app.routes.verification import router as verification_router
 from app.routes.auth import router as auth_router
@@ -11,21 +14,20 @@ from app.services.google_fact_check import GoogleFactCheckService
 from seed import seed_sample_news_and_questions, seed_skills
 
 
-Base.metadata.create_all(bind=engine)
-
-# Initialize skills and sample game content (only on an empty news table) on startup
-try:
-    db = SessionLocal()
-    seed_skills(db)
-    seed_sample_news_and_questions(db)
-    db.close()
-except Exception as e:
-    print(f"Warning: Failed to seed initial data: {e}")
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    upgrade_game_round_question(engine)
+    with SessionLocal() as db:
+        seed_skills(db)
+        seed_sample_news_and_questions(db)
+    yield
 
 app = FastAPI(
     title="Fact Check Backend",
     description="Backend para consulta ao Google Fact Check Tools API",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(

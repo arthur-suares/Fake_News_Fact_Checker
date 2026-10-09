@@ -792,3 +792,66 @@ Fluxo da integração:
 | "Depois da verificação, sua opinião mudou?" | `POST /api/verifications/{id}/feedback` com as respostas do questionário inicial + `opiniaoMudou` |
 
 Como a Google Fact Check API busca por afirmações curtas, quando o texto completo da notícia não retorna checagens o backend tenta novamente com a primeira frase e depois com palavras-chave.
+
+---
+
+## 20. Jogo, autenticação e BKT
+
+O jogo usa dados persistidos em `News`, `Question`, `Skill`, `Game`, `GameRound`, `Answer` e `UserSkillState`. Uma rodada guarda a pergunta exata exibida; uma restrição no banco permite no máximo uma resposta por rodada. O `AnswerService` verifica dono, rodada, questão, opção e partida ativa, calcula a correção no backend e atualiza a mastery da skill da questão. Resposta, mastery e encerramento da décima rodada são confirmados na mesma transação. Repetição ou conflito concorrente retorna `409`.
+
+As quatro habilidades são inicializadas com mastery `0.30` no cadastro do usuário e recuperadas do banco no perfil. O motor continua usando os parâmetros existentes (`p_guess=0.20`, `p_slip=0.05`, `p_transition=0.10`, `p_init=0.30`); esta integração não treina nem altera esses parâmetros. As masteries são estimativas do BKT, não uma medida definitiva de competência.
+
+`POST /auth/register` cria a conta e os quatro estados iniciais; `POST /auth/login` devolve o JWT. O frontend guarda esse token no armazenamento local do navegador e o envia como `Authorization: Bearer ...`. Iniciar/consultar partidas, responder e ler `/api/users/me/skills` exigem autenticação. Sem sessão, o jogo e o perfil encaminham para `/login`.
+
+O startup inicializa as skills e garante 12 notícias/perguntas de demonstração persistidas, suficientes para dez rodadas, mesmo quando notícias do dataset já existem. O seed acrescenta apenas registros ausentes e não se repete em reinicializações. As questões são conteúdo de demonstração curado; falhas da API não fazem o frontend substituí-las por mocks.
+
+## 21. Dataset e questões
+
+Os scripts da EDA confirmam `label=1` em `fakes.csv` e `label=0` em `true.csv`. A contagem observada nesta revisão foi:
+
+| Arquivo | Registros | Rótulos |
+| --- | ---: | --- |
+| `EDA/datasets/fakes.csv` | 20.478 | `1` (fake) |
+| `EDA/datasets/true.csv` | 2.720 | `0` (verdadeira) |
+| `EDA/datasets/limpos/fakes.csv` | 20.469 | `1` (fake) |
+| `EDA/datasets/limpos/true.csv` | 2.720 | `0` (verdadeira) |
+
+O importador prefere os CSVs limpos, gerados sem alterar os originais pelo script `EDA/00_limpeza.py`. A limpeza retirou nove duplicatas de fakes e acrescentou campos de proveniência; o importador ainda valida campos obrigatórios e reporta linha/erro. Cada linha é lida em streaming. A chave estável é SHA-256 de título, texto e URL normalizados, permitindo reexecução sem duplicar registros.
+
+A classificação original não é escrita em `News.verdict`, que fica reservado a vereditos externos. `title` e `text` viram `News.title` e `News.content`; URL original, origem, publicador, domínio, label numérico, classe mapeada, data e nome do arquivo ficam em `News.fact_check_data.dataset`. Nenhuma questão é fabricada a partir do label.
+
+Com o backend instalado no ambiente virtual e a partir de `backend/`:
+
+```bash
+# Inicializa o esquema e aplica a migração explícita; o startup também faz isso.
+../venv/bin/python -m app.migrations
+
+# Valida os CSVs sem inserir notícias.
+../venv/bin/python -m app.services.dataset_import --dry-run
+
+# Importa os arquivos limpos (ou os originais se os limpos não existirem).
+../venv/bin/python -m app.services.dataset_import
+```
+
+Importar notícias não cria questões. Questões são inseridas somente por JSONL curado, uma questão por linha, com `news_source_key`, `reviewed: true`, `skill_code`, `text`, `difficulty`, `options`, `correct_option` e `explanation`. `news_source_key` é a chave estável descrita acima; pode ser calculada com `record_source_key(title, text, url)` em `app.services.dataset_import`. O importador recusa alternativa correta inexistente, explicação ausente, skill não suportada, SOURCE sem origem/publicador e VISUAL sem `image_url` disponível.
+
+```bash
+# Simula e valida o JSONL sem gravar questões.
+../venv/bin/python -m app.services.question_import caminho/questoes.jsonl --dry-run
+
+# Importa questões aprovadas; reexecutar não duplica a mesma questão.
+../venv/bin/python -m app.services.question_import caminho/questoes.jsonl
+```
+
+O dataset não contém imagens nem evidência estruturada suficiente para gerar automaticamente questões válidas nas quatro habilidades. A curadoria e a revisão factual continuam necessárias, principalmente para EVIDENCE, CONTEXT e VISUAL. Não há dependência de LLM.
+
+## 22. Migração e testes
+
+Não há Alembic configurado. `app.migrations.upgrade_game_round_question` é a migração aditiva explícita: adiciona `game_rounds.question_id`, tenta preencher rodadas antigas pela resposta existente ou pela primeira questão da notícia, e cria unicidade por rodada em `answers`. Não apaga histórico. Se detectar respostas duplicadas históricas, interrompe com erro para revisão manual em vez de descartar dados. `Base.metadata.create_all()` continua criando tabelas ausentes, mas não é usado como mecanismo de alteração de tabelas existentes.
+
+```bash
+cd backend
+../venv/bin/python -m pytest tests -q
+```
+
+Para executar a aplicação e a interface, use os comandos da seção 19. O ambiente de desenvolvimento precisa ter Python com `backend/requirements.txt` e Node.js/npm para instalar/buildar o frontend. O banco não importa os CSVs automaticamente no startup: importação é operação explícita.

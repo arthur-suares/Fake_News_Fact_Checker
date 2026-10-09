@@ -58,6 +58,7 @@ class SkillRepository:
         user_id: str,
         skill_id: str,
         initial_mastery: float = 0.3,
+        commit: bool = True,
     ) -> UserSkillState:
         """
         Get or create a user's skill state.
@@ -87,8 +88,11 @@ class SkillRepository:
                 mastery_probability=initial_mastery,
             )
             db.add(state)
-            db.commit()
-            db.refresh(state)
+            if commit:
+                db.commit()
+                db.refresh(state)
+            else:
+                db.flush()
 
         return state
 

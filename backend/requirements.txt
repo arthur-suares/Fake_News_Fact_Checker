@@ -8,5 +8,5 @@ psycopg2-binary
 httpx
 python-multipart
 python-jose[cryptography]
-passlib[bcrypt]
+bcrypt
 pytest

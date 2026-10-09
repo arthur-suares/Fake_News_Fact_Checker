@@ -21,7 +21,10 @@ router = APIRouter(prefix="/api", tags=["skills"])
 
 
 @router.get("/users/me/skills", response_model=UserSkillProfileResponse)
-def get_user_skills(db: Session = Depends(get_db)):
+def get_user_skills(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+):
     """
     Get the current user's skill profile.
 
@@ -41,9 +44,6 @@ def get_user_skills(db: Session = Depends(get_db)):
         }
     """
     try:
-        # TODO: Get actual user from auth token
-        user_id = "test-user"  # Placeholder
-        
         profile = AnswerService.get_user_skill_profile(db, user_id)
         
         return {

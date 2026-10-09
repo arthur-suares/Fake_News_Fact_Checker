@@ -2,13 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import User
+from app.models import User, UserSkillState
+from app.repositories.skill_repository import SkillRepository
 from app.schemas import UserCreate, UserLogin
 from app.security import (
     hash_password,
     verify_password,
     create_access_token
 )
+from seed import seed_skills
 
 router = APIRouter(
     prefix="/auth",
@@ -26,16 +28,30 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
             detail="E-mail já cadastrado"
         )
 
+    seed_skills(db)
     new_user = User(
         name=user.name,
         email=user.email,
         phone=user.phone,
-        password=hash_password(user.password)
+        password=hash_password(user.password),
     )
 
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    try:
+        db.add(new_user)
+        db.flush()
+        for skill in SkillRepository.get_all_skills(db):
+            db.add(
+                UserSkillState(
+                    user_id=new_user.id,
+                    skill_id=skill.id,
+                    mastery_probability=0.3,
+                )
+            )
+        db.commit()
+        db.refresh(new_user)
+    except Exception:
+        db.rollback()
+        raise
 
     return {
         "message": "Usuário cadastrado com sucesso",

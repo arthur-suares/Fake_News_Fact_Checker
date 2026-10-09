@@ -12,7 +12,7 @@ class GameRepository:
     """Repository for game-related database operations."""
 
     @staticmethod
-    def create_game(db: Session, user_id: str) -> Game:
+    def create_game(db: Session, user_id: str, commit: bool = True) -> Game:
         """
         Create a new game for a user.
 
@@ -25,8 +25,11 @@ class GameRepository:
         """
         game = Game(user_id=user_id, status=GameStatusEnum.IN_PROGRESS)
         db.add(game)
-        db.commit()
-        db.refresh(game)
+        if commit:
+            db.commit()
+            db.refresh(game)
+        else:
+            db.flush()
         return game
 
     @staticmethod
@@ -70,6 +73,8 @@ class GameRepository:
         game_id: str,
         news_id: str,
         round_number: int,
+        question_id: str | None = None,
+        commit: bool = True,
     ) -> GameRound:
         """
         Create a new game round.
@@ -86,11 +91,15 @@ class GameRepository:
         game_round = GameRound(
             game_id=game_id,
             news_id=news_id,
+            question_id=question_id,
             round_number=round_number,
         )
         db.add(game_round)
-        db.commit()
-        db.refresh(game_round)
+        if commit:
+            db.commit()
+            db.refresh(game_round)
+        else:
+            db.flush()
         return game_round
 
     @staticmethod
@@ -127,7 +136,7 @@ class GameRepository:
         )
 
     @staticmethod
-    def finish_game(db: Session, game_id: str) -> Game:
+    def finish_game(db: Session, game_id: str, commit: bool = True) -> Game:
         """
         Mark a game as finished.
 
@@ -148,6 +157,9 @@ class GameRepository:
         from datetime import datetime
         game.status = GameStatusEnum.FINISHED
         game.finished_at = datetime.utcnow()
-        db.commit()
-        db.refresh(game)
+        if commit:
+            db.commit()
+            db.refresh(game)
+        else:
+            db.flush()
         return game
