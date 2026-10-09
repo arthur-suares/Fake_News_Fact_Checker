@@ -163,7 +163,6 @@ export interface UserSkillState {
 }
 
 
-
 export interface GameResult {
   id: string
   correct: boolean
@@ -175,5 +174,12 @@ export interface GameResult {
 
 export interface GameCreateResponse {
   game_id: string
-  round: GameRound
+  round: {
+    id: string
+    number: number
+    news_id: string
+    question_id: string
+  }
+  news: News
+  question: Question
 }
