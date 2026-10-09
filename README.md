@@ -86,6 +86,21 @@ cd backend
 pytest -q
 ```
 
+### Migrations (Alembic)
+
+As migrations ficam em `backend/migrations/versions/` e usam o mesmo `DATABASE_URL` da aplicação:
+
+```bash
+cd backend
+alembic upgrade head      # aplica as migrations pendentes
+alembic downgrade -1      # desfaz a última
+```
+
+- `0001` (RF-02): cria `skills` e `user_skill_states`, cadastra as quatro skills (SOURCE, EVIDENCE, CONTEXT, VISUAL) e garante no máximo um estado por usuário + skill, com `mastery_probability` entre 0 e 1.
+- `0002` (RF-04): cria `answers` (vinculada a usuário, rodada e pergunta) com `confidence` entre 1 e 5 e `response_time` em milissegundos (≥ 0). Num banco vazio cria também `news`, `questions`, `games` e `game_rounds`.
+
+As migrations também funcionam em bancos já criados pelo `create_all`, completando só o que falta.
+
 ### Legacy / compatibilidade
 
 A verificação de notícias e o questionário pós-verificação continuam presentes como rotas legadas. O antigo cálculo de perfil (GMM) foi removido: o fluxo principal do MVP utiliza `UserSkillState` + `BKTManager` + `SkillTracker`.

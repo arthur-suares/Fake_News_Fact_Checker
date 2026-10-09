@@ -2,8 +2,8 @@ import uuid
 from datetime import datetime
 from enum import Enum as PyEnum
 
-from sqlalchemy import DateTime, ForeignKey, Integer, JSON, String, Text, Float, Enum, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, JSON, String, Text, Float, Enum, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.database import Base
 
@@ -122,11 +122,17 @@ class UserSkillState(Base):
     """Tracks user's mastery probability for each skill.
     
     Updated by BKT after each answer.
-    Constraint: One state per user + skill combination.
+    Constraints:
+    - One state per user + skill combination.
+    - mastery_probability between 0 and 1.
     """
     __tablename__ = "user_skill_states"
     __table_args__ = (
         UniqueConstraint('user_id', 'skill_id', name='uq_user_skill'),
+        CheckConstraint(
+            'mastery_probability >= 0 AND mastery_probability <= 1',
+            name='ck_user_skill_mastery_range',
+        ),
     )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -137,6 +143,12 @@ class UserSkillState(Base):
 
     user: Mapped["User"] = relationship()
     skill: Mapped[Skill] = relationship(back_populates="user_skill_states")
+
+    @validates("mastery_probability")
+    def validate_mastery_probability(self, key: str, value: float) -> float:
+        if value is None or not (0 <= value <= 1):
+            raise ValueError(f"mastery_probability must be between 0 and 1, got {value}")
+        return value
 
 
 class News(Base):
@@ -221,11 +233,22 @@ class Answer(Base):
     """Represents a user's answer to a question.
     
     Fields:
+    - selected_option: Option chosen by the user (key of Question.options)
     - correct: Observation used by BKT (whether answer was correct)
-    - confidence: User's confidence 1-5
-    - response_time: Time taken in milliseconds
+    - confidence: User's confidence 1-5 (optional)
+    - response_time: Time taken in milliseconds (optional, >= 0)
     """
     __tablename__ = "answers"
+    __table_args__ = (
+        CheckConstraint(
+            'confidence IS NULL OR (confidence >= 1 AND confidence <= 5)',
+            name='ck_answer_confidence_range',
+        ),
+        CheckConstraint(
+            'response_time IS NULL OR response_time >= 0',
+            name='ck_answer_response_time_non_negative',
+        ),
+    )
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
@@ -237,5 +260,18 @@ class Answer(Base):
     response_time: Mapped[int | None] = mapped_column(Integer, nullable=True)  # milliseconds
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
+    user: Mapped["User"] = relationship()
     game_round: Mapped[GameRound] = relationship(back_populates="answers")
     question: Mapped[Question] = relationship(back_populates="answers")
+
+    @validates("confidence")
+    def validate_confidence(self, key: str, value: int | None) -> int | None:
+        if value is not None and not (1 <= value <= 5):
+            raise ValueError(f"confidence must be between 1 and 5, got {value}")
+        return value
+
+    @validates("response_time")
+    def validate_response_time(self, key: str, value: int | None) -> int | None:
+        if value is not None and value < 0:
+            raise ValueError(f"response_time must be non-negative, got {value}")
+        return value
