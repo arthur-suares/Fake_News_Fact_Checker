@@ -53,7 +53,11 @@ def selector_context():
 
 def add_question(db, skill, question_id, difficulty, news=None):
     if news is None:
-        news = News(title=question_id, content="Content")
+        news = News(
+            title=question_id,
+            content="Content with enough detail",
+            image_url="/test-image.png" if skill.code == "VISUAL" else None,
+        )
         db.add(news)
         db.flush()
     question = Question(
@@ -64,6 +68,7 @@ def add_question(db, skill, question_id, difficulty, news=None):
         difficulty=difficulty,
         options={"A": "Option A", "B": "Option B"},
         correct_option="A",
+        explanation="Reviewed test explanation.",
     )
     db.add(question)
     db.flush()
@@ -184,7 +189,7 @@ def test_falls_back_to_another_tracked_skill(selector_context):
     assert selected.id == available.id
 
 
-def test_global_fallback_includes_question_from_untracked_skill(selector_context):
+def test_global_fallback_rejects_question_from_untracked_skill(selector_context):
     db, user, skills, game = selector_context
     for code, mastery in {
         "SOURCE": 0.5,
@@ -196,12 +201,10 @@ def test_global_fallback_includes_question_from_untracked_skill(selector_context
     extra_skill = Skill(code="EXTRA", name="Extra")
     db.add(extra_skill)
     db.flush()
-    expected = add_question(db, extra_skill, "q-global", 0.4)
+    add_question(db, extra_skill, "q-global", 0.4)
     db.commit()
 
-    selected, _ = QuestionSelector.select_next_question(db, user.id, game.id)
-
-    assert selected.id == expected.id
+    assert QuestionSelector.select_next_question(db, user.id, game.id) is None
 
 
 def test_returns_none_when_all_questions_were_answered(selector_context):
@@ -213,6 +216,15 @@ def test_returns_none_when_all_questions_were_answered(selector_context):
     db.commit()
     for question in questions:
         record_answer(db, user, question)
+
+    assert QuestionSelector.select_next_question(db, user.id, game.id) is None
+
+
+def test_incomplete_question_is_not_eligible(selector_context):
+    db, user, skills, game = selector_context
+    invalid = add_question(db, skills["SOURCE"], "q-no-explanation", 0.2)
+    invalid.explanation = None
+    db.commit()
 
     assert QuestionSelector.select_next_question(db, user.id, game.id) is None
 

@@ -170,8 +170,6 @@ export interface Answer {
 }
 
 export interface UserSkillState {
-  id: string
-  user_id: string
   skill_id: string
   skill_code: SkillCode
   mastery_probability: number
