@@ -7,12 +7,12 @@ nav:
   - Início: index.md
   # - Investigação Forense de Notícias: investigacao-forense-de-noticias.md
   # - Exploração de estudos de caso: exploracao-de-estudos-de-caso.md
-  - Elaboração de guiding questions: elaboracao-de-guiding-questions.md
-  - Exploração de datasets públicos: exploracao-de-datasets-publicos.md
-  - Processo investigativo: processo-investigativo.md
+  # - Exploração de datasets públicos: exploracao-de-datasets-publicos.md
+  # - Processo investigativo: processo-investigativo.md
   - Visão Geral do Projeto: visao-geral-projeto.md
   - Arquitetura do Projeto: arquitetura-projeto.md
-  - Requisitos: requisitos.md
+  - Requisitos: requisitos_mvp.md
+  - Elaboração de guiding questions: elaboracao-de-guiding-questions.md
   - Bibliografia: bibliografia.md
 theme:
   name: material

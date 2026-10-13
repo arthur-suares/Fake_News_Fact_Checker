@@ -52,16 +52,24 @@ Entre as fontes e iniciativas relacionadas à checagem de informações estão:
 - **Projeto Comprova**
 - **Fato ou Fake — G1/Globo**
 
-## Artigos científicos
+### Bayesian Knowledge Tracing
+
+O *Bayesian Knowledge Tracing* (BKT) é uma abordagem probabilística de rastreamento do conhecimento que estima o domínio de uma habilidade a partir do histórico de respostas de um indivíduo. O modelo tradicional considera parâmetros que representam o conhecimento inicial, a probabilidade de aprendizagem, a possibilidade de acerto por adivinhação e a possibilidade de erro mesmo quando a habilidade já foi dominada. Dessa forma, o BKT permite atualizar as estimativas de domínio conforme novas interações são observadas.
+
+Segundo Abdelrahman, Wang e Nunes (2023), o rastreamento do conhecimento constitui uma abordagem para representar a evolução das habilidades e apoiar a personalização de experiências de aprendizagem. Neste projeto, o BKT será utilizado para estimar separadamente o domínio das habilidades de avaliação de fontes, evidências, contexto e conteúdo visual. As estimativas obtidas orientarão a seleção adaptativa de perguntas, priorizando habilidades com menor domínio estimado. Essa aplicação corresponde ao uso do BKT como mecanismo de acompanhamento da aprendizagem, e não como classificador automático de notícias falsas. Mais informações podem ser encontradas em:
+
+> [**Knowledge Tracing: A Survey**](https://dl.acm.org/doi/10.1145/3569576)
+
+#### Outros Artigos Científicos Estudados no Desenvolvimento do Projeto
 
 ### Artigo 1 — Nature Human Behaviour
 
-- [Artigo — Nature](https://www.nature.com/articles/s41562-024-02086-1)
+> [Artigo — Nature](https://www.nature.com/articles/s41562-024-02086-1)
 
 ### Artigo 2 — Computers & Education
 
-- [Artigo — ScienceDirect](https://www.sciencedirect.com/science/article/pii/S0360131519302647)
+> [Artigo — ScienceDirect](https://www.sciencedirect.com/science/article/pii/S0360131519302647)
 
 ### Artigo 3 — PubMed Central
 
-- [Artigo — PubMed Central (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6279465/)
+> [Artigo — PubMed Central (PMC)](https://pmc.ncbi.nlm.nih.gov/articles/PMC6279465/)
