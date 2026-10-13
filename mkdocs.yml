@@ -10,7 +10,8 @@ nav:
   - Elaboração de guiding questions: elaboracao-de-guiding-questions.md
   - Exploração de datasets públicos: exploracao-de-datasets-publicos.md
   - Processo investigativo: processo-investigativo.md
-  - Visão Geral da Arquitetura: visao-geral-arquitetura.md
+  - Visão Geral do Projeto: visao-geral-projeto.md
+  - Arquitetura do Projeto: arquitetura-projeto.md
   - Requisitos: requisitos.md
   - Bibliografia: bibliografia.md
 theme:
