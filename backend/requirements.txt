@@ -4,6 +4,7 @@ requests
 python-dotenv
 pydantic-settings
 sqlalchemy
+alembic
 psycopg2-binary
 httpx
 python-multipart
