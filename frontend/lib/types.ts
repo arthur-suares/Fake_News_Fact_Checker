@@ -183,3 +183,15 @@ export interface GameCreateResponse {
   news: News
   question: Question
 }
+
+export interface UserSkillProfileItem {
+  skill_id: string
+  skill_code: SkillCode
+  mastery_probability: number
+  updated_at: string | null
+}
+
+
+export interface UserSkillProfileResponse {
+  skills: UserSkillProfileItem[]
+}

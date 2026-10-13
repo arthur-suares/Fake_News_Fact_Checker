@@ -13,14 +13,23 @@ async function request<T>(
   path: string,
   init?: RequestInit
 ): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, init)
+  let response: Response
+
+  try {
+    response = await fetch(`${API_URL}${path}`, init)
+  } catch {
+    throw new Error(
+      "Não foi possível conectar ao servidor. Verifique se o backend está ligado e tente novamente."
+    )
+  }
 
   if (!response.ok) {
     const body = await response.json().catch(() => null)
+
     const detail =
       typeof body?.detail === "string"
         ? body.detail
-        : response.statusText
+        : response.statusText || "Ocorreu um erro na solicitação."
 
     throw new Error(`${response.status} ${detail}`)
   }

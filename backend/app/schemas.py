@@ -1,4 +1,4 @@
-from datetime import datetime
+﻿from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -168,13 +168,11 @@ class GameStartRoundResponse(BaseModel):
     number: int
     news_id: str
     question_id: str
-    news: GameStartNewsResponse
-    question: QuestionOptionResponse
-
-
 class GameCreateResponse(BaseModel):
     game_id: str
     round: GameStartRoundResponse
+    news: GameStartNewsResponse
+    question: QuestionOptionResponse
 
 
 class GameStatusResponse(BaseModel):
