@@ -17,7 +17,9 @@ def game_round(db_session):
     seed_sample_news_and_questions(db_session)
     question = db_session.query(Question).first()
     game = GameRepository.create_game(db_session, "test-user")
-    round_ = GameRepository.create_game_round(db_session, game.id, question.news_id, round_number=1)
+    round_ = GameRepository.create_game_round(
+        db_session, game.id, question.news_id, round_number=1, question_id=question.id
+    )
     return game, round_, question
 
 

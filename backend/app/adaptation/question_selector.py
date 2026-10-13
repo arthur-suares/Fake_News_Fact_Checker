@@ -83,6 +83,7 @@ class QuestionSelector:
                 question
                 for question in questions
                 if question.id not in answered_question_ids
+                and QuestionSelector._is_eligible(question)
             ]
 
         # First pass avoids repeating a news item whenever another question exists.
@@ -112,6 +113,7 @@ class QuestionSelector:
             question
             for question in QuestionRepository.get_all_questions(db)
             if question.id not in answered_question_ids
+            and QuestionSelector._is_eligible(question)
         ]
         if not unanswered_questions:
             return None
@@ -145,3 +147,22 @@ class QuestionSelector:
             questions,
             key=lambda question: (abs(question.difficulty - mastery), question.id),
         )
+
+    @staticmethod
+    def _is_eligible(question: Question) -> bool:
+        """Reject incomplete questions and questions outside the BKT skill set."""
+        options = question.options
+        if (
+            question.skill.code not in BKTManager.VALID_SKILLS
+            or not question.text.strip()
+            or not question.explanation
+            or not question.explanation.strip()
+            or not isinstance(options, dict)
+            or len(options) < 2
+            or question.correct_option not in options
+            or not 0 <= question.difficulty <= 1
+            or not question.news.title.strip()
+            or not question.news.content.strip()
+        ):
+            return False
+        return question.skill.code != BKTManager.SKILL_VISUAL or bool(question.news.image_url)

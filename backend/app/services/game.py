@@ -5,9 +5,10 @@ Handles game creation, round initialization, and game flow.
 Does not directly handle HTTP concerns or database access (delegates to repositories).
 """
 
-from datetime import datetime
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
+from app.repositories.answer_repository import AnswerRepository
 from app.repositories.game_repository import GameRepository
 from app.repositories.skill_repository import SkillRepository
 from app.repositories.question_repository import NewsRepository
@@ -15,8 +16,22 @@ from app.adaptation.question_selector import QuestionSelector
 from app.models import Game, GameRound, Question, News
 
 
+class GameNotFoundError(ValueError):
+    """Raised when a game does not exist."""
+
+
+class GameForbiddenError(ValueError):
+    """Raised when a user accesses another user's game."""
+
+
+class GameConflictError(ValueError):
+    """Raised when the current game state does not allow another round."""
+
+
 class GameService:
     """Service for game-related business logic."""
+
+    MAX_ROUNDS = 10
 
     @staticmethod
     def create_game_with_first_round(db: Session, user_id: str) -> dict:
@@ -35,30 +50,27 @@ class GameService:
         Raises:
             ValueError: If no questions/news available or user not found
         """
-        # Initialize user skill states for all four skills if not already done
-        GameService._ensure_user_skills_initialized(db, user_id)
+        try:
+            GameService._ensure_user_skills_initialized(db, user_id)
+            game = GameRepository.create_game(db, user_id, commit=False)
+            question_news = QuestionSelector.select_next_question(db, user_id, game.id)
+            if not question_news:
+                raise ValueError("No valid questions available to start game")
 
-        # Create the game
-        game = GameRepository.create_game(db, user_id)
-
-        # Select first question
-        question_news = QuestionSelector.select_next_question(db, user_id, game.id)
-
-        if not question_news:
-            # Clean up the created game if we can't get a question
-            raise ValueError("No questions available to start game")
-
-        question, news = question_news
-
-        # Create first round
-        game_round = GameRepository.create_game_round(
-            db,
-            game.id,
-            news.id,
-            round_number=1,
-        )
-
-        return GameService._round_payload(game.id, game_round, question, news)
+            question, news = question_news
+            game_round = GameRepository.create_game_round(
+                db,
+                game.id,
+                news.id,
+                round_number=1,
+                question_id=question.id,
+                commit=False,
+            )
+            db.commit()
+            return GameService._round_payload(game.id, game_round, question, news)
+        except Exception:
+            db.rollback()
+            raise
 
     @staticmethod
     def get_next_question(db: Session, user_id: str, game_id: str) -> dict | None:
@@ -78,41 +90,46 @@ class GameService:
         """
         game = GameRepository.get_game_by_id(db, game_id)
         if not game:
-            raise ValueError(f"Game {game_id} not found")
+            raise GameNotFoundError(f"Game {game_id} not found")
 
         if game.user_id != user_id:
-            raise ValueError("User does not own this game")
+            raise GameForbiddenError("User does not own this game")
 
         from app.models import GameStatusEnum
         if game.status == GameStatusEnum.FINISHED:
             return None
 
-        # Get last round number
         game_rounds = GameRepository.get_game_rounds(db, game_id)
-        last_round = max((r.round_number for r in game_rounds), default=0)
+        current_round = game_rounds[-1] if game_rounds else None
+        if current_round and not AnswerRepository.get_answers_for_round(db, current_round.id):
+            raise GameConflictError("The current round must be answered before continuing")
+        last_round = current_round.round_number if current_round else 0
 
-        # Check if we should continue or finish game
-        if last_round >= 10:  # MVP: games have 10 rounds max
-            game = GameRepository.finish_game(db, game_id)
+        if last_round >= GameService.MAX_ROUNDS:
+            GameRepository.finish_game(db, game_id)
             return None
 
         # Select next question
         question_news = QuestionSelector.select_next_question(db, user_id, game_id)
 
         if not question_news:
-            # No more questions - finish game
-            game = GameRepository.finish_game(db, game_id)
+            GameRepository.finish_game(db, game_id)
             return None
 
         question, news = question_news
 
         # Create next round
-        game_round = GameRepository.create_game_round(
-            db,
-            game_id,
-            news.id,
-            round_number=last_round + 1,
-        )
+        try:
+            game_round = GameRepository.create_game_round(
+                db,
+                game_id,
+                news.id,
+                round_number=last_round + 1,
+                question_id=question.id,
+            )
+        except IntegrityError as error:
+            db.rollback()
+            raise GameConflictError("A round was already created for this position") from error
 
         return GameService._round_payload(game_id, game_round, question, news)
 
@@ -163,4 +180,6 @@ class GameService:
                 user_id,
                 skill.id,
                 initial_mastery=0.3,
+                commit=False,
             )
+            db.flush()

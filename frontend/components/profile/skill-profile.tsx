@@ -11,7 +11,7 @@ export function SkillProfile({ skills }: SkillProfileProps) {
       <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <h1 className="text-2xl font-bold text-slate-900">Perfil de habilidades</h1>
         <p className="mt-2 text-sm text-slate-600">
-          Estado atual de domínio por habilidade para o MVP de avaliação de informação.
+          Estimativas de domínio produzidas pelo BKT a partir das respostas registradas. Não são uma medida definitiva de competência.
         </p>
       </div>
 

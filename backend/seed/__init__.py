@@ -278,46 +278,51 @@ SAMPLE_ROUNDS = [
 
 def seed_sample_news_and_questions(db: Session) -> None:
     """
-    Create sample news and questions for the game MVP.
-
-    Only runs on an empty news table. More content should be added via RF-19.
+    Ensure the reviewed sample questions exist, even alongside imported news.
 
     Args:
         db: Database session
     """
     from app.models import News, Question
     from app.repositories.skill_repository import SkillRepository
-    from app.repositories.question_repository import NewsRepository
-
-    # Only create if no news exists yet
-    existing_news = NewsRepository.get_all_news(db, limit=1)
-    if existing_news:
-        return
 
     seed_skills(db)
     skills_by_code = {skill.code: skill for skill in SkillRepository.get_all_skills(db)}
 
     for item in SAMPLE_ROUNDS:
-        news = News(
-            title=item["title"],
-            content=item["content"],
-            image_url=item["image_url"],
-            verdict=item["verdict"],
-            fact_check_data={},
+        news = (
+            db.query(News)
+            .filter(News.title == item["title"], News.content == item["content"])
+            .first()
         )
-        db.add(news)
-        db.flush()
-
-        db.add(
-            Question(
-                news_id=news.id,
-                skill_id=skills_by_code[item["skill"]].id,
-                text=item["text"],
-                difficulty=item["difficulty"],
-                options=item["options"],
-                correct_option=item["correct_option"],
-                explanation=item["explanation"],
+        if news is None:
+            news = News(
+                title=item["title"],
+                content=item["content"],
+                image_url=item["image_url"],
+                verdict=item["verdict"],
+                fact_check_data={"seed_key": f"game-demo-v1:{item['skill']}:{item['title']}"},
             )
+            db.add(news)
+            db.flush()
+
+        skill_id = skills_by_code[item["skill"]].id
+        question = (
+            db.query(Question)
+            .filter_by(news_id=news.id, skill_id=skill_id, text=item["text"])
+            .first()
         )
+        if question is None:
+            db.add(
+                Question(
+                    news_id=news.id,
+                    skill_id=skill_id,
+                    text=item["text"],
+                    difficulty=item["difficulty"],
+                    options=item["options"],
+                    correct_option=item["correct_option"],
+                    explanation=item["explanation"],
+                )
+            )
 
     db.commit()

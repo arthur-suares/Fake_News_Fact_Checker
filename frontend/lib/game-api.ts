@@ -4,12 +4,24 @@ import type {
   AnswerSubmission,
   Game,
   GameRoundPayload,
-  Question,
   Skill,
   UserSkillState,
 } from "@/lib/types"
 
 const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "")
+const ACCESS_TOKEN_KEY = "fact-check-access-token"
+
+export function getAccessToken(): string | null {
+  return typeof window === "undefined" ? null : window.localStorage.getItem(ACCESS_TOKEN_KEY)
+}
+
+export function clearAccessToken(): void {
+  if (typeof window !== "undefined") window.localStorage.removeItem(ACCESS_TOKEN_KEY)
+}
+
+function saveAccessToken(token: string): void {
+  window.localStorage.setItem(ACCESS_TOKEN_KEY, token)
+}
 
 // status 0 = falha de rede (backend fora do ar, CORS, sem internet)
 export class ApiError extends Error {
@@ -25,7 +37,10 @@ export class ApiError extends Error {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response
   try {
-    response = await fetch(`${API_URL}${path}`, init)
+    const headers = new Headers(init?.headers)
+    const token = getAccessToken()
+    if (token) headers.set("Authorization", `Bearer ${token}`)
+    response = await fetch(`${API_URL}${path}`, { ...init, headers })
   } catch {
     throw new ApiError(0, "Não foi possível conectar ao servidor.")
   }
@@ -41,9 +56,44 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export function describeApiError(error: unknown): string {
   if (!(error instanceof ApiError)) return "Algo deu errado. Tente novamente."
   if (error.status === 0) return "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente."
+  if (error.status === 401) return "Sua sessão não está ativa. Entre para continuar."
   if (error.status === 404) return "Partida não encontrada. Inicie uma nova partida."
+  if (error.status === 409) return `A partida não pode avançar neste momento: ${error.detail}`
+  if (error.status === 403) return "Você não tem acesso a esta partida."
   if (error.status === 422) return `Não foi possível registrar a resposta: ${error.detail}`
   return "O servidor encontrou um erro. Tente novamente em instantes."
+}
+
+export function isAuthenticationError(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 401
+}
+
+interface AccessTokenResponse {
+  access_token: string
+  token_type: "bearer"
+}
+
+export async function login(email: string, password: string): Promise<void> {
+  const response = await request<AccessTokenResponse>("/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  })
+  saveAccessToken(response.access_token)
+}
+
+export async function registerAndLogin(
+  name: string,
+  email: string,
+  phone: string,
+  password: string,
+): Promise<void> {
+  await request<{ user_id: string }>("/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, phone, password }),
+  })
+  await login(email, password)
 }
 
 export async function createGame(): Promise<GameRoundPayload> {
@@ -71,28 +121,5 @@ export async function getUserSkills(): Promise<UserSkillState[]> {
   return response.skills
 }
 
-export async function getAvailableSkills(): Promise<Skill[]> {
-  return [
-    { id: "source", code: "SOURCE", name: "Source Analysis" },
-    { id: "evidence", code: "EVIDENCE", name: "Evidence Evaluation" },
-    { id: "context", code: "CONTEXT", name: "Context Perception" },
-    { id: "visual", code: "VISUAL", name: "Visual Analysis" },
-  ]
-}
-
-export async function getExampleQuestion(): Promise<Question> {
-  return {
-    id: "demo-question",
-    text: "A imagem apresentada realmente mostra o evento descrito?",
-    difficulty: 0.45,
-    options: {
-      A: "Sim, a imagem corresponde ao evento descrito.",
-      B: "Não, a imagem é antiga ou fora de contexto.",
-      C: "Não dá para afirmar com base na imagem isolada.",
-    },
-    skill_id: "visual",
-    explanation: "Avaliar contexto visual é parte da habilidade VISUAL.",
-  }
-}
-
-export type { Answer, AnswerResponse, AnswerSubmission, Game, GameRoundPayload, Question, Skill, UserSkillState }
+export type { Answer, AnswerResponse, AnswerSubmission, Game, GameRoundPayload, Skill, UserSkillState }
+export type { Question } from "@/lib/types"

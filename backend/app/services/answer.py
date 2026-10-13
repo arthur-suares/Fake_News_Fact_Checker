@@ -5,6 +5,7 @@ Processes answers, updates skill mastery using BKT, and returns feedback.
 """
 
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from app.repositories.answer_repository import AnswerRepository
 from app.repositories.question_repository import QuestionRepository
@@ -12,6 +13,7 @@ from app.repositories.game_repository import GameRepository
 from app.repositories.skill_repository import SkillRepository
 from app.bkt.manager import BKTManager
 from app.models import GameStatusEnum
+from datetime import datetime
 
 
 class AnswerError(ValueError):
@@ -92,8 +94,16 @@ class AnswerService:
                 f"Round {game_round_id} not found in game {game_id}"
             )
 
+        rounds = GameRepository.get_game_rounds(db, game.id)
+        if not rounds or rounds[-1].id != game_round.id:
+            raise AnswerConflictError("Only the current game round can be answered")
+
         question = QuestionRepository.get_question_by_id(db, question_id)
-        if not question or question.news_id != game_round.news_id:
+        if (
+            not question
+            or question.news_id != game_round.news_id
+            or question.id != game_round.question_id
+        ):
             raise AnswerNotFoundError(
                 f"Question {question_id} not found in round {game_round_id}"
             )
@@ -115,18 +125,16 @@ class AnswerService:
         if not skill:
             raise ValueError(f"Question {question_id} has no skill associated")
 
-        user_skill_state = SkillRepository.get_or_create_user_skill_state(
-            db,
-            user_id,
-            skill.id,
-        )
-        current_mastery = user_skill_state.mastery_probability
-
-        # 4. Run BKT before persisting so a failure leaves nothing half-saved
-        new_mastery = BKTManager.update(skill.code, current_mastery, is_correct)
-
-        # 5. Save Answer and new mastery in a single transaction
         try:
+            user_skill_state = SkillRepository.get_or_create_user_skill_state(
+                db,
+                user_id,
+                skill.id,
+                commit=False,
+            )
+            current_mastery = user_skill_state.mastery_probability
+            new_mastery = BKTManager.update(skill.code, current_mastery, is_correct)
+
             answer = AnswerRepository.create_answer(
                 db,
                 user_id,
@@ -145,7 +153,15 @@ class AnswerService:
                 new_mastery,
                 commit=False,
             )
+            game_round.finished_at = datetime.utcnow()
+            if game_round.round_number >= 10:
+                GameRepository.finish_game(db, game.id, commit=False)
             db.commit()
+        except IntegrityError as error:
+            db.rollback()
+            raise AnswerConflictError(
+                f"Round {game_round_id} was already answered"
+            ) from error
         except Exception:
             db.rollback()
             raise
@@ -177,6 +193,21 @@ class AnswerService:
         Returns:
             Dictionary with skills and their mastery probabilities
         """
+        try:
+            skills = SkillRepository.get_all_skills(db)
+            for skill in skills:
+                SkillRepository.get_or_create_user_skill_state(
+                    db,
+                    user_id,
+                    skill.id,
+                    initial_mastery=0.3,
+                    commit=False,
+                )
+            db.commit()
+        except Exception:
+            db.rollback()
+            raise
+
         user_skill_states = SkillRepository.get_user_skill_states(db, user_id)
 
         skills = []

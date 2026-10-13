@@ -8,28 +8,24 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import User
-from app.services.game import GameService
+from app.dependencies import get_current_user_id
+from app.services.game import (
+    GameConflictError,
+    GameForbiddenError,
+    GameNotFoundError,
+    GameService,
+)
 from app.repositories.game_repository import GameRepository
 from app.schemas import GameCreateResponse, GameStatusResponse, GameRoundResponse
 
 router = APIRouter(prefix="/api/games", tags=["games"])
 
 
-def get_current_user(db: Session = Depends(get_db)) -> User:
-    """
-    Get the current authenticated user.
-    
-    TODO: Implement proper authentication/authorization
-    For now, this is a placeholder that returns None.
-    The endpoints should include Authorization header handling.
-    """
-    # Placeholder - will be implemented with proper auth
-    return None
-
-
 @router.post("", response_model=GameCreateResponse, status_code=status.HTTP_201_CREATED)
-def create_game(db: Session = Depends(get_db)):
+def create_game(
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+):
     """
     Create a new game session for the current user.
 
@@ -49,9 +45,6 @@ def create_game(db: Session = Depends(get_db)):
         }
     """
     try:
-        # TODO: Get actual user from auth token
-        user_id = "test-user"  # Placeholder
-        
         result = GameService.create_game_with_first_round(db, user_id)
         return result
     except ValueError as error:
@@ -67,7 +60,11 @@ def create_game(db: Session = Depends(get_db)):
 
 
 @router.get("/{game_id}", response_model=GameStatusResponse)
-def get_game_status(game_id: str, db: Session = Depends(get_db)):
+def get_game_status(
+    game_id: str,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+):
     """
     Get the status of a game.
 
@@ -84,6 +81,11 @@ def get_game_status(game_id: str, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Game {game_id} not found",
         )
+    if game.user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not own this game",
+        )
 
     # Get current round number
     rounds = GameRepository.get_game_rounds(db, game_id)
@@ -98,7 +100,11 @@ def get_game_status(game_id: str, db: Session = Depends(get_db)):
 
 
 @router.get("/{game_id}/next", response_model=GameRoundResponse | None)
-def get_next_question(game_id: str, db: Session = Depends(get_db)):
+def get_next_question(
+    game_id: str,
+    db: Session = Depends(get_db),
+    user_id: str = Depends(get_current_user_id),
+):
     """
     Get the next question for a game.
 
@@ -112,16 +118,16 @@ def get_next_question(game_id: str, db: Session = Depends(get_db)):
         HTTPException: If game not found
     """
     try:
-        # TODO: Get actual user from auth token
-        user_id = "test-user"  # Placeholder
-        
         result = GameService.get_next_question(db, user_id, game_id)
         return result
     except ValueError as error:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(error),
-        )
+        if isinstance(error, GameConflictError):
+            status_code = status.HTTP_409_CONFLICT
+        elif isinstance(error, GameForbiddenError):
+            status_code = status.HTTP_403_FORBIDDEN
+        else:
+            status_code = status.HTTP_404_NOT_FOUND
+        raise HTTPException(status_code=status_code, detail=str(error))
     except Exception as error:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
