@@ -4,8 +4,9 @@ Answer Repository - Database access layer for answer-related entities.
 Handles Answer storage and retrieval.
 """
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
-from app.models import Answer
+from app.models import Answer, GameRound
 
 
 class AnswerRepository:
@@ -116,6 +117,29 @@ class AnswerRepository:
         question_ids = (
             db.query(Answer.question_id)
             .filter(Answer.user_id == user_id)
+            .distinct()
+            .all()
+        )
+        return {question_id for (question_id,) in question_ids}
+
+    @staticmethod
+    def get_answer_counts_by_question_for_user(db: Session, user_id: str) -> dict[str, int]:
+        """Return how many times a user answered each question, across all games."""
+        rows = (
+            db.query(Answer.question_id, func.count(Answer.id))
+            .filter(Answer.user_id == user_id)
+            .group_by(Answer.question_id)
+            .all()
+        )
+        return {question_id: count for question_id, count in rows}
+
+    @staticmethod
+    def get_answered_question_ids_for_game(db: Session, game_id: str) -> set[str]:
+        """Return question IDs answered in one game, including rounds without question_id."""
+        question_ids = (
+            db.query(Answer.question_id)
+            .join(GameRound, Answer.game_round_id == GameRound.id)
+            .filter(GameRound.game_id == game_id)
             .distinct()
             .all()
         )

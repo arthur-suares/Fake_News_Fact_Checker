@@ -14,6 +14,7 @@ from app.repositories.skill_repository import SkillRepository
 from app.repositories.question_repository import NewsRepository
 from app.adaptation.question_selector import QuestionSelector
 from app.models import Game, GameRound, Question, News
+from app.services import news_questions
 
 
 class GameNotFoundError(ValueError):
@@ -146,10 +147,11 @@ class GameService:
             },
             "news": {
                 "id": news.id,
-                "title": news.title,
+                "title": news_questions.round_title(news),
                 "content": news.content,
                 "image_url": news.image_url,
                 "verdict": news.verdict,
+                "details": news_questions.news_details(news),
             },
             "question": {
                 "id": question.id,
@@ -158,6 +160,7 @@ class GameService:
                 "options": question.options,
                 "skill_id": question.skill_id,
                 "skill_code": question.skill.code,
+                "hints": news_questions.question_hints(news, question.skill.code),
             },
         }
 

@@ -35,6 +35,34 @@ def record_source_key(title: str, content: str, source_url: str) -> str:
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
+def dataset_metadata(row: dict, csv_path: Path, source_key: str) -> dict:
+    """Provenance stored in News.fact_check_data["dataset"] for a CSV row."""
+    source_label = normalize_value(row.get("label"))
+    return {
+        "source_key": source_key,
+        "source_file": Path(csv_path).name,
+        "source_label": int(source_label),
+        "class": LABELS[source_label],
+        "source_url": normalize_value(row.get("url")),
+        "origin": normalize_value(row.get("origin")),
+        "publisher_name": normalize_value(row.get("publisher_name")),
+        "publisher_site": normalize_value(row.get("publisher_site")),
+        "original_date": normalize_value(row.get("date")),
+        "date_source": normalize_value(row.get("date_fonte")),
+        "text_equals_title": normalize_value(row.get("text_igual_title")),
+    }
+
+
+def news_ids_by_source_key(db: Session) -> dict[str, str]:
+    """Map dataset source keys to the News rows already persisted."""
+    ids: dict[str, str] = {}
+    for news_id, fact_check_data in db.query(News.id, News.fact_check_data).yield_per(1000):
+        source_key = (fact_check_data or {}).get("dataset", {}).get("source_key")
+        if source_key:
+            ids[source_key] = news_id
+    return ids
+
+
 def _existing_source_keys(db: Session) -> set[str]:
     keys: set[str] = set()
     for title, content, fact_check_data in db.query(
@@ -90,26 +118,15 @@ def import_dataset_files(
                         source_keys.add(source_key)
 
                         if not dry_run:
-                            dataset_metadata = {
-                                "source_key": source_key,
-                                "source_file": Path(csv_path).name,
-                                "source_label": int(source_label),
-                                "class": LABELS[source_label],
-                                "source_url": source_url,
-                                "origin": normalize_value(row.get("origin")),
-                                "publisher_name": normalize_value(row.get("publisher_name")),
-                                "publisher_site": normalize_value(row.get("publisher_site")),
-                                "original_date": normalize_value(row.get("date")),
-                                "date_source": normalize_value(row.get("date_fonte")),
-                                "text_equals_title": normalize_value(row.get("text_igual_title")),
-                            }
                             db.add(
                                 News(
                                     title=title,
                                     content=content,
                                     image_url=None,
                                     verdict=None,
-                                    fact_check_data={"dataset": dataset_metadata},
+                                    fact_check_data={
+                                        "dataset": dataset_metadata(row, csv_path, source_key)
+                                    },
                                 )
                             )
                             pending += 1
@@ -131,6 +148,11 @@ def import_dataset_files(
         db.rollback()
         raise
     return report
+
+
+def default_dataset_files(repo_root: Path | None = None) -> list[Path]:
+    repo_root = repo_root or Path(__file__).resolve().parents[3]
+    return _default_dataset_files(repo_root)
 
 
 def _default_dataset_files(repo_root: Path) -> list[Path]:

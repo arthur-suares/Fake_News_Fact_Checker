@@ -11,6 +11,7 @@ from app.routes.auth import router as auth_router
 from app.routes.game import router as game_router
 from app.routes.skills import router as skills_router
 from app.services.google_fact_check import GoogleFactCheckService
+from app.services.news_questions import seed_news_questions
 from seed import seed_sample_news_and_questions, seed_skills
 
 
@@ -21,6 +22,7 @@ async def lifespan(_app: FastAPI):
     with SessionLocal() as db:
         seed_skills(db)
         seed_sample_news_and_questions(db)
+        seed_news_questions(db)
     yield
 
 app = FastAPI(

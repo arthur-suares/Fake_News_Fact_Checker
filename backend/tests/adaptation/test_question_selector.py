@@ -143,7 +143,7 @@ def test_ignores_answered_question(selector_context):
     assert selected.id == available.id
 
 
-def test_answer_from_previous_game_is_still_excluded(selector_context):
+def test_answer_from_previous_game_is_deprioritized(selector_context):
     db, user, skills, current_game = selector_context
     set_mastery(db, user, skills, {"SOURCE": 0.1})
     answered = add_question(db, skills["SOURCE"], "q-old-game", 0.1)
@@ -207,15 +207,37 @@ def test_global_fallback_rejects_question_from_untracked_skill(selector_context)
     assert QuestionSelector.select_next_question(db, user.id, game.id) is None
 
 
-def test_returns_none_when_all_questions_were_answered(selector_context):
+def test_new_game_repeats_questions_once_all_were_answered_before(selector_context):
+    db, user, skills, game = selector_context
+    set_mastery(db, user, skills, {"SOURCE": 0.1})
+    once = add_question(db, skills["SOURCE"], "q-once", 0.1)
+    twice = add_question(db, skills["SOURCE"], "q-twice", 0.1)
+    db.commit()
+    record_answer(db, user, once)
+    record_answer(db, user, twice)
+    record_answer(db, user, twice)
+
+    selected, _ = QuestionSelector.select_next_question(db, user.id, game.id)
+
+    assert selected.id == once.id
+
+
+def test_returns_none_when_all_questions_were_used_in_this_game(selector_context):
     db, user, skills, game = selector_context
     questions = [
         add_question(db, skill, f"q-{code}", 0.3)
         for code, skill in skills.items()
     ]
+    for round_number, question in enumerate(questions, start=1):
+        db.add(
+            GameRound(
+                game_id=game.id,
+                news_id=question.news_id,
+                question_id=question.id,
+                round_number=round_number,
+            )
+        )
     db.commit()
-    for question in questions:
-        record_answer(db, user, question)
 
     assert QuestionSelector.select_next_question(db, user.id, game.id) is None
 
