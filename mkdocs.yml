@@ -13,6 +13,7 @@ nav:
   - Arquitetura do Projeto: arquitetura-projeto.md
   - Requisitos: requisitos_mvp.md
   - Elaboração de guiding questions: elaboracao-de-guiding-questions.md
+  - SCRUM: scrum.md
   - Bibliografia: bibliografia.md
 theme:
   name: material
