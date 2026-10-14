@@ -104,6 +104,18 @@ export interface Skill {
   description?: string | null
 }
 
+// Procedência de uma alegação checada do dataset (GameNewsDetails no backend).
+// Não traz o veredito nem a manchete da checagem, que entregariam a resposta.
+export interface NewsDetails {
+  kind: "fact_check_claim"
+  claim: string
+  origin?: string | null
+  checked_on?: string | null
+  fact_checker?: string | null
+  fact_checker_site?: string | null
+  source_url?: string | null
+}
+
 export interface News {
   id: string
   title: string
@@ -111,6 +123,7 @@ export interface News {
   image_url?: string | null
   verdict?: string | null
   created_at?: string
+  details?: NewsDetails | null
 }
 
 export interface Question {
@@ -122,6 +135,7 @@ export interface Question {
   skill_code?: SkillCode | null
   explanation?: string | null
   correct_option?: string | null
+  hints?: string[]
 }
 
 // Rodada jogável devolvida por POST /api/games e GET /api/games/{id}/next
@@ -211,4 +225,6 @@ export interface AnswerFeedback {
   next_action?: string | null
   mastery_before?: number | null
   mastery_after?: number | null
+  source_url?: string | null
+  fact_checker?: string | null
 }

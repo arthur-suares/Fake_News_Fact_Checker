@@ -30,7 +30,12 @@ type SubmitStatus = "idle" | "submitting" | "error"
 
 // Junta a resposta do backend com os textos da pergunta já carregada.
 // A dica para a próxima rodada vem do conteúdo pré-autorado em lib/skills.ts.
-function buildFeedback(question: Question, selectedOption: string, result: AnswerResponse): AnswerFeedback | null {
+function buildFeedback(
+  question: Question,
+  news: News | null | undefined,
+  selectedOption: string,
+  result: AnswerResponse,
+): AnswerFeedback | null {
   const skillCode = toSkillCode(result.skill_code) ?? toSkillCode(question.skill_code ?? question.skill_id)
   if (!skillCode) return null
   const correctOption = result.correct_option ?? question.correct_option ?? null
@@ -45,6 +50,8 @@ function buildFeedback(question: Question, selectedOption: string, result: Answe
     explanation: result.explanation ?? question.explanation,
     mastery_before: result.previous_mastery_probability,
     mastery_after: result.mastery_probability,
+    source_url: news?.details?.source_url,
+    fact_checker: news?.details?.fact_checker ?? news?.details?.fact_checker_site,
   }
 }
 
@@ -91,7 +98,7 @@ export function GameScreen({
 
     try {
       const result = await submitAnswer(gameId, payload)
-      const built = buildFeedback(question, selectedOption, result)
+      const built = buildFeedback(question, news, selectedOption, result)
       if (!built) throw new Error("Resposta sem skill reconhecida")
       setFeedback(built)
       setStatus("idle")

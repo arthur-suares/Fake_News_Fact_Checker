@@ -803,7 +803,9 @@ As quatro habilidades são inicializadas com mastery `0.30` no cadastro do usuá
 
 `POST /auth/register` cria a conta e os quatro estados iniciais; `POST /auth/login` devolve o JWT. O frontend guarda esse token no armazenamento local do navegador e o envia como `Authorization: Bearer ...`. Iniciar/consultar partidas, responder e ler `/api/users/me/skills` exigem autenticação. Sem sessão, o jogo e o perfil encaminham para `/login`.
 
-O startup inicializa as skills e garante 12 notícias/perguntas de demonstração persistidas, suficientes para dez rodadas, mesmo quando notícias do dataset já existem. O seed acrescenta apenas registros ausentes e não se repete em reinicializações. As questões são conteúdo de demonstração curado; falhas da API não fazem o frontend substituí-las por mocks.
+O startup inicializa as skills e garante 12 notícias/perguntas de demonstração persistidas, suficientes para dez rodadas, mesmo quando notícias do dataset já existem. Também garante uma amostra de alegações checadas do dataset como questões de veredito + justificativa (seção 21). O seed acrescenta apenas registros ausentes e não se repete em reinicializações. Falhas da API não fazem o frontend substituir as questões por mocks.
+
+O `QuestionSelector` nunca repete uma questão dentro da mesma partida. Questões respondidas em partidas anteriores não são excluídas, apenas vão para o fim da fila (as menos respondidas primeiro), então um jogador que já passou por todo o banco continua conseguindo iniciar partidas. Entre as candidatas, a prioridade é: notícia ainda não exibida na partida, skill com menor mastery e dificuldade mais próxima da mastery.
 
 ## 21. Dataset e questões
 
@@ -818,7 +820,7 @@ Os scripts da EDA confirmam `label=1` em `fakes.csv` e `label=0` em `true.csv`. 
 
 O importador prefere os CSVs limpos, gerados sem alterar os originais pelo script `EDA/00_limpeza.py`. A limpeza retirou nove duplicatas de fakes e acrescentou campos de proveniência; o importador ainda valida campos obrigatórios e reporta linha/erro. Cada linha é lida em streaming. A chave estável é SHA-256 de título, texto e URL normalizados, permitindo reexecução sem duplicar registros.
 
-A classificação original não é escrita em `News.verdict`, que fica reservado a vereditos externos. `title` e `text` viram `News.title` e `News.content`; URL original, origem, publicador, domínio, label numérico, classe mapeada, data e nome do arquivo ficam em `News.fact_check_data.dataset`. Nenhuma questão é fabricada a partir do label.
+A classificação original não é escrita em `News.verdict`, que fica reservado a vereditos externos. `title` e `text` viram `News.title` e `News.content`; URL original, origem, publicador, domínio, label numérico, classe mapeada, data e nome do arquivo ficam em `News.fact_check_data.dataset`. O importador não cria questões; as questões derivadas do label são geradas à parte por `app.services.news_questions` (ver abaixo).
 
 Com o backend instalado no ambiente virtual e a partir de `backend/`:
 
@@ -843,7 +845,25 @@ Importar notícias não cria questões. Questões são inseridas somente por JSO
 ../venv/bin/python -m app.services.question_import caminho/questoes.jsonl
 ```
 
-O dataset não contém imagens nem evidência estruturada suficiente para gerar automaticamente questões válidas nas quatro habilidades. A curadoria e a revisão factual continuam necessárias, principalmente para EVIDENCE, CONTEXT e VISUAL. Não há dependência de LLM.
+### Questões de veredito + justificativa a partir das alegações checadas
+
+`app/services/news_questions.py` transforma linhas do dataset em questões sobre a alegação. No dataset, `text` é a alegação que circulou, `origin` quem a fez ou espalhou, e `title`/`url`/`publisher_*`/`date` descrevem a checagem. O veredito correto vem do `label` da agência de checagem.
+
+- **Alternativas**: quatro por questão, cada uma com um veredito ("Verdadeira" ou "Falsa ou enganosa") e uma justificativa ligada à skill. Para cada veredito há um critério correto da skill e um erro de raciocínio comum (ex.: "muita gente compartilhou, então é real"). Só o veredito certo com o critério correto conta como acerto, então um chute ou um acerto por raciocínio errado não aumenta o domínio estimado pelo BKT. A ordem é embaralhada por alegação, de forma determinística. Os textos ficam em `JUSTIFICATIONS`.
+
+- **Skill**: SOURCE quando a origem é rede social, aplicativo de mensagem ou post anônimo; EVIDENCE quando a alegação usa números ou dados; CONTEXT nos demais casos (em geral, falas de figuras públicas). VISUAL não é gerado porque o dataset não tem imagens.
+- **Dificuldade**: base por skill, mais difícil sem origem informada ou com alegação curta, mais fácil com alegação longa.
+- **Filtros**: ficam de fora alegações em forma de pergunta, sem data, curtas/longas demais ou que já trazem o veredito no texto ("é falso", "boato", "checagem"...).
+- **Balanceamento**: o dataset tem ~7,5 vezes mais falsas que verdadeiras. A amostra pega o mesmo número de verdadeiras e falsas em cada combinação skill × dificuldade (`--per-cell`, padrão 10; ~220 questões), para o jogador não aprender a responder sempre "falsa".
+- **Durante a rodada**, a API envia `news.details` (alegação, quem disse/onde circulou, data e agência da checagem, link da checagem) e `question.hints` (pontos de atenção da skill). A manchete da checagem costuma entregar a resposta ("É falso que..."), por isso só aparece na explicação mostrada depois da resposta, junto com o link para a checagem completa.
+
+```bash
+# Gera (ou completa) a amostra; o startup já faz isso com o padrão.
+../venv/bin/python -m app.services.news_questions --per-cell 10
+../venv/bin/python -m app.services.news_questions --dry-run
+```
+
+As notícias criadas usam a mesma chave estável do importador, então o importador completo depois não as duplica. As questões geradas dependem da classificação feita pela agência de checagem e de heurísticas para skill e dificuldade. Para EVIDENCE, CONTEXT e VISUAL com enunciados específicos, a curadoria via JSONL continua sendo o caminho recomendado. Não há dependência de LLM.
 
 ## 22. Migração e testes
 
@@ -854,4 +874,4 @@ cd backend
 ../venv/bin/python -m pytest tests -q
 ```
 
-Para executar a aplicação e a interface, use os comandos da seção 19. O ambiente de desenvolvimento precisa ter Python com `backend/requirements.txt` e Node.js/npm para instalar/buildar o frontend. O banco não importa os CSVs automaticamente no startup: importação é operação explícita.
+Para executar a aplicação e a interface, use os comandos da seção 19. O ambiente de desenvolvimento precisa ter Python com `backend/requirements.txt` e Node.js/npm para instalar/buildar o frontend. O startup não importa os CSVs inteiros: lê os CSVs e grava só a amostra balanceada de alegações usada nas questões. Se os CSVs não existirem, essa etapa é ignorada. A importação completa continua sendo uma operação explícita.

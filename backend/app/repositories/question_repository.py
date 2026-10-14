@@ -4,7 +4,7 @@ Question Repository - Database access layer for question-related entities.
 Handles Question and News operations.
 """
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 from app.models import Question, News
 
@@ -50,8 +50,13 @@ class QuestionRepository:
 
     @staticmethod
     def get_all_questions(db: Session) -> list[Question]:
-        """Get all questions in stable ID order for selector fallback."""
-        return db.query(Question).order_by(Question.id).all()
+        """Get all questions, with news and skill loaded, in stable ID order."""
+        return (
+            db.query(Question)
+            .options(joinedload(Question.news), joinedload(Question.skill))
+            .order_by(Question.id)
+            .all()
+        )
 
     @staticmethod
     def get_questions_by_news(db: Session, news_id: str) -> list[Question]:

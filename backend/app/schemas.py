@@ -139,12 +139,24 @@ class GameRoundInfo(BaseModel):
     question_id: str
 
 
+class GameNewsDetails(BaseModel):
+    """Provenance of a fact-checked claim from the dataset (no verdict, no fact-check headline)."""
+    kind: str
+    claim: str
+    origin: str | None = None
+    checked_on: str | None = None
+    fact_checker: str | None = None
+    fact_checker_site: str | None = None
+    source_url: str | None = None
+
+
 class GameNewsResponse(BaseModel):
     """News shown during a round. The verdict is omitted so it doesn't spoil the answer."""
     id: str
     title: str
     content: str
     image_url: str | None = None
+    details: GameNewsDetails | None = None
 
 
 class GameQuestionResponse(BaseModel):
@@ -155,6 +167,7 @@ class GameQuestionResponse(BaseModel):
     options: dict[str, str]
     skill_id: str
     skill_code: str
+    hints: list[str] = []
 
 
 class GameRoundResponse(BaseModel):

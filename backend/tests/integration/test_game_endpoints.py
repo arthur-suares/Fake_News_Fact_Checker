@@ -147,3 +147,31 @@ def test_full_game_plays_ten_rounds_then_finishes(db_session):
     assert client.get(f"/api/games/{game_id}").json()["status"] == "FINISHED"
     # Com 12 notícias no seed, nenhuma se repete em 10 rodadas
     assert len(seen_news) == 10 <= len(SAMPLE_ROUNDS)
+
+
+def test_returning_player_can_start_new_games_after_playing_the_bank(db_session):
+    seed_sample_news_and_questions(db_session)
+    client = TestClient(app)
+
+    for _ in range(3):
+        current = client.post("/api/games")
+        assert current.status_code == 201
+        current = current.json()
+        game_id = current["game_id"]
+        seen_questions = set()
+        while current:
+            seen_questions.add(current["question"]["id"])
+            client.post(
+                f"/api/games/{game_id}/answers",
+                json={
+                    "question_id": current["question"]["id"],
+                    "game_round_id": current["round"]["id"],
+                    "selected_option": "A",
+                    "confidence": 3,
+                    "response_time": 4000,
+                },
+            )
+            current = client.get(f"/api/games/{game_id}/next").json()
+
+        # Cada partida completa 10 rodadas sem repetir questão dentro dela
+        assert len(seen_questions) == 10
