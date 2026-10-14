@@ -25,7 +25,7 @@
 
 ---
 
-###  Ian *(Frontend & Test Automation Developer)*
+###  Ian Lucca *(Frontend & Test Automation Developer)*
 > **Atuação:** Responsável pelo desenvolvimento da interface do usuário (UI/UX) do jogo, telas de feedback, dashboards e pela qualidade do produto via testes.
 
 * **Frontend & Interface do Usuário:**
@@ -41,7 +41,7 @@
 
 ---
 
-###  Gabriel *(Database & Legacy Architecture Developer)*
+###  Gabriel da Cruz *(Database & Legacy Architecture Developer)*
 > **Atuação:** Responsável pela estruturação inicial do banco de dados e suporte ao modelo arquitetural legado.
 
 * **Modelagem de Dados e Banco de Dados Relacional:**
@@ -52,7 +52,7 @@
 
 ---
 
-###  Laura *(BKT Engine & Core Backend Developer)*
+###  Laura Carolina *(BKT Engine & Core Backend Developer)*
 > **Atuação:** Responsável pela implementação do motor matemático de IA/BKT, regras de atualização de habilidades e persistência de dados.
 
 * **Motor Matemático & Regras de Negócio BKT:**
@@ -65,7 +65,7 @@
 
 ---
 
-###  Madu *(Security & AI / Vector Search Developer)*
+###  Maria Eduarda *(Security & AI / Vector Search Developer)*
 > **Atuação:** Responsável pela segurança/autenticação da aplicação e pela infraestrutura de IA para consulta histórica em parceria com Milena.
 
 * **Segurança e Autenticação:**
@@ -77,7 +77,7 @@
 
 ---
 
-###  Milena *(Research & AI / Vector Search Developer)*
+###  Milena Marques *(Research & AI / Vector Search Developer)*
 > **Atuação:** Responsável pela fundamentação teórica/pesquisa acadêmica do projeto e co-desenvolvimento da infraestrutura de dados vetoriais.
 
 * **Pesquisa & Referencial Teórico:**
@@ -94,6 +94,6 @@
 | **Frontend & UI/UX** | Ian | Interfaces da rodada, feedback e dashboard de habilidades |
 | **Backend & Motor BKT** | Arthur, Laura | Motor BKT, rastreadores (Evidence, Context, Visual, Source), BKTManager e regras adaptativas |
 | **Banco de Dados & Persistência** | Gabriel, Laura | Estruturas de Game, GameRound, Skills, UserSkillState e salvamento de respostas |
-| **Segurança & Pipeline IA (RAG)** | Madu, Milena | Autenticação JWT e Banco Vetorial/Pipeline RAG para consulta de notícias |
+| **Segurança & Pipeline IA (RAG)** | Maria Eduarda, Milena | Autenticação JWT e Banco Vetorial/Pipeline RAG para consulta de notícias |
 | **Pesquisa & Fundamentação** | Milena | Pesquisa de artigos e análise de bancos de dados |
 | **Garantia de Qualidade (QA)** | Arthur, Ian | Testes unitários do BKT, testes de integração da rodada e dataset de notícias |
