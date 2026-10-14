@@ -1,7 +1,7 @@
 # Papéis do Time SCRUM
 
 * **Scrum Master:** Arthur Suares
-* **Developers / Equipe de Desenvolvimento:** Ian, Arthur, Gabriel, Laura, Madu, Milena
+* **Developers / Equipe de Desenvolvimento:** Ian, Arthur, Gabriel, Laura, Maria Eduarda, Milena
 
 ---
 
@@ -82,7 +82,7 @@
 
 * **Pesquisa & Referencial Teórico:**
   * Levantamento e análise de artigos científicos e pesquisa sobre bancos de dados.
-* **Inteligência Artificial e Busca Semântica (Co-autoria com Madu):**
+* **Inteligência Artificial e Busca Semântica (Co-autoria com Maria Eduarda):**
   * Implementação do Banco de Dados Vetorial e Pipeline RAG para consulta de histórico de notícias.
 
 ---
