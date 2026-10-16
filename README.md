@@ -10,7 +10,7 @@ https://youtu.be/Wkn8gjQ_tHc
 https://github.com/arthur-suares/Projeto_Verifica_2026/
 
 ## Documentação do projeto
-https://arthur-suares.github.io/Fake_News_Fact_Checker/
+https://arthur-suares.github.io/Projeto_Verifica_2026/
 
 # Arquitetura do projeto
 Backend desenvolvido em Python utilizando **FastAPI** para consultar a **Google Fact Check Tools API**.
