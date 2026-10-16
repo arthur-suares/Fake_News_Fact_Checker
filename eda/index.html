@@ -1,0 +1,1210 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../scrum/">
+      
+      
+        <link rel="next" href="../referencial-teorico/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Análise exploratória de dados - Grupo 2 - Residência em IA TIC - First Challenge</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#1-introducao" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href=".." title="Grupo 2 - Residência em IA TIC - First Challenge" class="md-header__button md-logo" aria-label="Grupo 2 - Residência em IA TIC - First Challenge" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grupo 2 - Residência em IA TIC - First Challenge
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Análise exploratória de dados
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/arthur-suares/Fake_News_Fact_Checker/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fake News Fack Checker
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Grupo 2 - Residência em IA TIC - First Challenge" class="md-nav__button md-logo" aria-label="Grupo 2 - Residência em IA TIC - First Challenge" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grupo 2 - Residência em IA TIC - First Challenge
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/arthur-suares/Fake_News_Fact_Checker/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fake News Fack Checker
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visao-geral-projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral do Projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura-projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura do Projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requisitos_mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../elaboracao-de-guiding-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elaboração de guiding questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SCRUM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise exploratória de dados
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise exploratória de dados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introdução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-caracterizacao-da-base-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Caracterização da base de dados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-analise-exploratoria-realizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Análise exploratória realizada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Análise exploratória realizada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-distribuicao-das-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Distribuição das classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-qualidade-e-consistencia-dos-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Qualidade e consistência dos dados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-procedimentos-de-limpeza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Procedimentos de limpeza
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-caracteristicas-textuais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Características textuais
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-vieses-e-limitacoes-identificados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Vieses e limitações identificados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-finalidade-original-treinamento-de-um-classificador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Finalidade original: treinamento de um classificador
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mudanca-de-direcao-do-projeto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mudança de direção do projeto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-por-que-a-base-nao-foi-utilizada-para-treinar-o-bkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Por que a base não foi utilizada para treinar o BKT?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-papel-atual-da-base-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Papel atual da base de dados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-limitacoes-e-trabalhos-futuros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Limitações e trabalhos futuros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-consideracoes-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Considerações finais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias-e-artefatos-do-projeto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referências e artefatos do projeto
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencial-teorico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencial Teórico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bibliografia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bibliografia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introdução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-caracterizacao-da-base-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Caracterização da base de dados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-analise-exploratoria-realizada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Análise exploratória realizada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Análise exploratória realizada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-distribuicao-das-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Distribuição das classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-qualidade-e-consistencia-dos-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Qualidade e consistência dos dados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-procedimentos-de-limpeza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Procedimentos de limpeza
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-caracteristicas-textuais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Características textuais
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-vieses-e-limitacoes-identificados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Vieses e limitações identificados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-finalidade-original-treinamento-de-um-classificador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Finalidade original: treinamento de um classificador
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-mudanca-de-direcao-do-projeto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Mudança de direção do projeto
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-por-que-a-base-nao-foi-utilizada-para-treinar-o-bkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Por que a base não foi utilizada para treinar o BKT?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-papel-atual-da-base-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Papel atual da base de dados
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-limitacoes-e-trabalhos-futuros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Limitações e trabalhos futuros
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-consideracoes-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Considerações finais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias-e-artefatos-do-projeto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referências e artefatos do projeto
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Análise exploratória de dados</h1>
+
+<div class="codehilite"><pre><span></span><code># Base de Dados e Análise Exploratória — Verifica
+</code></pre></div>
+
+<h2 id="1-introducao">1. Introdução</h2>
+<p>A base de dados utilizada no projeto Verifica foi inicialmente incorporada com o objetivo de apoiar o desenvolvimento de um sistema de detecção automática de notícias falsas. A proposta original consistia em utilizar técnicas de aprendizado de máquina para treinar um classificador capaz de identificar padrões textuais associados a alegações classificadas como falsas ou verdadeiras.</p>
+<p>Para compreender as características dessa base e avaliar sua adequação a essa finalidade, foi desenvolvido um processo de análise exploratória de dados (<em>Exploratory Data Analysis</em> — EDA), documentado no notebook <code>analise_exploratoria.ipynb</code>. Essa etapa investigou a estrutura dos registros, a distribuição das classes, a qualidade dos dados, as características dos textos e possíveis vieses que poderiam comprometer o treinamento e a avaliação de um classificador.</p>
+<p>Entretanto, durante o desenvolvimento, o projeto passou por uma mudança de direcionamento. Em razão de dificuldades técnicas encontradas na implementação da abordagem original, a proposta evoluiu para uma aplicação gamificada que utiliza o <em>Bayesian Knowledge Tracing</em> (BKT) para acompanhar o domínio de habilidades relacionadas à análise crítica de notícias.</p>
+<p>Essa mudança é importante para compreender o papel atual da base de dados: <strong>o dataset foi preparado e analisado com vistas ao treinamento de um classificador de notícias falsas, mas não foi utilizado como dataset de treinamento do BKT.</strong> O modelo BKT adotado na proposta atual tem outra finalidade e utiliza como evidência as respostas fornecidas pelos jogadores durante as partidas.</p>
+<h2 id="2-caracterizacao-da-base-de-dados">2. Caracterização da base de dados</h2>
+<p>A base é composta por dois arquivos CSV, que reúnem alegações verificadas por agências de checagem brasileiras e portuguesas, incluindo Lupa, Aos Fatos, Boatos.org, Polígrafo e AFP Checamos.</p>
+<p>Os arquivos utilizados na análise são:</p>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Conteúdo</th>
+<th style="text-align: right;">Valor de <code>label</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fakes.csv</code></td>
+<td>Alegações classificadas como falsas pelas fontes de checagem</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td><code>true.csv</code></td>
+<td>Alegações classificadas como verdadeiras pelas fontes de checagem</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Na versão examinada pelo notebook, os arquivos continham os seguintes quantitativos:</p>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th style="text-align: right;">Quantidade de registros</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Notícias falsas</td>
+<td style="text-align: right;">20.478</td>
+</tr>
+<tr>
+<td>Notícias verdadeiras</td>
+<td style="text-align: right;">2.720</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>23.198</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Esses números correspondem à versão efetivamente analisada no notebook e podem diferir de contagens divulgadas em versões posteriores da base.</p>
+<p>A estrutura dos registros inclui informações textuais e metadados associados às checagens. Entre as principais colunas estão:</p>
+<ul>
+<li><code>title</code>: título do artigo de checagem.</li>
+<li><code>text</code>: alegação ou declaração submetida à verificação.</li>
+<li><code>origin</code>: origem atribuída à alegação, com significado variável entre os arquivos.</li>
+<li><code>url</code>: endereço do artigo de checagem.</li>
+<li><code>publisher_name</code>: nome da agência ou publicação.</li>
+<li><code>publisher_site</code>: domínio da publicação.</li>
+<li><code>date</code>: data registrada para a alegação ou checagem.</li>
+<li><code>label</code>: classificação da alegação como falsa ou verdadeira.</li>
+</ul>
+<p>O conteúdo textual constitui o principal elemento de interesse para a proposta original de classificação automática. Os demais campos permitem contextualizar os registros e investigar características da coleta, mas não podem ser utilizados indiscriminadamente como variáveis preditoras, pois alguns podem introduzir vieses ou revelar indiretamente a classe.</p>
+<h2 id="3-analise-exploratoria-realizada">3. Análise exploratória realizada</h2>
+<p>A análise exploratória foi desenvolvida para compreender a composição da base, identificar problemas de qualidade e levantar riscos que precisariam ser considerados caso fosse realizado o treinamento de um classificador.</p>
+<p>O notebook organiza esse processo em etapas de inspeção inicial, análise de qualidade, limpeza, caracterização dos textos, investigação de padrões lexicais e identificação de temas recorrentes.</p>
+<h3 id="31-distribuicao-das-classes">3.1 Distribuição das classes</h3>
+<p>Um dos primeiros resultados identificados foi o desbalanceamento entre as classes. A base contém aproximadamente 7,5 registros de notícias falsas para cada registro de notícia verdadeira.</p>
+<p>Esse desequilíbrio representa um desafio para o treinamento de um classificador. Um modelo que classificasse todos os registros como falsos obteria aproximadamente 88% de acurácia nessa distribuição, mesmo sem aprender a distinguir as duas classes.</p>
+<p>Por esse motivo, o notebook destaca que a acurácia isolada não seria suficiente para avaliar um modelo futuro. Métricas como precisão, revocação (<em>recall</em>), F1-score e resultados separados por classe seriam necessárias para avaliar melhor seu desempenho.</p>
+<p>Na análise exploratória, as comparações entre as classes foram realizadas preferencialmente por proporções, reduzindo a influência da diferença no número de registros.</p>
+<h3 id="32-qualidade-e-consistencia-dos-dados">3.2 Qualidade e consistência dos dados</h3>
+<p>O notebook investigou problemas que poderiam prejudicar a interpretação dos resultados ou o processamento posterior da base.</p>
+<p>Entre os problemas identificados estão:</p>
+<ul>
+<li><strong>Valores ausentes:</strong> as colunas <code>title</code> e <code>text</code> estavam preenchidas nos registros analisados, mas havia valores ausentes em <code>origin</code> e <code>date</code>.</li>
+<li><strong>Duplicatas:</strong> foram identificadas 18 linhas envolvidas em duplicações segundo a combinação de título, texto e URL. Após a remoção de duplicatas exatas por esses campos, foram eliminadas nove linhas.</li>
+<li><strong>Conteúdo repetido:</strong> em 4.083 registros, aproximadamente 17,6% do total, o campo <code>text</code> era igual ao campo <code>title</code>. Isso exigia cuidado ao combinar os campos para evitar a contagem duplicada de palavras.</li>
+<li><strong>Inconsistências nos nomes das publicações:</strong> uma mesma agência aparecia com grafias diferentes, o que poderia distorcer as estatísticas por fonte.</li>
+<li><strong>Variações no campo <code>origin</code>:</strong> foram encontradas diferentes grafias para uma mesma origem, além de valores genéricos que não identificavam uma origem específica.</li>
+<li><strong>Datas inconsistentes:</strong> foi identificada uma data de 2005 atribuída ao Observador, publicação fundada posteriormente. Também foram identificadas URLs que permitiam recuperar datas ausentes.</li>
+</ul>
+<p>Esses problemas foram tratados conforme a possibilidade de correção segura. A limpeza buscou corrigir inconsistências identificáveis sem descartar automaticamente todos os registros que apresentavam informações incompletas.</p>
+<h3 id="33-procedimentos-de-limpeza">3.3 Procedimentos de limpeza</h3>
+<p>A limpeza foi realizada sobre uma cópia dos dados carregados em memória, preservando os arquivos originais.</p>
+<p>Os procedimentos implementados no notebook incluem:</p>
+<ol>
+<li>Remoção de espaços indevidos, quebras de linha e caracteres problemáticos nos campos textuais.</li>
+<li>Eliminação de duplicatas considerando a combinação de título, texto e URL.</li>
+<li>Criação de uma variável indicadora para identificar quando <code>text</code> é igual a <code>title</code>.</li>
+<li>Padronização dos nomes das agências com base no domínio de publicação.</li>
+<li>Normalização de grafias equivalentes no campo <code>origin</code> e tratamento de valores genéricos.</li>
+<li>Conversão e validação das datas, incluindo a recuperação de datas a partir de URLs quando possível.</li>
+<li>Criação de campos auxiliares, como texto combinado e quantidade de palavras, para apoiar as análises posteriores.</li>
+</ol>
+<p>Após a limpeza registrada no notebook, a tabela passou de 23.198 para 23.189 registros, com a remoção de nove duplicatas. O número de valores distintos em <code>origin</code> caiu de 1.503 para 1.462, e a quantidade de datas ausentes foi reduzida de 3.070 para 2.569.</p>
+<p>O notebook também faz referência ao script <code>00_limpeza.py</code>, responsável por reproduzir esse processo e exportar os dados limpos para <code>datasets/limpos/</code>, além de gerar um arquivo <code>nao_tratados.csv</code> com casos que não puderam ser resolvidos automaticamente.</p>
+<h3 id="34-caracteristicas-textuais">3.4 Características textuais</h3>
+<p>A análise dos textos procurou identificar diferenças entre as alegações falsas e verdadeiras que poderiam ser relevantes para um classificador.</p>
+<p>Foram investigados o tamanho dos textos, o uso de letras maiúsculas, a frequência de pontos de exclamação, as palavras mais recorrentes, os pares de palavras (<em>bigramas</em>) e o vocabulário característico de cada classe.</p>
+<p>Os resultados mostraram que as alegações falsas apresentavam maior variabilidade no tamanho: a mediana era de 14 palavras, assim como na classe verdadeira, mas os textos falsos incluíam desde alegações muito curtas até textos extensos.</p>
+<p>A análise lexical também identificou temas frequentes relacionados a política, eleições, COVID-19, vacinas, tratamentos de saúde e figuras públicas. Entre as palavras e expressões associadas às alegações falsas estavam referências a urnas eletrônicas, fraude, hidroxicloroquina e diferentes narrativas políticas.</p>
+<p>Esses resultados permitiram levantar possíveis características textuais para uma futura etapa de modelagem. Contudo, a presença de determinados termos não comprova, isoladamente, a falsidade de uma alegação. Um classificador que dependesse excessivamente de palavras ou temas específicos poderia perder desempenho quando os assuntos da desinformação mudassem.</p>
+<h3 id="35-vieses-e-limitacoes-identificados">3.5 Vieses e limitações identificados</h3>
+<p>Um dos achados mais importantes foi o potencial viés associado às fontes de publicação.</p>
+<p>A análise identificou que aproximadamente 97% dos registros classificados como verdadeiros vinham de duas agências: Polígrafo e Lupa. Outras publicações apareciam predominantemente ou exclusivamente na classe falsa.</p>
+<p>Esse padrão poderia levar um classificador a aprender diferenças de estilo, idioma ou procedência editorial, em vez de aprender características realmente relacionadas à veracidade das alegações.</p>
+<p>Outro problema relevante foi o campo <code>origin</code>. Nas notícias falsas, ele frequentemente indicava onde o boato circulou, como Facebook ou WhatsApp. Nas notícias verdadeiras, frequentemente identificava quem havia feito uma declaração, como um político. Utilizar esse campo diretamente como variável de treinamento poderia revelar indiretamente a classe.</p>
+<p>A análise também constatou que os dados terminavam em 2022, o que limita sua representatividade em relação a narrativas e acontecimentos posteriores. Além disso, aproximadamente 42% dos registros não foram associados a nenhum dos temas definidos por palavras-chave no notebook, demonstrando que a categorização temática era apenas parcial.</p>
+<p>Essas limitações seriam importantes para o desenvolvimento de um classificador e precisariam ser consideradas em sua preparação, treinamento e avaliação.</p>
+<h2 id="4-finalidade-original-treinamento-de-um-classificador">4. Finalidade original: treinamento de um classificador</h2>
+<p>Na concepção inicial do projeto, a base seria utilizada para desenvolver um classificador supervisionado de notícias falsas.</p>
+<p>Nesse cenário, cada registro forneceria um exemplo de treinamento composto por um texto e um rótulo conhecido. O modelo procuraria aprender padrões que ajudassem a distinguir alegações classificadas como falsas daquelas classificadas como verdadeiras.</p>
+<p>O fluxo previsto seria, de forma geral:</p>
+<ol>
+<li>Preparar e limpar os dados.</li>
+<li>Definir quais campos poderiam ser utilizados como entradas do modelo.</li>
+<li>Transformar os textos em representações adequadas ao algoritmo escolhido.</li>
+<li>Separar os dados em conjuntos de treinamento, validação e teste.</li>
+<li>Treinar o classificador e ajustar seus hiperparâmetros.</li>
+<li>Avaliar o desempenho com métricas adequadas ao desbalanceamento das classes e investigar possíveis vieses.</li>
+</ol>
+<p>A análise exploratória desenvolvida representa uma etapa preparatória desse fluxo. Ela ajudou a compreender os dados, identificar riscos e levantar decisões que precisariam ser tomadas antes do treinamento.</p>
+<p><strong>Entretanto, a realização da análise exploratória não significa que um classificador tenha sido treinado ou validado.</strong> O notebook documenta a inspeção, a limpeza e a caracterização da base, mas não constitui evidência de que o fluxo completo de treinamento de um classificador tenha sido concluído.</p>
+<h2 id="5-mudanca-de-direcao-do-projeto">5. Mudança de direção do projeto</h2>
+<p>Durante o desenvolvimento, foram encontradas dificuldades técnicas na implementação da abordagem original de análise automatizada de notícias. Em consequência, o escopo do projeto foi reformulado para priorizar um MVP gamificado, com acompanhamento de habilidades por meio do Bayesian Knowledge Tracing.</p>
+<p>Na proposta atual, o objetivo central deixou de ser exclusivamente classificar cada notícia como falsa ou verdadeira. O foco passou a ser a criação de uma experiência de perguntas e respostas que permita acompanhar o desempenho do jogador em diferentes dimensões da análise crítica de informações.</p>
+<p>O sistema considera quatro habilidades principais:</p>
+<ul>
+<li><code>SOURCE</code>: avaliação da fonte.</li>
+<li><code>EVIDENCE</code>: avaliação das evidências.</li>
+<li><code>CONTEXT</code>: análise do contexto.</li>
+<li><code>VISUAL</code>: análise da relação entre imagens e alegações.</li>
+</ul>
+<p>O BKT utiliza as respostas dadas pelo jogador para atualizar a probabilidade estimada de domínio de cada habilidade. Essas estimativas podem, então, orientar a seleção das próximas perguntas.</p>
+<p>Essa mudança representa uma alteração na finalidade dos dados necessários ao modelo. Enquanto um classificador supervisionado utiliza exemplos de textos rotulados para aprender a distinguir classes, o BKT acompanha sequências de respostas de usuários associadas a habilidades específicas.</p>
+<p>Por isso, a base de notícias analisada anteriormente não foi utilizada como dataset de treinamento do BKT. Os rótulos <code>label</code> indicam a classificação atribuída às alegações, mas não informam se um jogador domina uma habilidade nem descrevem como seu domínio evolui ao longo das partidas.</p>
+<h2 id="6-por-que-a-base-nao-foi-utilizada-para-treinar-o-bkt">6. Por que a base não foi utilizada para treinar o BKT?</h2>
+<p>A distinção decorre da finalidade e da estrutura dos dados exigidos por cada abordagem.</p>
+<table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Classificador de notícias (proposta original)</th>
+<th>BKT (proposta atual)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Objetivo</td>
+<td>Classificar alegações como falsas ou verdadeiras</td>
+<td>Estimar o domínio de habilidades do jogador</td>
+</tr>
+<tr>
+<td>Unidade principal de análise</td>
+<td>Registro de notícia ou alegação rotulada</td>
+<td>Resposta do jogador a uma questão associada a uma habilidade</td>
+</tr>
+<tr>
+<td>Dados necessários</td>
+<td>Textos e rótulos de classe</td>
+<td>Sequências de respostas corretas e incorretas, associadas às habilidades</td>
+</tr>
+<tr>
+<td>Significado do rótulo</td>
+<td>Veracidade atribuída à alegação</td>
+<td>Resultado da resposta do jogador em relação à questão</td>
+</tr>
+<tr>
+<td>Resultado produzido</td>
+<td>Predição de classe para uma alegação</td>
+<td>Probabilidade estimada de domínio por habilidade</td>
+</tr>
+<tr>
+<td>Uso previsto</td>
+<td>Detecção automática de notícias falsas</td>
+<td>Acompanhamento de habilidades e seleção adaptativa de questões</td>
+</tr>
+</tbody>
+</table>
+<p>A base original não contém, por si só, as sequências de respostas necessárias para estimar o desenvolvimento das habilidades de um jogador. Ainda que seus registros sejam utilizados como material para elaborar questões, isso não transforma automaticamente o dataset em dados de treinamento do BKT.</p>
+<p>Para que uma notícia seja utilizada no jogo, é necessário criar ou selecionar uma questão apropriada, definir sua habilidade principal, estabelecer uma resposta correta com base em evidências verificáveis e preparar uma explicação coerente. Depois, são as respostas dadas pelos jogadores a essas questões, ao longo do tempo, que podem alimentar o acompanhamento pelo BKT.</p>
+<p>Da mesma forma, a classificação de uma notícia como falsa não determina automaticamente a habilidade avaliada. Uma questão pode abordar a fonte de uma alegação falsa, a ausência de evidências, a distorção de contexto ou a incompatibilidade de uma imagem. A habilidade depende do objetivo específico da questão, e não apenas do rótulo da notícia.</p>
+<p>Portanto, <strong>o dataset de notícias e o histórico de respostas dos jogadores cumprem funções diferentes na arquitetura atual</strong>. O primeiro pode servir como fonte de material para a elaboração de questões, desde que haja curadoria e verificação. O segundo constitui a fonte de evidências para atualizar as estimativas de domínio do BKT.</p>
+<h2 id="7-papel-atual-da-base-de-dados">7. Papel atual da base de dados</h2>
+<p>Após a mudança de escopo, a base permanece relevante como parte do trabalho de investigação e preparação de dados realizado no projeto. A análise exploratória permite documentar a origem dos registros, compreender sua distribuição, identificar problemas de qualidade e registrar limitações que seriam importantes para qualquer uso posterior.</p>
+<p>No contexto atual, a base pode eventualmente apoiar a seleção de alegações para a elaboração de perguntas, mas esse uso exige cuidados adicionais. Os registros não devem ser convertidos automaticamente em questões sem verificar o conteúdo, o gabarito, a fonte, a habilidade avaliada e a explicação apresentada ao jogador.</p>
+<p>A base também não deve ser descrita como o conjunto de treinamento do BKT. O treinamento de um classificador supervisionado e a atualização de um modelo de Knowledge Tracing são processos diferentes, com objetivos e requisitos de dados distintos.</p>
+<p>A análise exploratória, por sua vez, continua sendo um artefato válido do projeto, pois documenta uma etapa real do desenvolvimento e fornece evidências sobre o material que estava disponível quando a proposta original ainda previa um classificador.</p>
+<h2 id="8-limitacoes-e-trabalhos-futuros">8. Limitações e trabalhos futuros</h2>
+<p>A mudança de direção permitiu concentrar os esforços no desenvolvimento da experiência gamificada e na implementação do acompanhamento de habilidades. Contudo, ela também implica que a finalidade original de classificação automática não foi concluída como parte da abordagem atual.</p>
+<p>Como próximos passos relacionados aos dados, podem ser consideradas as seguintes atividades:</p>
+<ol>
+<li><strong>Curadoria de questões:</strong> transformar alegações selecionadas em questões verificáveis, associadas a uma única habilidade principal.</li>
+<li><strong>Verificação das respostas corretas:</strong> assegurar que os gabaritos e as explicações estejam fundamentados em fontes adequadas.</li>
+<li><strong>Organização do banco de questões:</strong> armazenar enunciados, alternativas, respostas corretas, explicações, dificuldade e habilidade avaliada.</li>
+<li><strong>Coleta de interações reais:</strong> registrar as respostas dos jogadores, a questão respondida, a habilidade associada e a sequência temporal das partidas.</li>
+<li><strong>Avaliação futura do BKT:</strong> utilizar os históricos de respostas para investigar a adequação dos parâmetros e a qualidade das estimativas de domínio.</li>
+<li><strong>Retomada eventual da classificação automática:</strong> caso volte a ser pertinente ao escopo, desenvolver e avaliar um classificador separadamente, utilizando a base de notícias e procedimentos apropriados de treinamento e validação.</li>
+</ol>
+<p>Essas atividades não devem ser interpretadas como funcionalidades já concluídas. Elas representam possibilidades de continuidade que dependem das prioridades e da evolução do projeto.</p>
+<h2 id="9-consideracoes-finais">9. Considerações finais</h2>
+<p>A base utilizada no Verifica reúne 23.198 registros na versão examinada pelo notebook, divididos entre alegações classificadas como falsas e verdadeiras. A análise exploratória documentou a estrutura dos arquivos, investigou a qualidade dos dados, aplicou procedimentos de limpeza e identificou características textuais, padrões temáticos e possíveis vieses relevantes para a modelagem.</p>
+<p>Inicialmente, o dataset foi considerado para o treinamento de um classificador supervisionado de notícias falsas. Entretanto, dificuldades técnicas na implementação dessa abordagem contribuíram para a mudança de direção do projeto, que passou a priorizar uma aplicação gamificada baseada em Bayesian Knowledge Tracing.</p>
+<p>Na proposta atual, o BKT tem a finalidade de estimar o domínio de habilidades do jogador a partir de suas respostas, e não de aprender a classificar notícias a partir dos rótulos existentes na base. Por esse motivo, os dados de notícias não foram utilizados como dataset de treinamento do BKT.</p>
+<p>A distinção é essencial para descrever corretamente o trabalho realizado: <strong>a base de dados foi objeto de análise exploratória com vistas à abordagem original de classificação, enquanto a proposta atual de BKT depende de questões associadas a habilidades e de sequências de respostas dos jogadores.</strong> Embora a base possa contribuir para a elaboração futura de questões, seu uso nessa função exige curadoria e não equivale ao treinamento ou à calibração do BKT.</p>
+<h2 id="referencias-e-artefatos-do-projeto">Referências e artefatos do projeto</h2>
+<ul>
+<li><code>analise_exploratoria.ipynb</code> — notebook de análise exploratória, inspeção da qualidade, limpeza e investigação dos padrões da base.</li>
+<li><code>00_limpeza.py</code> — script citado no notebook para reproduzir a limpeza e exportar os dados tratados.</li>
+<li><code>datasets/fakes.csv</code> — registros de alegações classificadas como falsas na versão analisada.</li>
+<li><code>datasets/true.csv</code> — registros de alegações classificadas como verdadeiras na versão analisada.</li>
+<li><code>datasets/limpos/</code> — diretório de saída citado pelo processo de limpeza para os dados tratados.</li>
+</ul>
+<p>Os caminhos e quantitativos apresentados correspondem à organização e à versão descritas no notebook analisado e devem ser conferidos caso a estrutura do repositório ou os arquivos tenham sido atualizados.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.annotate", "content.tabs.link", "header.autohide", "navigation.instant", "navigation.top", "navigation.tracking"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

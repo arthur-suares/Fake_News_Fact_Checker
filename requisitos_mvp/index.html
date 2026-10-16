@@ -1,0 +1,1788 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../arquitetura-projeto/">
+      
+      
+        <link rel="next" href="../elaboracao-de-guiding-questions/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Requisitos - Grupo 2 - Residência em IA TIC - First Challenge</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documento-de-requisitos-mvp-fake-news-fact-checker-com-bkt" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href=".." title="Grupo 2 - Residência em IA TIC - First Challenge" class="md-header__button md-logo" aria-label="Grupo 2 - Residência em IA TIC - First Challenge" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grupo 2 - Residência em IA TIC - First Challenge
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Requisitos
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/arthur-suares/Fake_News_Fact_Checker/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fake News Fack Checker
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Grupo 2 - Residência em IA TIC - First Challenge" class="md-nav__button md-logo" aria-label="Grupo 2 - Residência em IA TIC - First Challenge" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grupo 2 - Residência em IA TIC - First Challenge
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/arthur-suares/Fake_News_Fact_Checker/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fake News Fack Checker
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visao-geral-projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral do Projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura-projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura do Projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-objetivo-do-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Objetivo do sistema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-escopo-do-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Escopo do MVP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Escopo do MVP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-incluido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Incluído
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-fora-do-escopo-obrigatorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Fora do escopo obrigatório
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-conceitos-e-entidades-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Conceitos e entidades principais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Conceitos e entidades principais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-noticia-news" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Notícia (News)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-questao-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Questão (Question)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-habilidades-skill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Habilidades (Skill)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-estado-de-habilidade-userskillstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Estado de habilidade (UserSkillState)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-partida-e-rodada-game-gameround" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. Partida e rodada (Game, GameRound)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-resposta-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6. Resposta (Answer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-requisitos-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Requisitos funcionais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Requisitos funcionais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-ingestao-e-persistencia-do-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Ingestão e persistência do dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-gestao-de-questoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Gestão de questões
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-partidas-e-rodadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Partidas e rodadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-respostas-e-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Respostas e feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-afericao-de-habilidades-com-bkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Aferição de habilidades com BKT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-selecao-adaptativa-de-questoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6. Seleção adaptativa de questões
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-interface-e-perfil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7. Interface e perfil
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#48-autenticacao-e-integracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8. Autenticação e integração
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-requisitos-nao-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Requisitos não funcionais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-priorizacao-moscow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Priorização MoSCoW
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-criterios-de-aceite-ponta-a-ponta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Critérios de aceite ponta a ponta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-dados-e-limitacoes-metodologicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dados e limitações metodológicas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-historico-de-versoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Histórico de versões
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../elaboracao-de-guiding-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elaboração de guiding questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SCRUM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise exploratória de dados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../referencial-teorico/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencial Teórico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bibliografia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bibliografia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-objetivo-do-sistema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Objetivo do sistema
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-escopo-do-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Escopo do MVP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Escopo do MVP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-incluido" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. Incluído
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-fora-do-escopo-obrigatorio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Fora do escopo obrigatório
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-conceitos-e-entidades-principais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Conceitos e entidades principais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Conceitos e entidades principais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-noticia-news" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Notícia (News)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-questao-question" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Questão (Question)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-habilidades-skill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Habilidades (Skill)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-estado-de-habilidade-userskillstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Estado de habilidade (UserSkillState)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-partida-e-rodada-game-gameround" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. Partida e rodada (Game, GameRound)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-resposta-answer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6. Resposta (Answer)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-requisitos-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Requisitos funcionais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Requisitos funcionais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-ingestao-e-persistencia-do-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Ingestão e persistência do dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-gestao-de-questoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Gestão de questões
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-partidas-e-rodadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3. Partidas e rodadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#44-respostas-e-feedback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4. Respostas e feedback
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#45-afericao-de-habilidades-com-bkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5. Aferição de habilidades com BKT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#46-selecao-adaptativa-de-questoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6. Seleção adaptativa de questões
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#47-interface-e-perfil" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7. Interface e perfil
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#48-autenticacao-e-integracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8. Autenticação e integração
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-requisitos-nao-funcionais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Requisitos não funcionais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-priorizacao-moscow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Priorização MoSCoW
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-criterios-de-aceite-ponta-a-ponta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Critérios de aceite ponta a ponta
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-dados-e-limitacoes-metodologicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Dados e limitações metodológicas
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-historico-de-versoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Histórico de versões
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="documento-de-requisitos-mvp-fake-news-fact-checker-com-bkt">Documento de Requisitos --- MVP Fake News Fact Checker com BKT</h1>
+<hr />
+<h2 id="1-objetivo-do-sistema">1. Objetivo do sistema</h2>
+<p>O sistema oferece uma experiência gamificada de avaliação crítica de
+notícias e informações. Ao longo de partidas com múltiplas rodadas, o
+usuário responde a questões que avaliam habilidades específicas de
+análise da informação. O sistema registra as respostas e utiliza
+<strong>Bayesian Knowledge Tracing (BKT)</strong> para estimar a evolução do domínio
+de cada habilidade ao longo do tempo.</p>
+<p>O MVP deve entregar um fluxo persistente de ponta a ponta: notícias
+armazenadas no banco são associadas a questões válidas; o usuário
+responde; o backend determina a correção; o BKT atualiza a estimativa da
+habilidade avaliada; e o sistema utiliza o estado atualizado para
+selecionar questões futuras e apresentar um perfil de habilidades.</p>
+<p>A integração existente com a Google Fact Check API e as funcionalidades
+de verificação podem continuar disponíveis como recursos complementares.
+Elas não substituem o BKT: a verificação externa fornece informações
+sobre alegações e verificações publicadas, enquanto o BKT estima o
+domínio de habilidades do usuário com base em suas respostas.</p>
+<h2 id="2-escopo-do-mvp">2. Escopo do MVP</h2>
+<h3 id="21-incluido">2.1. Incluído</h3>
+<ul>
+<li>Persistência de notícias provenientes dos datasets do projeto.</li>
+<li>Importação repetível e validada de notícias para o banco de dados.</li>
+<li>Cadastro e persistência de questões associadas às notícias.</li>
+<li>Classificação de cada questão em uma única habilidade.</li>
+<li>Definição de gabarito, explicação e dificuldade para cada questão.</li>
+<li>Partidas com até dez rodadas.</li>
+<li>Registro de respostas, confiança declarada e tempo de resposta,
+    quando disponíveis.</li>
+<li>Atualização e persistência do estado BKT por habilidade.</li>
+<li>Seleção determinística de questões, priorizando a habilidade com
+    menor domínio estimado.</li>
+<li>Evitar repetição de questões respondidas enquanto existirem
+    alternativas elegíveis.</li>
+<li>Feedback após a resposta e perfil com as quatro habilidades.</li>
+<li>Autenticação e autorização para proteger jogos, respostas e estados
+    de habilidade.</li>
+<li>Testes unitários e de integração do fluxo principal.</li>
+<li>Preservação das funcionalidades existentes de verificação factual,
+    quando compatíveis com a arquitetura atual.</li>
+</ul>
+<h3 id="22-fora-do-escopo-obrigatorio">2.2. Fora do escopo obrigatório</h3>
+<ul>
+<li>Treinar um classificador próprio para decidir se uma notícia é
+    verdadeira ou falsa.</li>
+<li>Estimar automaticamente parâmetros BKT a partir de dados coletados.
+    Os parâmetros iniciais podem ser configurados e documentados.</li>
+<li>Tratar as 24.800 notícias como questões prontas.</li>
+<li>Gerar automaticamente questões para todas as notícias sem validação.</li>
+<li>Reinforcement Learning, Deep Knowledge Tracing (DKT), K-Means ou
+    outros algoritmos adaptativos complexos.</li>
+<li>Diagnosticar personalidade, ideologia ou suscetibilidade psicológica
+    do usuário.</li>
+<li>Pipeline contínuo de MLOps ou retreinamento automático.</li>
+<li>Dependência obrigatória de LLM para iniciar ou executar uma partida.</li>
+<li>Análise multimodal avançada, busca reversa de imagem ou CLIP como
+    requisito para o fluxo principal do jogo. Funcionalidades existentes
+    podem ser preservadas, mas não devem bloquear o jogo.</li>
+</ul>
+<h2 id="3-conceitos-e-entidades-principais">3. Conceitos e entidades principais</h2>
+<h3 id="31-noticia-news">3.1. Notícia (<code>News</code>)</h3>
+<p>Armazena o conteúdo original utilizado para compor questões. Deve
+preservar, quando disponíveis, título, texto, URL, origem/publicador,
+classificação original, data e referência à imagem.</p>
+<p>A classificação de origem da notícia é distinta da resposta do usuário e
+de qualquer resultado retornado por uma API de fact-checking.</p>
+<h3 id="32-questao-question">3.2. Questão (<code>Question</code>)</h3>
+<p>Representa uma atividade que utiliza uma notícia para avaliar uma
+habilidade. Uma notícia pode estar associada a várias questões, e cada
+questão deve avaliar <strong>uma única habilidade</strong>.</p>
+<p>Cada questão válida deve possuir notícia associada, habilidade
+associada, enunciado, alternativas, gabarito, explicação e dificuldade
+numérica entre 0 e 1. O gabarito e a explicação não devem ser enviados
+ao frontend antes do envio da resposta.</p>
+<h3 id="33-habilidades-skill">3.3. Habilidades (<code>Skill</code>)</h3>
+<ul>
+<li><code>SOURCE</code>: avaliar origem, rastreabilidade e confiabilidade da fonte.</li>
+<li><code>EVIDENCE</code>: avaliar se as evidências sustentam a alegação.</li>
+<li><code>CONTEXT</code>: identificar omissões, distorções ou uso de informação
+    fora de contexto.</li>
+<li><code>VISUAL</code>: avaliar se uma imagem disponível corresponde à alegação e
+    constitui evidência relevante.</li>
+</ul>
+<p>Uma questão só deve avaliar uma habilidade. Não se deve atualizar várias
+habilidades a partir de uma única resposta no MVP.</p>
+<h3 id="34-estado-de-habilidade-userskillstate">3.4. Estado de habilidade (<code>UserSkillState</code>)</h3>
+<p>Armazena, por usuário e habilidade, a probabilidade atual estimada de
+domínio (<code>mastery_probability</code>) e a data da última atualização. Deve
+existir no máximo um estado atual por combinação de usuário e
+habilidade. Os valores devem permanecer entre 0 e 1 e ser persistidos
+entre partidas e reinicializações.</p>
+<h3 id="35-partida-e-rodada-game-gameround">3.5. Partida e rodada (<code>Game</code>, <code>GameRound</code>)</h3>
+<p><code>Game</code> representa uma partida do usuário. <code>GameRound</code> representa uma
+rodada daquela partida e referencia a notícia apresentada. A questão
+efetivamente respondida deve ser identificada de maneira inequívoca pelo
+registro de resposta.</p>
+<h3 id="36-resposta-answer">3.6. Resposta (<code>Answer</code>)</h3>
+<p>Armazena, no mínimo, usuário, rodada, questão, alternativa selecionada,
+correção calculada pelo backend e data/hora. Confiança declarada e tempo
+de resposta podem ser armazenados quando disponíveis. O backend
+determina a correção.</p>
+<h2 id="4-requisitos-funcionais">4. Requisitos funcionais</h2>
+<p>Prioridades: <strong>Must have</strong> = obrigatório; <strong>Should have</strong> = importante;
+<strong>Could have</strong> = desejável; <strong>Won't have</strong> = fora do escopo desta
+versão.</p>
+<h3 id="41-ingestao-e-persistencia-do-dataset">4.1. Ingestão e persistência do dataset</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-DAT-01               Importar notícias dos   Must have
+                          CSVs selecionados para<br />
+<code>News</code>, preservando os<br />
+                          campos relevantes     <br />
+                          disponíveis.            </p>
+<p>RF-DAT-02               Validar e normalizar    Must have
+                          campos, tratar valores<br />
+                          ausentes e registrar  <br />
+                          registros ignorados ou<br />
+                          rejeitados.             </p>
+<p>RF-DAT-03               Tornar a importação     Must have
+                          idempotente, sem      <br />
+                          duplicar registros em <br />
+                          execuções repetidas.    </p>
+<p>RF-DAT-04               Mapear explicitamente   Must have
+                          as classes do dataset e 
+                          documentar seu        <br />
+                          significado.            </p>
+<p>RF-DAT-05               Oferecer modo de        Should have
+                          simulação/validação sem 
+                          gravação no banco.      </p>
+<p>RF-DAT-06               Importar em lotes, sem  Should have
+                          exigir que todo o     <br />
+                          dataset esteja na     <br />
+                          memória.                </p>
+<hr />
+<p>A base contém aproximadamente 22 mil notícias falsas e 2.800
+verdadeiras, mas o importador deve conferir as contagens reais dos
+arquivos.</p>
+<h3 id="42-gestao-de-questoes">4.2. Gestão de questões</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-QUE-01               Persistir questões      Must have
+                          associadas a notícias <br />
+                          existentes.             </p>
+<p>RF-QUE-02               Associar cada questão a Must have
+                          exatamente uma das    <br />
+                          quatro habilidades.     </p>
+<p>RF-QUE-03               Exigir enunciado,       Must have
+                          opções válidas,       <br />
+                          gabarito e explicação.  </p>
+<p>RF-QUE-04               Exigir dificuldade      Must have
+                          numérica entre 0 e 1.   </p>
+<p>RF-QUE-05               Validar a existência da Must have
+                          notícia e da habilidade 
+                          associadas.             </p>
+<p>RF-QUE-06               Disponibilizar questões Must have
+                          revisadas associadas a<br />
+                          notícias reais,       <br />
+                          suficientes para testar 
+                          uma partida completa.   </p>
+<p>RF-QUE-07               Permitir várias         Must have
+                          questões por notícia, <br />
+                          inclusive de          <br />
+                          habilidades diferentes. </p>
+<p>RF-QUE-08               Impedir que questões    Must have
+                          inválidas sejam       <br />
+                          disponibilizadas no   <br />
+                          jogo.                   </p>
+<p>RF-QUE-09               Permitir geração de     Could have
+                          rascunhos de questões <br />
+                          sujeitos a validação  <br />
+                          antes da publicação.    </p>
+<hr />
+<p>O dataset de notícias não deve ser tratado como banco de questões. Não
+se deve inventar evidências, fontes, contexto, imagens ou gabaritos.
+Questões <code>VISUAL</code> exigem material visual disponível e suficiente para
+avaliar a relação entre imagem e alegação.</p>
+<h3 id="43-partidas-e-rodadas">4.3. Partidas e rodadas</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-JOG-01               Permitir que um usuário Must have
+                          autenticado inicie uma<br />
+                          partida.                </p>
+<p>RF-JOG-02               Garantir a existência   Must have
+                          dos quatro estados    <br />
+                          iniciais de habilidade<br />
+                          do usuário.             </p>
+<p>RF-JOG-03               Criar rodadas           Must have
+                          persistidas associadas<br />
+                          à partida e à notícia <br />
+                          selecionada.            </p>
+<p>RF-JOG-04               Apresentar notícia,     Must have
+                          questão e opções sem  <br />
+                          revelar o gabarito.     </p>
+<p>RF-JOG-05               Aceitar uma resposta    Must have
+                          válida por            <br />
+                          questão/rodada e      <br />
+                          rejeitar duplicatas.    </p>
+<p>RF-JOG-06               Limitar uma partida a   Must have
+                          dez rodadas           <br />
+                          respondidas.            </p>
+<p>RF-JOG-07               Encerrar a partida após Must have
+                          dez rodadas ou quando <br />
+                          não houver questões   <br />
+                          elegíveis, informando o 
+                          motivo.                 </p>
+<p>RF-JOG-08               Impedir novas respostas Must have
+                          em partidas           <br />
+                          finalizadas.            </p>
+<p>RF-JOG-09               Preservar o histórico   Must have
+                          após o encerramento.    </p>
+<hr />
+<h3 id="44-respostas-e-feedback">4.4. Respostas e feedback</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-RES-01               Receber a alternativa e Must have
+                          identificar usuário,  <br />
+                          rodada e questão      <br />
+                          correspondentes.        </p>
+<p>RF-RES-02               Calcular a correção no  Must have
+                          backend usando o      <br />
+                          gabarito persistido.    </p>
+<p>RF-RES-03               Registrar resposta,     Must have
+                          correção e data/hora.   </p>
+<p>RF-RES-04               Registrar a confiança   Should have
+                          declarada em escala   <br />
+                          validada, se          <br />
+                          habilitada.             </p>
+<p>RF-RES-05               Registrar o tempo de    Should have
+                          resposta em           <br />
+                          milissegundos, quando <br />
+                          disponível, validando o 
+                          valor.                  </p>
+<p>RF-RES-06               Apresentar correção,    Must have
+                          alternativa correta,  <br />
+                          explicação e habilidade 
+                          avaliada após a       <br />
+                          resposta.               </p>
+<p>RF-RES-07               Impedir que uma mesma   Must have
+                          resposta seja         <br />
+                          processada ou atualize<br />
+                          o BKT mais de uma vez.  </p>
+<hr />
+<h3 id="45-afericao-de-habilidades-com-bkt">4.5. Aferição de habilidades com BKT</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-BKT-01               Manter estado de        Must have
+                          domínio independente  <br />
+                          para cada uma das     <br />
+                          quatro habilidades de <br />
+                          cada usuário.           </p>
+<p>RF-BKT-02               Atualizar a             Must have
+                          probabilidade de      <br />
+                          domínio após uma      <br />
+                          resposta válida.        </p>
+<p>RF-BKT-03               Utilizar parâmetros     Must have
+                          configurados para     <br />
+                          domínio inicial,      <br />
+                          transição, adivinhação<br />
+                          e deslize.              </p>
+<p>RF-BKT-04               Persistir a estimativa  Must have
+                          atualizada e a data da<br />
+                          atualização.            </p>
+<p>RF-BKT-05               Atualizar somente a     Must have
+                          habilidade associada à<br />
+                          questão respondida.     </p>
+<p>RF-BKT-06               Recuperar o estado      Must have
+                          persistido ao iniciar <br />
+                          novas partidas.         </p>
+<p>RF-BKT-07               Permitir consultar as   Must have
+                          quatro estimativas do <br />
+                          usuário autenticado.    </p>
+<p>RF-BKT-08               Centralizar a           Should have
+                          matemática no motor BKT 
+                          compartilhado, sem    <br />
+                          duplicar fórmulas nos <br />
+                          trackers.               </p>
+<p>RF-BKT-09               Configurar e documentar Should have
+                          os parâmetros iniciais<br />
+                          do BKT.                 </p>
+<p>RF-BKT-10               Estimar parâmetros a    Won't have
+                          partir de sequências  <br />
+                          reais de respostas em <br />
+                          uma etapa futura.       </p>
+<hr />
+<p>Os parâmetros iniciais podem ser definidos manualmente no MVP. Não é
+necessário treinar o BKT com o dataset de notícias. As estimativas são
+probabilidades do modelo, não medidas clínicas nem provas definitivas de
+competência.</p>
+<h3 id="46-selecao-adaptativa-de-questoes">4.6. Seleção adaptativa de questões</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-SEL-01               Priorizar a habilidade  Must have
+                          com menor probabilidade 
+                          de domínio atual.       </p>
+<p>RF-SEL-02               Evitar questões já      Must have
+                          respondidas pelo      <br />
+                          usuário em partidas   <br />
+                          anteriores, enquanto  <br />
+                          houver alternativas   <br />
+                          elegíveis.              </p>
+<p>RF-SEL-03               Priorizar questão cuja  Must have
+                          dificuldade seja      <br />
+                          compatível com a      <br />
+                          mastery atual.          </p>
+<p>RF-SEL-04               Usar critérios          Must have
+                          determinísticos para  <br />
+                          desempate.              </p>
+<p>RF-SEL-05               Se não houver questão   Must have
+                          da habilidade         <br />
+                          prioritária, tentar   <br />
+                          outras habilidades e  <br />
+                          depois qualquer questão 
+                          não respondida.         </p>
+<p>RF-SEL-06               Retornar estado         Must have
+                          explícito quando não  <br />
+                          houver questões       <br />
+                          elegíveis.              </p>
+<p>RF-SEL-07               Evitar repetir a        Should have
+                          notícia na mesma      <br />
+                          partida quando houver <br />
+                          alternativa, sem      <br />
+                          descartar outras      <br />
+                          questões válidas da   <br />
+                          mesma notícia.          </p>
+<hr />
+<p>O seletor não deve utilizar Reinforcement Learning, DKT, K-Means ou
+algoritmos complexos. A dificuldade é um atributo da questão e não deve
+ser confundida com a mastery do usuário.</p>
+<h3 id="47-interface-e-perfil">4.7. Interface e perfil</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-UI-01                Iniciar uma partida e   Must have
+                          apresentar a questão  <br />
+                          retornada pelo backend. </p>
+<p>RF-UI-02                Permitir selecionar uma Must have
+                          opção e enviar a      <br />
+                          resposta à API.         </p>
+<p>RF-UI-03                Apresentar feedback     Must have
+                          após confirmação do   <br />
+                          backend.                </p>
+<p>RF-UI-04                Exibir progresso e      Must have
+                          estado de conclusão da<br />
+                          partida.                </p>
+<p>RF-UI-05                Exibir as estimativas   Must have
+                          de <code>SOURCE</code>,          <br />
+<code>EVIDENCE</code>, <code>CONTEXT</code> e 
+                          <code>VISUAL</code>.               </p>
+<p>RF-UI-06                Carregar o perfil da    Must have
+                          API, sem calcular uma <br />
+                          estimativa alternativa<br />
+                          no frontend.            </p>
+<p>RF-UI-07                Informar erros de       Must have
+                          comunicação e ausência<br />
+                          de questões           <br />
+                          disponíveis.            </p>
+<p>RF-UI-08                Exibir evolução entre   Could have
+                          partidas quando houver<br />
+                          histórico suficiente.   </p>
+<hr />
+<h3 id="48-autenticacao-e-integracao">4.8. Autenticação e integração</h3>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RF-INT-01               Associar partidas,      Must have
+                          respostas e estados ao<br />
+                          usuário autenticado.    </p>
+<p>RF-INT-02               Impedir acesso ou       Must have
+                          alteração não         <br />
+                          autorizados aos dados <br />
+                          de outro usuário.       </p>
+<p>RF-INT-03               Reutilizar serviços,    Must have
+                          schemas e repositórios<br />
+                          existentes, evitando  <br />
+                          duplicação            <br />
+                          desnecessária.          </p>
+<p>RF-INT-04               Preservar               Should have
+                          funcionalidades       <br />
+                          existentes de         <br />
+                          verificação factual   <br />
+                          quando compatíveis, sem 
+                          exigir fact-check     <br />
+                          externo a cada rodada.  </p>
+<p>RF-INT-05               Manter distintas a      Must have
+                          classificação original<br />
+                          do dataset, as        <br />
+                          respostas, as         <br />
+                          estimativas BKT e os  <br />
+                          vereditos externos.     </p>
+<hr />
+<h2 id="5-requisitos-nao-funcionais">5. Requisitos não funcionais</h2>
+<hr />
+<p>ID                      Requisito               Prioridade</p>
+<hr />
+<p>RNF-01                  Validar e sanitizar os  Must have
+                          dados recebidos pelas <br />
+                          APIs.                   </p>
+<p>RNF-02                  Isolar os dados por     Must have
+                          usuário e proteger    <br />
+                          rotas autenticadas.     </p>
+<p>RNF-03                  Manter consistentes o   Must have
+                          registro da resposta e<br />
+                          a atualização da      <br />
+                          mastery, evitando     <br />
+                          duplicação.             </p>
+<p>RNF-04                  Persistir notícias,     Must have
+                          questões, partidas,   <br />
+                          rodadas, respostas e  <br />
+                          estados de habilidade.  </p>
+<p>RNF-05                  Tornar idempotente a    Must have
+                          inicialização das     <br />
+                          skills e dos dados de <br />
+                          demonstração.           </p>
+<p>RNF-06                  Tornar a importação     Must have
+                          repetível, sem        <br />
+                          duplicação, com resumo<br />
+                          dos resultados.         </p>
+<p>RNF-07                  Garantir seleção        Must have
+                          determinística para o <br />
+                          mesmo estado do banco.  </p>
+<p>RNF-08                  Oferecer interface      Should have
+                          utilizável em desktop e 
+                          dispositivos móveis.    </p>
+<p>RNF-09                  Apresentar enunciados e Must have
+                          feedback em linguagem <br />
+                          acessível.              </p>
+<p>RNF-10                  Tratar falhas de APIs   Must have
+                          externas sem impedir  <br />
+                          partidas que não      <br />
+                          dependam delas.         </p>
+<p>RNF-11                  Usar banco isolado nos  Must have
+                          testes e não modificar<br />
+                          os datasets originais.  </p>
+<p>RNF-12                  Registrar erros         Must have
+                          relevantes sem expor  <br />
+                          credenciais ou dados  <br />
+                          sensíveis nos logs.     </p>
+<p>RNF-13                  Utilizar HTTPS nas      Must have
+                          comunicações com APIs <br />
+                          externas.               </p>
+<p>RNF-14                  Documentar              Must have
+                          configuração,         <br />
+                          inicialização,        <br />
+                          importação e execução <br />
+                          dos testes.             </p>
+<p>RNF-15                  Evitar chamadas         Should have
+                          externas desnecessárias 
+                          no caminho crítico da <br />
+                          resposta e da seleção <br />
+                          de questões.            </p>
+<hr />
+<h2 id="6-priorizacao-moscow">6. Priorização MoSCoW</h2>
+<hr />
+<p>Must have         Should have       Could have        Won't have</p>
+<hr />
+<p>Importação        Simulação de      Rascunhos de      Treinamento de
+  idempotente;      importação;       questões com LLM  parâmetros BKT
+  persistência de   confiança e tempo sujeitos a        neste ciclo; DKT;
+  notícias e        de resposta;      revisão;          Reinforcement
+  questões; quatro  evitar repetição  visualização      Learning; K-Means
+  skills; partidas  de notícia na     longitudinal;     e personas
+  e rodadas;        mesma partida;    ferramentas       psicológicas;
+  respostas; BKT    parâmetros BKT    administrativas   classificador
+  persistido;       configuráveis;    de curadoria.     próprio de
+  seleção           integração                          veracidade;
+  adaptativa        complementar com                    geração
+  simples; perfil;  Google Fact                         automática sem
+  autenticação e    Check; evolução                     validação; MLOps
+  autorização;      entre partidas.                     contínuo.
+  testes unitários                                    <br />
+  e de integração.                                      </p>
+<hr />
+<h2 id="7-criterios-de-aceite-ponta-a-ponta">7. Critérios de aceite ponta a ponta</h2>
+<p>O MVP será considerado funcional quando:</p>
+<ol>
+<li>O banco é inicializado e as quatro skills existem sem duplicação.</li>
+<li>Um subconjunto do dataset é importado e a reexecução não duplica
+    registros.</li>
+<li>Existem questões válidas persistidas e associadas a notícias
+    importadas.</li>
+<li>Um usuário autenticado inicia uma partida e recebe uma questão
+    elegível.</li>
+<li>A API apresenta enunciado e alternativas sem revelar o gabarito.</li>
+<li>O usuário envia uma resposta e o backend determina a correção.</li>
+<li>A resposta é persistida e a habilidade correspondente é atualizada
+    pelo BKT exatamente uma vez.</li>
+<li>O perfil retorna as quatro estimativas persistidas.</li>
+<li>A próxima seleção utiliza o estado atualizado e evita repetir
+    questões respondidas quando há alternativas.</li>
+<li>O sistema apresenta feedback e encerra a partida após dez rodadas
+    respondidas ou antes, se não houver questões elegíveis.</li>
+<li>Histórico e perfil permanecem disponíveis após reinicialização do
+    backend.</li>
+<li>Os testes do backend passam e o frontend compila com tipos alinhados
+    à API.</li>
+</ol>
+<h2 id="8-dados-e-limitacoes-metodologicas">8. Dados e limitações metodológicas</h2>
+<p>A base atual contém aproximadamente 22 mil notícias falsas e 2.800
+verdadeiras. Esses registros são fontes de conteúdo, não um banco de
+questões pronto.</p>
+<p>A importação deve preservar a origem e a classificação original. As
+questões precisam ser elaboradas ou curadas com base nas informações
+disponíveis. Não se deve inferir que uma notícia possui imagem, fonte
+verificável ou evidência suficiente apenas porque existe no dataset.</p>
+<p>O MVP deve começar com um conjunto controlado de questões revisadas,
+suficiente para exercitar as quatro habilidades e concluir partidas de
+teste. A cobertura integral do dataset pode ocorrer incrementalmente.</p>
+<p>Quando houver material válido, o conjunto deve incluir notícias
+classificadas como verdadeiras e falsas. O sistema não deve permitir que
+responder sempre "falso" seja uma estratégia suficiente para obter bom
+desempenho.</p>
+<p>A qualidade do BKT depende da validade dos enunciados, gabaritos e
+associações entre questões e habilidades. A calibração dos parâmetros
+com interações reais é uma possível evolução de pesquisa, não um
+requisito para concluir o MVP.</p>
+<h2 id="9-historico-de-versoes">9. Histórico de versões</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Data</strong></th>
+<th style="text-align: center;"><strong>Versão</strong></th>
+<th style="text-align: center;"><strong>Descrição</strong></th>
+<th style="text-align: center;"><strong>Autor</strong></th>
+<th style="text-align: center;"><strong>Revisor</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">18/09/2026</td>
+<td style="text-align: center;">1.0</td>
+<td style="text-align: center;">Confecção inicial do documento</td>
+<td style="text-align: center;">Arthur Suares</td>
+<td style="text-align: center;">Milena Marques</td>
+</tr>
+<tr>
+<td style="text-align: center;">13/10/2026</td>
+<td style="text-align: center;">1.1</td>
+<td style="text-align: center;">Reestruturação do documento de requisitos para atender ao modelo bkt</td>
+<td style="text-align: center;">Arthur Suares</td>
+<td style="text-align: center;">Ian Lucca</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.annotate", "content.tabs.link", "header.autohide", "navigation.instant", "navigation.top", "navigation.tracking"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

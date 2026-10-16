@@ -1,0 +1,1518 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../eda/">
+      
+      
+        <link rel="next" href="../bibliografia/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Referencial Teórico - Grupo 2 - Residência em IA TIC - First Challenge</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#referencial-teorico-knowledge-tracing-bayesian-knowledge-tracing-e-definicao-dos-parametros-iniciais" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href=".." title="Grupo 2 - Residência em IA TIC - First Challenge" class="md-header__button md-logo" aria-label="Grupo 2 - Residência em IA TIC - First Challenge" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Grupo 2 - Residência em IA TIC - First Challenge
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Referencial Teórico
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/arthur-suares/Fake_News_Fact_Checker/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fake News Fack Checker
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Grupo 2 - Residência em IA TIC - First Challenge" class="md-nav__button md-logo" aria-label="Grupo 2 - Residência em IA TIC - First Challenge" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Grupo 2 - Residência em IA TIC - First Challenge
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/arthur-suares/Fake_News_Fact_Checker/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Fake News Fack Checker
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Início
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../visao-geral-projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Visão Geral do Projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../arquitetura-projeto/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitetura do Projeto
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requisitos_mvp/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requisitos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../elaboracao-de-guiding-questions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Elaboração de guiding questions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scrum/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SCRUM
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eda/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análise exploratória de dados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencial Teórico
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Referencial Teórico
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introdução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-knowledge-tracing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Knowledge Tracing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bayesian-knowledge-tracing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Bayesian Knowledge Tracing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Bayesian Knowledge Tracing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-fundamentos-do-modelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Fundamentos do modelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-parametros-do-bkt-classico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Parâmetros do BKT clássico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-atualizacao-probabilistica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Atualização probabilística
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-aplicacao-do-bkt-ao-verifica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Aplicação do BKT ao Verifica
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Aplicação do BKT ao Verifica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-objetivo-da-aplicacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Objetivo da aplicação
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-habilidades-monitoradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Habilidades monitoradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-selecao-adaptativa-das-questoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Seleção adaptativa das questões
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-definicao-e-justificativa-dos-parametros-iniciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Definição e justificativa dos parâmetros iniciais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Definição e justificativa dos parâmetros iniciais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-o-problema-da-estimacao-em-cenarios-com-poucos-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 O problema da estimação em cenários com poucos dados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-criterios-gerais-para-a-escolha-dos-parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Critérios gerais para a escolha dos parâmetros
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-justificativa-da-probabilidade-inicial-de-dominio-pl_0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Justificativa da probabilidade inicial de domínio — (P(L_0))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-justificativa-da-probabilidade-de-aprendizagem-pt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Justificativa da probabilidade de aprendizagem — (P(T))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-justificativa-da-probabilidade-de-chute-pg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Justificativa da probabilidade de chute — (P(G))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-justificativa-da-probabilidade-de-deslize-ps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Justificativa da probabilidade de deslize — (P(S))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-restricoes-conceituais-e-matematicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Restrições conceituais e matemáticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-registro-e-rastreabilidade-dos-parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Registro e rastreabilidade dos parâmetros
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-conhecimento-previo-elicitacao-de-parametros-e-simulacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Conhecimento prévio, elicitação de parâmetros e simulação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Conhecimento prévio, elicitação de parâmetros e simulação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-elicitacao-de-conhecimento-previo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Elicitação de conhecimento prévio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-uso-de-simulacoes-no-desenvolvimento-do-bkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Uso de simulações no desenvolvimento do BKT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-limites-da-validacao-simulada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Limites da validação simulada
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-estrategia-de-validacao-adotada-no-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Estratégia de validação adotada no MVP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-consideracoes-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Considerações finais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referências
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bibliografia/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bibliografia
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-introducao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Introdução
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-knowledge-tracing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Knowledge Tracing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-bayesian-knowledge-tracing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Bayesian Knowledge Tracing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Bayesian Knowledge Tracing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-fundamentos-do-modelo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Fundamentos do modelo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-parametros-do-bkt-classico" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Parâmetros do BKT clássico
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-atualizacao-probabilistica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Atualização probabilística
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-aplicacao-do-bkt-ao-verifica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Aplicação do BKT ao Verifica
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Aplicação do BKT ao Verifica">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-objetivo-da-aplicacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Objetivo da aplicação
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-habilidades-monitoradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Habilidades monitoradas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#43-selecao-adaptativa-das-questoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Seleção adaptativa das questões
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-definicao-e-justificativa-dos-parametros-iniciais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Definição e justificativa dos parâmetros iniciais
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Definição e justificativa dos parâmetros iniciais">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#51-o-problema-da-estimacao-em-cenarios-com-poucos-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 O problema da estimação em cenários com poucos dados
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#52-criterios-gerais-para-a-escolha-dos-parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Critérios gerais para a escolha dos parâmetros
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#53-justificativa-da-probabilidade-inicial-de-dominio-pl_0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Justificativa da probabilidade inicial de domínio — (P(L_0))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#54-justificativa-da-probabilidade-de-aprendizagem-pt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Justificativa da probabilidade de aprendizagem — (P(T))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#55-justificativa-da-probabilidade-de-chute-pg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Justificativa da probabilidade de chute — (P(G))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#56-justificativa-da-probabilidade-de-deslize-ps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Justificativa da probabilidade de deslize — (P(S))
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#57-restricoes-conceituais-e-matematicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Restrições conceituais e matemáticas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#58-registro-e-rastreabilidade-dos-parametros" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 Registro e rastreabilidade dos parâmetros
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-conhecimento-previo-elicitacao-de-parametros-e-simulacao" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Conhecimento prévio, elicitação de parâmetros e simulação
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Conhecimento prévio, elicitação de parâmetros e simulação">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-elicitacao-de-conhecimento-previo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Elicitação de conhecimento prévio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-uso-de-simulacoes-no-desenvolvimento-do-bkt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Uso de simulações no desenvolvimento do BKT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-limites-da-validacao-simulada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Limites da validação simulada
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-estrategia-de-validacao-adotada-no-mvp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Estratégia de validação adotada no MVP
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-consideracoes-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Considerações finais
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencias" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Referências
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="referencial-teorico-knowledge-tracing-bayesian-knowledge-tracing-e-definicao-dos-parametros-iniciais">Referencial Teórico: Knowledge Tracing, Bayesian Knowledge Tracing e Definição dos Parâmetros Iniciais</h1>
+<h2 id="1-introducao">1. Introdução</h2>
+<p>O desenvolvimento de sistemas adaptativos baseados em inteligência artificial envolve não apenas a identificação de respostas corretas ou incorretas, mas também a capacidade de acompanhar a evolução do usuário ao longo de sucessivas interações. Em ambientes educacionais, essa necessidade é abordada pelo problema de <em>Knowledge Tracing</em> (KT), que consiste em estimar o conhecimento ou o domínio de habilidades de um indivíduo a partir de seu histórico de respostas.</p>
+<p>Abdelrahman, Wang e Nunes (2023), em <em>Knowledge Tracing: A Survey</em>, apresentam uma revisão abrangente dos principais modelos utilizados para acompanhar o desenvolvimento do conhecimento em sistemas computacionais. Os autores destacam a relevância do KT para plataformas educacionais, sistemas tutores inteligentes e aplicações capazes de adaptar conteúdos às necessidades individuais. A pesquisa também organiza as diferentes abordagens de Knowledge Tracing, abrangendo modelos probabilísticos tradicionais e métodos baseados em aprendizagem profunda.</p>
+<p>A partir desse referencial, o projeto <strong>Verifica</strong> utiliza o <em>Bayesian Knowledge Tracing</em> (BKT) para estimar o domínio de habilidades relacionadas à análise crítica de notícias. A proposta consiste em transformar a avaliação de informações em uma experiência gamificada, na qual as respostas do jogador são utilizadas para atualizar estimativas de domínio e orientar a seleção das questões seguintes.</p>
+<p>Como o projeto se encontra em estágio de desenvolvimento de um produto mínimo viável (MVP), não há, neste momento, um conjunto amplo de respostas reais que permita estimar com segurança todos os parâmetros do modelo. Por esse motivo, a definição inicial dos parâmetros é tratada como uma decisão metodológica que deve ser justificada teoricamente, submetida a testes de consistência e avaliada por simulações controladas. Essa estratégia permite verificar o funcionamento do modelo sem confundir resultados experimentais simulados com evidências empíricas sobre jogadores reais.</p>
+<h2 id="2-knowledge-tracing">2. Knowledge Tracing</h2>
+<p>O Knowledge Tracing busca representar a evolução do conhecimento de um indivíduo ao longo de uma sequência de atividades. Diferentemente de uma avaliação que considera apenas o resultado final de um teste, essa abordagem utiliza o histórico de interações para estimar o estado de domínio de determinadas habilidades.</p>
+<p>Em um sistema adaptativo, essa estimativa pode apoiar decisões como a seleção de exercícios, a recomendação de conteúdos e a identificação de competências que demandam maior atenção. Dessa forma, o modelo não se limita a registrar o desempenho observado, mas procura inferir um estado de conhecimento que não pode ser medido diretamente.</p>
+<p>Segundo Abdelrahman, Wang e Nunes (2023), os modelos de Knowledge Tracing podem ser agrupados, de maneira geral, em abordagens tradicionais e abordagens baseadas em aprendizagem profunda. Entre os modelos tradicionais, o Bayesian Knowledge Tracing ocupa uma posição importante por representar explicitamente a incerteza sobre o domínio de uma habilidade.</p>
+<p>Essa característica é relevante para o Verifica porque uma resposta isolada não constitui evidência suficiente para afirmar que uma pessoa domina ou não uma habilidade de análise crítica. Um acerto pode ocorrer por conhecimento prévio ou por acaso, enquanto um erro pode decorrer de uma interpretação equivocada, de uma questão ambígua ou de uma falha pontual. O Knowledge Tracing oferece uma estrutura para interpretar essas observações ao longo de múltiplas interações.</p>
+<h2 id="3-bayesian-knowledge-tracing">3. Bayesian Knowledge Tracing</h2>
+<h3 id="31-fundamentos-do-modelo">3.1 Fundamentos do modelo</h3>
+<p>O Bayesian Knowledge Tracing é um modelo probabilístico introduzido por Corbett e Anderson (1994) para acompanhar o desenvolvimento de habilidades em sistemas de aprendizagem. No BKT clássico, o estado de domínio de uma habilidade é representado por uma variável latente binária: o indivíduo é considerado como estando em um estado de domínio ou de não domínio daquela habilidade.</p>
+<p>A variável é denominada latente porque não pode ser observada diretamente. O sistema observa as respostas fornecidas pelo usuário e utiliza essas evidências para atualizar a probabilidade de que ele domine a habilidade avaliada.</p>
+<p>O modelo pode ser representado como um processo probabilístico de estados ocultos, frequentemente formulado por meio de um Modelo Oculto de Markov (<em>Hidden Markov Model</em>). As respostas corretas e incorretas constituem observações do processo, enquanto o domínio da habilidade é o estado que se deseja inferir.</p>
+<p>De acordo com Badrinath, Wang e Pardos (2021), o BKT e suas extensões são utilizados para estimar o domínio cognitivo a partir de sequências de resolução de problemas. Os autores apresentam a biblioteca pyBKT, que implementa diferentes variantes do modelo e disponibiliza funcionalidades para geração de dados, estimação de parâmetros, predição e validação cruzada.</p>
+<p>O uso de probabilidades permite que o sistema represente graus de confiança sobre o domínio de uma habilidade. Por exemplo, uma estimativa de 0,70 indica que, segundo o modelo e os dados observados, a probabilidade estimada de domínio é de 70%. Esse resultado não deve ser interpretado como uma medição direta e infalível do conhecimento do indivíduo, mas como uma inferência condicionada às hipóteses e aos parâmetros adotados.</p>
+<h3 id="32-parametros-do-bkt-classico">3.2 Parâmetros do BKT clássico</h3>
+<p>O BKT clássico utiliza quatro parâmetros principais:</p>
+<ul>
+<li><strong>Probabilidade inicial de domínio — (P(L_0)):</strong> representa a probabilidade de o indivíduo já dominar a habilidade antes da primeira interação observada.</li>
+<li><strong>Probabilidade de transição ou aprendizagem — (P(T)):</strong> representa a probabilidade de um indivíduo que ainda não domina a habilidade passar ao estado de domínio após uma oportunidade de aprendizagem.</li>
+<li><strong>Probabilidade de chute — (P(G)):</strong> representa a probabilidade de responder corretamente sem dominar a habilidade.</li>
+<li><strong>Probabilidade de deslize — (P(S)):</strong> representa a probabilidade de responder incorretamente mesmo dominando a habilidade.</li>
+</ul>
+<p>Esses parâmetros descrevem aspectos diferentes do processo. A probabilidade inicial representa uma hipótese sobre o conhecimento prévio; a transição representa a possibilidade de aprendizagem; e os parâmetros de chute e deslize representam a relação imperfeita entre o estado de conhecimento e a resposta observada.</p>
+<p>O modelo clássico pressupõe que, depois de atingir o domínio, o indivíduo permanece nesse estado. Portanto, o esquecimento não é representado diretamente pela formulação original, embora existam variantes que permitem modelá-lo (Abdelrahman; Wang; Nunes, 2023).</p>
+<h3 id="33-atualizacao-probabilistica">3.3 Atualização probabilística</h3>
+<p>Seja (P(L_t)) a probabilidade estimada de domínio de uma habilidade antes da observação da resposta seguinte. A probabilidade de uma resposta correta pode ser expressa por:</p>
+<p>[
+P(C_{t+1}) =
+P(L_t)(1-P(S)) +
+(1-P(L_t))P(G)
+]</p>
+<p>A expressão combina dois cenários: o indivíduo domina a habilidade e responde corretamente, ou não a domina, mas acerta por chute.</p>
+<p>Quando uma resposta correta é observada, a probabilidade de domínio é atualizada pela regra de Bayes:</p>
+<p>[
+P(L_t \mid C_{t+1}) =
+\frac{P(L_t)(1-P(S))}
+{P(L_t)(1-P(S))+(1-P(L_t))P(G)}
+]</p>
+<p>Para uma resposta incorreta, a atualização é:</p>
+<p>[
+P(L_t \mid \neg C_{t+1}) =
+\frac{P(L_t)P(S)}
+{P(L_t)P(S)+(1-P(L_t))(1-P(G))}
+]</p>
+<p>Após a atualização associada à resposta, o modelo clássico considera a possibilidade de aprendizagem. A probabilidade posterior de domínio é então ajustada pela probabilidade de transição:</p>
+<p>[
+P(L_{t+1}) =
+P(L_t \mid \text{resposta}) +
+P(T)\left[1-P(L_t \mid \text{resposta})\right]
+]</p>
+<p>Nessa expressão, (P(L_t \mid \text{resposta})) corresponde à probabilidade de domínio após considerar se a resposta foi correta ou incorreta.</p>
+<p>Essas equações demonstram que a estimativa final depende tanto do histórico de respostas quanto dos parâmetros escolhidos. Consequentemente, a definição dos parâmetros iniciais influencia a interpretação dos resultados e o comportamento do sistema adaptativo.</p>
+<h2 id="4-aplicacao-do-bkt-ao-verifica">4. Aplicação do BKT ao Verifica</h2>
+<h3 id="41-objetivo-da-aplicacao">4.1 Objetivo da aplicação</h3>
+<p>No Verifica, o BKT é utilizado para estimar o domínio de habilidades relacionadas à análise crítica de notícias. O objetivo não é apenas classificar uma notícia como verdadeira ou falsa, mas acompanhar o desempenho do jogador em diferentes dimensões de avaliação da informação.</p>
+<p>A cada questão respondida, o sistema registra o resultado e atualiza a estimativa de domínio da habilidade correspondente. Essas estimativas podem ser utilizadas pelo mecanismo de seleção adaptativa para priorizar questões relacionadas às habilidades com menor domínio estimado.</p>
+<p>A abordagem segue o princípio geral de Knowledge Tracing: utilizar o histórico de interações para orientar a adaptação da experiência às necessidades do indivíduo. Entretanto, a aplicação a competências de análise crítica de notícias constitui uma adaptação do modelo ao domínio específico do projeto. A adequação pedagógica dessa aplicação ainda precisa ser investigada por meio de avaliação empírica.</p>
+<h3 id="42-habilidades-monitoradas">4.2 Habilidades monitoradas</h3>
+<p>O MVP organiza o acompanhamento em quatro habilidades:</p>
+<table>
+<thead>
+<tr>
+<th>Habilidade</th>
+<th>Descrição operacional</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>SOURCE</code></td>
+<td>Avaliar a credibilidade e a procedência da fonte de uma notícia.</td>
+</tr>
+<tr>
+<td><code>EVIDENCE</code></td>
+<td>Verificar se as evidências apresentadas sustentam a alegação.</td>
+</tr>
+<tr>
+<td><code>CONTEXT</code></td>
+<td>Identificar omissões, distorções ou utilização de informações fora de contexto.</td>
+</tr>
+<tr>
+<td><code>VISUAL</code></td>
+<td>Avaliar a relação entre uma imagem e a alegação apresentada, incluindo possíveis incompatibilidades contextuais.</td>
+</tr>
+</tbody>
+</table>
+<p>Cada questão deve estar associada a uma única habilidade principal, de forma que a resposta forneça evidência interpretável para a atualização do respectivo estado de domínio.</p>
+<p>Essa separação é uma decisão metodológica do projeto. Sua validade depende de que as questões realmente avaliem a habilidade à qual foram associadas. Uma questão que exija simultaneamente avaliar a fonte, verificar evidências e interpretar uma imagem pode produzir uma resposta difícil de atribuir a uma única competência.</p>
+<p>Além disso, a dificuldade de uma questão não equivale ao domínio de uma habilidade. A dificuldade caracteriza o desafio oferecido pelo item, enquanto o BKT clássico representa o domínio por meio de uma variável latente e utiliza os parâmetros de chute, deslize e transição para interpretar as respostas. Caso o sistema precise representar explicitamente diferenças de dificuldade, isso deve ser tratado por uma extensão do modelo ou por uma regra adicional de seleção, sem presumir que a dificuldade já esteja contemplada nos quatro parâmetros clássicos.</p>
+<h3 id="43-selecao-adaptativa-das-questoes">4.3 Seleção adaptativa das questões</h3>
+<p>As estimativas de domínio podem orientar a escolha das próximas questões. No MVP, o seletor prioriza a habilidade com menor probabilidade estimada de domínio, evita questões já respondidas e considera a dificuldade dos itens disponíveis.</p>
+<p>Essa estratégia constitui uma regra adaptativa simples, adequada para testar o fluxo principal do produto. Ela não deve ser confundida com uma política de seleção comprovadamente ótima: sua eficácia pedagógica depende da qualidade das questões, da confiabilidade das estimativas e da avaliação de resultados com usuários.</p>
+<p>A utilização do BKT oferece, assim, uma forma de conectar as respostas individuais ao acompanhamento longitudinal das habilidades, enquanto o mecanismo de seleção utiliza essas estimativas para adaptar as partidas.</p>
+<h2 id="5-definicao-e-justificativa-dos-parametros-iniciais">5. Definição e justificativa dos parâmetros iniciais</h2>
+<h3 id="51-o-problema-da-estimacao-em-cenarios-com-poucos-dados">5.1 O problema da estimação em cenários com poucos dados</h3>
+<p>Em aplicações reais, os parâmetros do BKT podem ser estimados a partir de históricos de respostas. Entretanto, essa estimação depende da quantidade e da qualidade dos dados, da diversidade das sequências observadas e das hipóteses adotadas pelo modelo.</p>
+<p>Badrinath, Wang e Pardos (2021) apresentam, na biblioteca pyBKT, procedimentos para estimação de parâmetros e experimentos de simulação utilizados para verificar o comportamento desses procedimentos. O trabalho demonstra a utilidade das simulações no desenvolvimento e na avaliação de implementações do BKT, mas não implica que parâmetros obtidos em simulações sejam automaticamente representativos de uma população real.</p>
+<p>Shchepakin, Sankaranarayanan e Zimmaro (2024) discutem dificuldades adicionais da estimação por máxima verossimilhança e pelo algoritmo de Expectation-Maximization (EM). Entre os problemas apontados estão a convergência para mínimos locais, a existência de diferentes conjuntos de parâmetros que explicam os mesmos dados de forma semelhante e a obtenção de valores degenerados, incompatíveis com o significado conceitual dos parâmetros.</p>
+<p>Esses problemas são particularmente relevantes para o Verifica. Como o MVP ainda não dispõe de um conjunto amplo de sequências reais de jogadores, tentar estimar livremente todos os parâmetros para cada habilidade pode produzir valores instáveis ou difíceis de interpretar.</p>
+<p>Além disso, os dados de um conjunto de notícias classificadas como verdadeiras ou falsas não constituem, por si só, dados de aprendizagem adequados para estimar os parâmetros do BKT. A estimação exige observações das respostas dos usuários em sequência e uma definição consistente das habilidades avaliadas. O rótulo de veracidade de uma notícia não informa diretamente se um jogador domina a habilidade <code>SOURCE</code>, <code>EVIDENCE</code>, <code>CONTEXT</code> ou <code>VISUAL</code>.</p>
+<p>Por esse motivo, o MVP adota uma abordagem inicial baseada em parâmetros definidos explicitamente, com justificativas conceituais e validação por simulações. Essa decisão deve ser entendida como uma estratégia provisória de modelagem, não como uma calibração empírica concluída.</p>
+<h3 id="52-criterios-gerais-para-a-escolha-dos-parametros">5.2 Critérios gerais para a escolha dos parâmetros</h3>
+<p>A definição dos parâmetros iniciais deve atender a quatro critérios.</p>
+<p><strong>1. Coerência conceitual.</strong> Cada parâmetro precisa representar o fenômeno que o modelo pretende descrever. Por exemplo, a probabilidade de chute deve representar acertos de usuários que ainda não dominam a habilidade, enquanto a probabilidade de deslize deve representar erros de usuários que já a dominam.</p>
+<p><strong>2. Coerência matemática.</strong> Os parâmetros devem pertencer a intervalos probabilisticamente válidos e respeitar restrições que preservem o significado do modelo. Shchepakin, Sankaranarayanan e Zimmaro (2024) demonstram a importância de restringir o espaço de parâmetros para evitar situações em que o modelo atribui maior probabilidade de acerto a indivíduos que não dominam uma habilidade do que àqueles que a dominam.</p>
+<p><strong>3. Adequação ao formato do jogo.</strong> O número de alternativas, a qualidade dos distratores, a ambiguidade das questões e a clareza do feedback influenciam a interpretação das respostas. Assim, valores encontrados em outras aplicações não devem ser transferidos automaticamente para o jogo sem avaliar a compatibilidade entre os contextos.</p>
+<p><strong>4. Transparência sobre a incerteza.</strong> Na ausência de dados reais suficientes, os valores devem ser apresentados como hipóteses iniciais. A documentação precisa informar quais decisões são fundamentadas na literatura, quais são escolhas de engenharia e quais dependem de futura validação empírica.</p>
+<h3 id="53-justificativa-da-probabilidade-inicial-de-dominio-pl_0">5.3 Justificativa da probabilidade inicial de domínio — (P(L_0))</h3>
+<p>A probabilidade inicial representa a hipótese de que o jogador já domina uma habilidade antes de responder à primeira questão considerada pelo modelo.</p>
+<p>No BKT clássico, esse parâmetro pode representar uma proporção inicial da população que domina determinada habilidade. Entretanto, no contexto do  Verifica, não há necessariamente evidência empírica suficiente para determinar essa proporção antes da coleta de dados reais.</p>
+<p>Por isso, o valor inicial deve ser escolhido como uma hipótese explícita de modelagem. Um valor intermediário pode ser útil em testes iniciais por evitar assumir que todos os jogadores começam sem domínio ou que todos já dominam a habilidade. Isso não significa, porém, que uma probabilidade intermediária seja empiricamente correta para o público do projeto.</p>
+<p>Como as quatro habilidades podem apresentar níveis distintos de familiaridade na população, futuramente poderá ser necessário investigar se elas compartilham a mesma distribuição inicial de domínio. No MVP, a utilização de um valor comum ou de valores diferentes deve ser documentada como uma escolha de implementação.</p>
+<p>A justificativa final para (P(L_0)) deve registrar o valor adotado, a razão de sua escolha e os resultados de testes que avaliem a influência dessa hipótese sobre as estimativas produzidas.</p>
+<h3 id="54-justificativa-da-probabilidade-de-aprendizagem-pt">5.4 Justificativa da probabilidade de aprendizagem — (P(T))</h3>
+<p>A probabilidade de transição representa a possibilidade de um jogador que ainda não domina uma habilidade passar a dominá-la após uma oportunidade de aprendizagem.</p>
+<p>No contexto do projeto, essa oportunidade está associada à interação com uma questão e, conforme o funcionamento implementado, ao feedback recebido após a resposta. A hipótese de que uma interação pode contribuir para a aprendizagem é coerente com o propósito de um jogo educativo, mas não determina, por si só, a magnitude da probabilidade de transição.</p>
+<p>Uma probabilidade elevada pode fazer as estimativas de domínio aumentarem rapidamente ao longo de uma partida curta. Por outro lado, uma probabilidade muito baixa pode tornar o perfil praticamente insensível ao número de interações. A escolha precisa, portanto, ser avaliada em relação ao comprimento das partidas e ao comportamento esperado do modelo.</p>
+<p>No MVP, recomenda-se utilizar um valor inicial conservador e testar diferentes cenários de transição. O objetivo é verificar se o perfil evolui de maneira estável e se o resultado permanece razoável quando a hipótese de aprendizagem é alterada.</p>
+<p>É importante reconhecer uma limitação conceitual: o BKT clássico pressupõe que o domínio é adquirido de forma monotônica, sem esquecimento. Além disso, uma resposta correta não prova que houve aprendizagem, assim como uma resposta incorreta não prova que não houve aprendizagem. A probabilidade de transição representa uma hipótese do modelo, e não uma observação direta da aprendizagem ocorrida.</p>
+<h3 id="55-justificativa-da-probabilidade-de-chute-pg">5.5 Justificativa da probabilidade de chute — (P(G))</h3>
+<p>A probabilidade de chute representa a chance de um jogador acertar uma questão sem dominar a habilidade avaliada.</p>
+<p>Esse parâmetro é especialmente relevante em questões de múltipla escolha. Se uma questão possui alternativas independentes e igualmente plausíveis, e o jogador escolhe aleatoriamente entre (k) alternativas, a probabilidade teórica de acerto ao acaso é:</p>
+<p>[
+P(G) = \frac{1}{k}
+]</p>
+<p>Por exemplo, em uma questão com quatro alternativas, a probabilidade de acerto por escolha aleatória seria de 0,25 sob essas hipóteses.</p>
+<p>Entretanto, essa relação é apenas um ponto de referência teórico. Ela pressupõe escolha aleatória e alternativas equiprováveis. Em um jogo de análise crítica de notícias, um jogador pode eliminar alternativas claramente incorretas, utilizar conhecimento prévio ou reconhecer padrões de formulação das perguntas. Nessas situações, a probabilidade efetiva de acerto sem domínio pleno pode ser diferente da probabilidade de escolha aleatória.</p>
+<p>Por esse motivo, o número de alternativas pode orientar a definição inicial de (P(G)), mas não deve ser considerado uma estimativa empírica definitiva. O valor adotado precisa ser testado por simulação e reavaliado quando houver respostas reais.</p>
+<h3 id="56-justificativa-da-probabilidade-de-deslize-ps">5.6 Justificativa da probabilidade de deslize — (P(S))</h3>
+<p>A probabilidade de deslize representa a chance de um jogador que domina uma habilidade responder incorretamente.</p>
+<p>No projeto, os deslizes podem decorrer de fatores como leitura desatenta, interpretação equivocada do enunciado, dificuldade de compreensão ou ambiguidade na construção da questão. Entretanto, o BKT clássico não identifica separadamente essas causas: ele as representa por meio de uma probabilidade agregada de erro no estado de domínio.</p>
+<p>A escolha de (P(S)) deve considerar a qualidade esperada das questões e a possibilidade de que usuários competentes cometam erros ocasionais. Assumir uma probabilidade nula implicaria que todo jogador que domina uma habilidade responderia corretamente a todas as questões associadas a ela, hipótese excessivamente restritiva para uma aplicação real.</p>
+<p>Por outro lado, uma probabilidade de deslize elevada pode reduzir a capacidade do sistema de interpretar acertos e erros como evidências de domínio. Assim, o valor deve ser suficientemente plausível para representar erros ocasionais, mas precisa ser avaliado quanto ao impacto nas atualizações probabilísticas.</p>
+<p>Como ainda não há dados suficientes para estimar a taxa de erro de jogadores que comprovadamente dominam cada habilidade, o valor inicial de (P(S)) deve ser apresentado como uma hipótese de projeto.</p>
+<h3 id="57-restricoes-conceituais-e-matematicas">5.7 Restrições conceituais e matemáticas</h3>
+<p>Além de definir valores iniciais plausíveis, é necessário garantir que os parâmetros respeitem as relações exigidas pelo modelo.</p>
+<p>Shchepakin, Sankaranarayanan e Zimmaro (2024) apresentam restrições derivadas do significado probabilístico do BKT. Entre as condições discutidas pelos autores estão:</p>
+<p>[
+0 &lt; P(G) &lt; 1
+]</p>
+<p>[
+0 &lt; P(S) &lt; 1
+]</p>
+<p>[
+0 &lt; P(T) &lt; 1
+]</p>
+<p>e</p>
+<p>[
+P(G) + P(S) \leq 1
+]</p>
+<p>Uma consequência importante é:</p>
+<p>[
+1-P(S) \geq P(G)
+]</p>
+<p>Essa relação assegura que a probabilidade de responder corretamente quando se domina a habilidade não seja inferior à probabilidade de acerto por chute quando a habilidade não é dominada.</p>
+<p>Os autores também apresentam uma condição adicional relacionada à probabilidade inicial e à dinâmica de transição do modelo. Portanto, as desigualdades acima são critérios importantes, mas não substituem a verificação conjunta de todas as condições aplicáveis à parametrização adotada.</p>
+<p>Essas restrições não determinam um único conjunto de parâmetros correto para o projeto. Elas delimitam combinações matematicamente admissíveis e conceitualmente coerentes. A escolha entre os conjuntos admissíveis ainda depende das hipóteses sobre o jogo e da futura avaliação empírica.</p>
+<h3 id="58-registro-e-rastreabilidade-dos-parametros">5.8 Registro e rastreabilidade dos parâmetros</h3>
+<p>Para garantir a transparência metodológica, os parâmetros devem ser documentados em uma tabela de configuração.</p>
+<table>
+<thead>
+<tr>
+<th>Parâmetro</th>
+<th style="text-align: right;">Valor inicial</th>
+<th>Justificativa</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(P(L_0))</td>
+<td style="text-align: right;">A definir</td>
+<td>Hipótese sobre o domínio anterior à primeira questão</td>
+<td>Provisório</td>
+</tr>
+<tr>
+<td>(P(T))</td>
+<td style="text-align: right;">A definir</td>
+<td>Hipótese sobre a aprendizagem por oportunidade de interação</td>
+<td>Provisório</td>
+</tr>
+<tr>
+<td>(P(G))</td>
+<td style="text-align: right;">A definir</td>
+<td>Formato das alternativas e possibilidade de acerto sem domínio</td>
+<td>Provisório</td>
+</tr>
+<tr>
+<td>(P(S))</td>
+<td style="text-align: right;">A definir</td>
+<td>Possibilidade de erros ocasionais apesar do domínio</td>
+<td>Provisório</td>
+</tr>
+</tbody>
+</table>
+<p>Os valores devem ser preenchidos a partir da configuração efetivamente utilizada no código. Não é apropriado apresentar valores hipotéticos nesta tabela como se fossem os valores implementados.</p>
+<p>Para cada parâmetro, recomenda-se registrar também a data da configuração, a versão do modelo, a origem da justificativa, as restrições verificadas e os resultados dos testes de sensibilidade. Esse registro permite comparar versões futuras e identificar se alterações nos resultados decorreram de mudanças nos parâmetros, na implementação ou nas questões utilizadas.</p>
+<h2 id="6-conhecimento-previo-elicitacao-de-parametros-e-simulacao">6. Conhecimento prévio, elicitação de parâmetros e simulação</h2>
+<h3 id="61-elicitacao-de-conhecimento-previo">6.1 Elicitação de conhecimento prévio</h3>
+<p>Bockting, Radev e Bürkner (2024) investigam métodos para traduzir conhecimento de especialistas em distribuições a priori para parâmetros de modelos bayesianos. Os autores propõem uma abordagem baseada em simulação para auxiliar na escolha dos hiperparâmetros de distribuições a priori, demonstrando sua aplicação em diferentes cenários de modelagem.</p>
+<p>Esse trabalho oferece uma fundamentação metodológica para reconhecer que o conhecimento prévio pode ser incorporado de maneira explícita quando os dados são limitados. Entretanto, sua contribuição não deve ser interpretada como uma receita direta de valores para os parâmetros do BKT. O método estudado é geral e trata da elicitação de distribuições a priori; sua aplicação específica ao BKT exigiria definir uma formulação probabilística apropriada e executar o procedimento correspondente.</p>
+<p>No Verifica, a contribuição mais imediata desse referencial é a distinção entre escolher parâmetros arbitrariamente e formular hipóteses explícitas que possam ser examinadas por simulações. A elicitação pode se tornar uma extensão metodológica futura, caso o projeto passe a representar formalmente a incerteza sobre os parâmetros.</p>
+<h3 id="62-uso-de-simulacoes-no-desenvolvimento-do-bkt">6.2 Uso de simulações no desenvolvimento do BKT</h3>
+<p>Badrinath, Wang e Pardos (2021) apresentam experimentos com dados simulados para verificar o comportamento dos procedimentos de estimação implementados na biblioteca pyBKT. Esse tipo de experimento é útil porque permite construir sequências nas quais os parâmetros geradores e os estados latentes são conhecidos.</p>
+<p>No projeto, as simulações podem ser utilizadas para avaliar se o algoritmo atualiza as probabilidades corretamente, se as estimativas respondem de maneira coerente a sequências de acertos e erros e se o seletor adaptativo respeita as regras definidas para a escolha das questões.</p>
+<p>Uma avaliação mais completa deve distinguir pelo menos três objetivos:</p>
+<ol>
+<li><strong>Verificação da implementação:</strong> confirmar que as equações e as atualizações são executadas corretamente.</li>
+<li><strong>Recuperação de parâmetros ou estados:</strong> verificar se um procedimento de estimação consegue recuperar valores ou estados conhecidos que geraram os dados simulados.</li>
+<li><strong>Avaliação de decisões adaptativas:</strong> verificar se o sistema seleciona as questões esperadas de acordo com as probabilidades de domínio e as restrições operacionais.</li>
+</ol>
+<p>Esses testes não são equivalentes. Uma implementação pode executar corretamente as equações sem que os parâmetros escolhidos representem adequadamente o comportamento humano. Da mesma forma, uma boa recuperação de parâmetros em dados gerados a partir do próprio modelo não garante que as hipóteses do modelo correspondam ao processo real de aprendizagem.</p>
+<h3 id="63-limites-da-validacao-simulada">6.3 Limites da validação simulada</h3>
+<p>A validação por simulação permite controlar as condições experimentais e conhecer os valores que geraram os dados. Contudo, quando os dados são inteiramente artificiais, as conclusões dependem das hipóteses adotadas para gerar as sequências.</p>
+<p>Se as simulações utilizarem os mesmos parâmetros fixos empregados pelo algoritmo, elas podem demonstrar consistência interna, mas não constituem evidência independente de que esses parâmetros sejam adequados para jogadores reais.</p>
+<p>Para reduzir esse risco, a avaliação deve considerar diferentes cenários de domínio inicial, aprendizagem, chute e deslize, além de variar o número de respostas por jogador. Quando houver um procedimento de estimação, os parâmetros recuperados devem ser comparados com os valores usados para gerar os dados.</p>
+<p>A análise de sensibilidade também deve investigar se pequenas mudanças nos parâmetros alteram significativamente as estimativas de domínio ou as decisões do seletor adaptativo. Se o comportamento variar muito entre cenários plausíveis, os resultados devem ser apresentados como dependentes das hipóteses utilizadas.</p>
+<p>Dessa forma, as simulações constituem uma etapa legítima de verificação e análise metodológica, mas não substituem a coleta de respostas reais para validar a interpretação pedagógica do perfil gerado.</p>
+<h2 id="7-estrategia-de-validacao-adotada-no-mvp">7. Estratégia de validação adotada no MVP</h2>
+<p>Considerando a ausência de um conjunto amplo de interações reais, a estratégia inicial de validação do Verifica deve priorizar a transparência dos parâmetros e a verificação do comportamento do modelo.</p>
+<p>A abordagem pode ser organizada em quatro etapas:</p>
+<ol>
+<li><strong>Definição dos parâmetros de referência:</strong> documentar os valores efetivamente implementados, suas justificativas e as restrições verificadas.</li>
+<li><strong>Testes com sequências controladas:</strong> gerar respostas simuladas para verificar o comportamento das atualizações e, quando aplicável, a recuperação de estados ou parâmetros conhecidos.</li>
+<li><strong>Análise de sensibilidade:</strong> repetir os testes com combinações alternativas de parâmetros e comparar as estimativas de domínio e as decisões de seleção.</li>
+<li><strong>Coleta futura de dados reais:</strong> registrar as respostas dos jogadores, as questões respondidas, as habilidades associadas e a ordem temporal das interações, de forma a permitir uma avaliação empírica posterior.</li>
+</ol>
+<p>Quando houver dados reais suficientes e de qualidade adequada, será possível avaliar a estimação dos parâmetros por métodos como máxima verossimilhança e Expectation-Maximization, com restrições conceituais quando apropriado. A avaliação deverá considerar a capacidade de prever respostas não utilizadas na estimação, preferencialmente com separação entre jogadores nos conjuntos de treinamento e teste.</p>
+<p>Métricas como log-loss e Brier score podem ser utilizadas para avaliar a qualidade das probabilidades previstas, enquanto curvas de calibração ajudam a investigar se as probabilidades estimadas correspondem às frequências observadas. A escolha das métricas e a interpretação dos resultados precisam considerar o objetivo da avaliação e as limitações da amostra.</p>
+<p>Até que essa validação seja realizada, os parâmetros devem permanecer identificados como iniciais ou provisórios, e as conclusões sobre o domínio dos jogadores devem ser interpretadas como estimativas do modelo, não como diagnósticos definitivos de suas competências.</p>
+<h2 id="8-consideracoes-finais">8. Considerações finais</h2>
+<p>O Bayesian Knowledge Tracing fornece uma estrutura probabilística para estimar a evolução do domínio de habilidades a partir de sequências de respostas. Sua utilização no Verifica permite relacionar as interações do jogador a estimativas individualizadas de domínio, que podem orientar a seleção adaptativa de questões.</p>
+<p>A escolha desse modelo está alinhada à literatura de Knowledge Tracing, que reconhece a relevância de acompanhar estados latentes de conhecimento em sistemas adaptativos. Entretanto, a qualidade dos resultados depende da definição das habilidades, da qualidade das questões, da coerência dos parâmetros e da adequação das hipóteses do modelo ao contexto de aplicação.</p>
+<p>Diante da limitação de dados reais no estágio atual do projeto, a definição explícita de parâmetros iniciais, a imposição de restrições conceituais e a realização de simulações constituem uma estratégia metodológica apropriada para desenvolver e verificar o MVP. Essa estratégia não equivale a uma calibração empírica definitiva, mas oferece uma base transparente e reproduzível para a implementação.</p>
+<p>Como continuidade, a coleta de interações reais permitirá investigar a adequação dos parâmetros, comparar configurações e avaliar se as estimativas produzidas refletem de maneira útil o desempenho dos jogadores. Dessa forma, a proposta reconhece tanto o potencial do BKT para a adaptação da experiência quanto a necessidade de validação contínua antes de atribuir significado empírico forte ao perfil de habilidades gerado.</p>
+<h2 id="referencias">Referências</h2>
+<blockquote>
+<p>ABDELRAHMAN, Ghodai; WANG, Qing; NUNES, Bernardo. Knowledge Tracing: A Survey. <em>ACM Computing Surveys</em>, v. 55, n. 11, art. 224, 2023. DOI: https://doi.org/10.1145/3569576.</p>
+<p>BADRINATH, Anirudhan; WANG, Frederic; PARDOS, Zachary A. pyBKT: An Accessible Python Library of Bayesian Knowledge Tracing Models. In: <em>Proceedings of the 14th International Conference on Educational Data Mining (EDM)</em>, 2021, p. 468–474. Disponível em: https://arxiv.org/abs/2105.00385.</p>
+<p>BOCKTING, Florence; RADEV, Stefan T.; BÜRKNER, Paul-Christian. Simulation-based prior knowledge elicitation for parametric Bayesian models. <em>Scientific Reports</em>, v. 14, art. 17330, 2024. DOI: https://doi.org/10.1038/s41598-024-68090-7.</p>
+<p>CORBETT, Albert T.; ANDERSON, John R. Knowledge tracing: Modeling the acquisition of procedural knowledge. <em>User Modeling and User-Adapted Interaction</em>, v. 4, p. 253–278, 1994. DOI: https://doi.org/10.1007/BF01099821.</p>
+<p>SHCHEPAKIN, Denis; SANKARANARAYANAN, Sreecharan; ZIMMARO, Dawn. Parametric Constraints for Bayesian Knowledge Tracing from First Principles. In: <em>Proceedings of the 17th International Conference on Educational Data Mining (EDM)</em>, 2024. Disponível em: https://educationaldatamining.org/edm2024/proceedings/2024.EDM-long-papers.2/index.html.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.annotate", "content.tabs.link", "header.autohide", "navigation.instant", "navigation.top", "navigation.tracking"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
