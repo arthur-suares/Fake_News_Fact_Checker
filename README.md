@@ -6,6 +6,9 @@ Este é um projeto desenvolvido por alunos participantes do programa de residên
 ## Vídeo de Apresentação do projeto
 https://youtu.be/Wkn8gjQ_tHc
 
+## Link do Repositório do Github
+https://github.com/arthur-suares/Projeto_Verifica_2026/
+
 ## Documentação do projeto
 https://arthur-suares.github.io/Fake_News_Fact_Checker/
 
