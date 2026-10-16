@@ -1,4 +1,4 @@
-# Fake_News_Fact_Checker
+# Projeto _Verifica_ - Residência em IA Eldorado|UnB
 
 Backend desenvolvido em Python utilizando **FastAPI** para consultar a **Google Fact Check Tools API**.
 
